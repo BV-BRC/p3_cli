@@ -117,4 +117,4 @@ if (! $genomeID || ! $name) {
 my $annotation = RASTlib::Annotate($contigs, $genomeID, $name, user => undef, password => undef,
         domain => $domain, geneticCode => $geneticCode, sleep => $opt->sleep);
 # Write the result.
-SeedUtils::write_encoded_object($annotation, \*STDOUT);
+$annotation->destroy_to_file(\*STDOUT);

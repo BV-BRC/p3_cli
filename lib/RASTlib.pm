@@ -30,6 +30,7 @@ package RASTlib;
     use Crypt::RC4;
     use FastA;
     use MD5Computer;
+    use GenomeTypeObject;
 
 =head1 Annotate a Genome Using RAST
 
@@ -107,7 +108,7 @@ If TRUE, errors will return C<undef> instead of failing outright.  A warning mes
 
 =item RETURN
 
-Returns an unblessed L<GenomeTypeObject> for the annotated genome.
+Returns a blessed L<GenomeTypeObject> for the annotated genome.
 
 =back
 
@@ -399,7 +400,7 @@ If TRUE, then the GTO is returned as a JSON string instead of an object.
 
 =item RETURN
 
-Returns an unblessed L<GenomeTypeObject> for the annotated genome, or C<undef> if an error occurred.
+Returns a blessed L<GenomeTypeObject> for the annotated genome, or C<undef> if an error occurred.
 
 =back
 
@@ -421,7 +422,7 @@ sub retrieve {
         if ($json =~ /^<html>/) {
             print STDERR "HTML response for RAST retrieval: $json.\n";
         } else {
-            my $gto = SeedUtils::read_encoded_object(\$json);
+            my $gto = GenomeTypeObject->new({ json => $json });
             my $md5Thing = MD5Computer->new_from_gto($gto);
             my $checkValue = $md5Thing->genomeMD5();
             if ($checkValue ne $checksum) {
