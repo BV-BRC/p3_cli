@@ -1,6 +1,6 @@
 =head1 Return All Subsystems and Their Roles in PATRIC
 
-    p3-all-subsystems [options]
+    p3-all-subsystem-roles [options]
 
 This script returns the IDs of all the subsystems in the PATRIC database and their roles.  There will be one output
 line per subsystem/role pair.  It supports standard filtering parameters and the specification of additional columns if
