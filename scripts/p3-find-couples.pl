@@ -167,7 +167,7 @@ while (! eof $ih) {
 # For each list, we sort by start position and figure out what qualifies as a couple.
 # The couples are counted in this hash, which is keyed by "element1\telement2".
 my %couples;
-open(my $oh, ">coupleDebug.log") || die "Could not open debug file: $!"; ##TODO debug
+# open(my $oh, ">coupleDebug.log") || die "Could not open debug file: $!";
 print STDERR scalar(keys %contigs) . " contigs ready to examine.\n" if $debug;
 my ($contigCount, $fidCount) = (0,0);
 for my $contig (sort keys %contigs) {
