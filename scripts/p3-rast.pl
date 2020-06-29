@@ -69,6 +69,10 @@ Password for RAST access.
 
 Sleep interval in seconds while waiting for the job to complete. The default is C<60>.
 
+=item noIndex
+
+Do not add the genome to the PATRIC index.
+
 =back
 
 =cut
@@ -82,6 +86,7 @@ my $opt = P3Utils::script_opts('genomeID name', P3Utils::ih_options(),
         ["domain|d=s", "domain (A or B) of the new genome", { default => 'B' }],
         ["geneticCode=i", "genetic code for the new genome", { default => 11 }],
         ["sleep=i", "sleep interval for status polling", { default => 60 }],
+        ["noIndex", "do not add the genome to the PATRIC genome index"],
         );
 # Open the input file.
 my $ih = P3Utils::ih($opt);
@@ -113,6 +118,8 @@ if (! $opt->gto) {
 if (! $genomeID || ! $name) {
     die "You must specify a genome ID and name somewhere.";
 }
+# Get the noIndex option.
+my $noIndex = ($opt->noindex ? 1 : 0);
 # Invoke the RAST service.
 my $annotation = RASTlib::Annotate($contigs, $genomeID, $name, user => undef, password => undef,
         domain => $domain, geneticCode => $geneticCode, sleep => $opt->sleep);
