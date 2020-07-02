@@ -206,7 +206,7 @@ If TRUE, errors will return C<undef> instead of failing outright.  A warning mes
 
 =item RETURN
 
-Returns a two-element list consisting of (0) an unblessed L<GenomeTypeObject> for the annotated genome and (1) a
+Returns a two-element list consisting of (0) the job ID for the genome annotation and (1) a
 checksum of the contig IDs.
 
 =back
