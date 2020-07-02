@@ -132,7 +132,7 @@ sub Annotate {
             sleep $sleepInterval;
         }
         # Get the results.
-        $retVal = retrieve($jobID, $checksum, $header);
+        $retVal = retrieve($jobID, $checksum, $header, $taxonID);
         if (! $retVal && ! $options{robust}) {
             die "Error retrieving RAST job $jobID.";
         }
@@ -376,7 +376,7 @@ sub check {
 
 =head3 retrieve
 
-    my $gto = RASTlib::retrieve($jobID, $checksum, $header, $row);
+    my $gto = RASTlib::retrieve($jobID, $checksum, $header, $taxonID, $raw);
 
 Extract the GTO for an annotated genome from the RAST interface.
 
@@ -394,6 +394,10 @@ The contig checksum returned by L</Submit>.
 
 The authorization header returned by L</auth_header>.
 
+=item taxonID (optional)
+
+The taxonomic ID used to submit the job.
+
 =item raw (optional)
 
 If TRUE, then the GTO is returned as a JSON string instead of an object.
@@ -407,9 +411,11 @@ Returns a blessed L<GenomeTypeObject> for the annotated genome, or C<undef> if a
 =cut
 
 sub retrieve {
-    my ($jobID, $checksum, $header, $raw) = @_;
+    my ($jobID, $checksum, $header, $taxonID, $raw) = @_;
     # This will be the return value.
     my $retVal;
+       # Insure the taxonID is a string.
+       $taxonID //= "";
     # Ask for the GTO from PATRIC.
     my $ua = LWP::UserAgent->new();
     my $url = join("/", RAST_URL, $jobID, 'retrieve');
@@ -422,11 +428,14 @@ sub retrieve {
         if ($json =~ /^<html>/) {
             print STDERR "HTML response for RAST retrieval: $json.\n";
         } else {
+            my ($oldTax) = split /\./, $taxonID;
             my $gto = GenomeTypeObject->new({ json => $json });
             my $md5Thing = MD5Computer->new_from_gto($gto);
             my $checkValue = $md5Thing->genomeMD5();
             if ($checkValue ne $checksum) {
                 print STDERR "Contigs checksum of returned genome does not match input genome.\n";
+            } elsif ($oldTax && $oldTax ne $gto->{ncbi_taxonomy_id}) {
+                print STDERR "Taxonomic ID of returned genome does not match parameters.\n";
             } elsif ($raw) {
                 $retVal = $json;
             } else {
