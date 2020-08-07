@@ -2,7 +2,7 @@
 
     p3-rep-prots.pl [options] outDir
 
-This script processes a list of genome IDs to create a directory suitable for use by the L<RepresentativeGenomes> server.
+This script processes a list of genome IDs to create a directory suitable for use by the representative genomes server.
 It will extract all the instances of the specified seed protein (default is Phenylanyl synthetase alpha chain). The list of genome IDs and
 names will go in the output file C<complete.genomes> and a FASTA of the seed proteins in C<6.1.1.20.fasta>.
 
