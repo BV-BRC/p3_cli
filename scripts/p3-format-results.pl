@@ -1,8 +1,7 @@
-use Data::Dumper;
 use strict;
 use warnings;
 use P3Utils;
-use SeedUtils;
+use P3DataAPI;
 
 =head1 Format Raw Data for Conversion to HTML.
 
@@ -11,8 +10,45 @@ use SeedUtils;
 This tool takes as input an Output Directory created by p3-related-by-clusters.
 It produces a condensed text for of the computed clusters.
 
-These text-forms can be run through p3-clusters-to-html to get versions
+These text-forms can be run through p3-aggregates-to-html to get versions
 that can be perused by a biologist.
+
+The input directory contains a list of protein family pairs in a file called C<related.signature.families>.  Each
+record consists of three tab-delimited columns-- (0) first family ID, (1) second family ID, and (2) count.
+
+For each pair, we want to create an output group that shows the pairing (and the intervening features) for
+each genome.  Each such group consists of the following.
+
+=over 4
+
+=item coupling_header
+
+A header consisting of the string C<////>.
+
+=item count
+
+Immediately after the header, a tab-delimited line containing (0) the first family ID, (1) the second family ID, and
+(2) the occurrence count.
+
+=item genome_header
+
+Following the count, there are one or more genome groups.  Each starts with a header containing C<###>, a tab, and the
+genome name.
+
+=item feature
+
+Inside the genome group there are one or more feature records. The feature record is tab-delimited, and consists of (0)
+a feature ID, (1) a protein family ID, and (2) a functional assignment.
+
+=back
+
+The B<count> records are taken directly from C<related.signature.families>.  The B<feature> records are taken from
+the iteration files in the data directory.  These files are found in the subdirectory <CS>, and each genome group
+is separated by a C<//> line.
+
+Our strategy will be to read in all the genome groups and track the genome and the protein family set for each.
+When we process a protein family pairing, we will output all of the genome groups that have both protein families
+present.
 
 =head2 Parameters
 
@@ -26,111 +62,105 @@ The additional command-line options are as follows.
 
 =item d DataDirectory
 
-=item q
-
-no STDOUT, output is in DataDirectory/labeled.
-
 =back
 
 =cut
 
-my ($opt, $helper) = P3Utils::script_opts('',["d=s","a directory created by p3-related-by-clusters", { required => 1 }],["q", "no STDOUT"]);
-my $outD = $opt->d;
-###########
-&SeedUtils::run("p3-aggregate-sss -d $outD");
-###########
-my @ignore = ('Mobile','mobile','transposase','Transposase');
-
-$/ = "\n////\n";
-
-my $sss;
-open(AG,"<$outD/aggregated.sss") || die "could not open $outD/aggregated.sss";
-open(PULL,">$outD/pulled")        || die "could not open $outD/pulled";
-while (defined($sss = <AG>))
-{
-    $/ = "\n";
-    if ($sss =~ /^(\S+\t\S+)\t(\d+)\n(\S.*\S)\n\/\/\n\/\/\/\/\n/s)
-    {
-        my($pair,$sc,$exemplars) = ($1,$2,$3);
-        my $i;
-        for ($i=0; ($i < @ignore) && (index($exemplars,$ignore[$i]) < 0); $i++) {}
-        if ($i == @ignore)
-        {
-#	    print STDERR &Dumper($sss); die "HERE";
-            print PULL $pair,"\t",$sc,"\n";
-
-            my %seen;
-            my @tmp = split(/\n\/\/\n/,$exemplars);
-            foreach my $tmp1 (@tmp)
-            {
-                my $fams = join("\t",(sort map { ($_ =~ /^fig\S+\t(\S+)/) ? $1 : () } split(/\n/,$tmp1)));
-                if (! $seen{$fams})
-                {
-                    $seen{$fams} = 1;
-                    print PULL $tmp1,"\n\/\/\n";
-                }
+my ($opt, $helper) = P3Utils::script_opts('',["d=s","a directory created by p3-related-by-clusters", { required => 1 }]);
+my $inD = $opt->d;
+# Connect to PATRIC.
+my $p3 = P3DataAPI->new();
+# We start by reading in the genome clusters.  This hash contains the genome IDs found.
+my %genomes;
+# This list contains all the clusters.  Each will be identified by its position in this list.  The cluster will be
+# represented by its genome ID and then the list of detail records.
+my @clusters;
+my @clusterGenomes;
+# This hash maps each protein family ID to a list of cluster numbers.
+my %families;
+# The genome cluster files are in the CS directory.
+opendir(my $dh, "$inD/CS") || die "Could not open cluster directory for $inD: $!";
+my @clusterFiles = grep { -s "$inD/CS/$_" } readdir $dh;
+closedir $dh;
+for my $clusterFile (@clusterFiles) {
+    open(my $ih, '<', "$inD/CS/$clusterFile") || die "Could not open cluster file $clusterFile: $!";
+    while (! eof $ih) {
+        my ($cluster, $genome, $families) = readCluster($ih);
+        # Save the genome ID.
+        $genomes{$genome} = "Unknown genome $genome";
+        # Attach the cluster to the families.  "scalar @clusterFiles" is the index the cluster will have in the list.
+        for my $family (@$families) {
+            push @{$families{$family}}, scalar @clusters;
+        }
+        # Finally, save the cluster in the list.
+        push @clusters, $cluster;
+        push @clusterGenomes, $genome;
+    }
+    close $ih;
+}
+# Next, we get the genome names from PATRIC.
+read_names(\%genomes);
+# Now we have all our support structures. We read through the related-families file to build the output.
+open(my $ih, '<', "$inD/related.signature.families") || die "Could not open related-families file: $!";
+while (! eof $ih) {
+    # Get the next pairing.
+    my $line = <$ih>;
+    chomp $line;
+    my ($fam1, $fam2, $count) = split /\t/, $line;
+    # Get the intersection of the cluster lists for the families.
+    my %f2List = map { $_ => 1 } @{$families{$fam2}};
+    my @matching = grep { $f2List{$_} } @{$families{$fam1}};
+    if (scalar @matching) {
+        # We have clusters to show, so start an output group.
+        print "////\n";
+        print "$line\n";
+        for my $clusterIdx (@matching) {
+            # Get the cluster and its genome ID.
+            my $cluster = $clusters[$clusterIdx];
+            my $genome = $clusterGenomes[$clusterIdx];
+            # Output the group.
+            print "###\t$genomes{$genome}\n";
+            for my $line (@$cluster) {
+                print $line;
             }
-            print PULL "////\n";
         }
     }
-    $/ = "\n////\n";
 }
-$/ = "\n";
-close(PULL);
-close(AG);
-###########
 
-open(TMP,"p3-all-genomes --attr genome_name |") || die "could not get genome names";
-my %genome_names = map { ($_ =~ /^(\S+)\t(\S.*\S)/) ? ($1 => $2) : () } <TMP>;
-close(TMP);
-open(IN,"<$outD/pulled") || die "could not open $outD/pulled";
-open(OUT,">$outD/labeled") || die "could not open $outD/labeled";
 
-$/ = "\n////\n";
-while (defined($_ = <IN>))
-{
-    $/ = "\n";
-    my $parsed = &parse($_,\%genome_names);
-    if ($parsed)
-    {
-        my $exemplars = $parsed->{exemplars};
-        print OUT $parsed->{pair}, "\t",$parsed->{sc}, "\n";
-        print OUT join("\n//\n",@$exemplars),"\n//\n////\n";
+##
+## Read a cluster from the input file.  The input file handle is the parameter.  The output is the cluster list,
+## the genome ID, and a list of the family IDs found.
+sub readCluster {
+    my ($ih) = @_;
+    # These will be the return values.
+    my $genomeID;
+    my @cluster;
+    my %families;
+    # We get the first line to parse out the genome ID.
+    my $line = <$ih>;
+    if ($line =~ /(\d+\.\d+)/) {
+        $genomeID = $1;
     }
-    $/ = "\n////\n";
-}
-close(IN);
-close(OUT);
-if (! $opt->q) {
-    open(IN, "<$outD/labeled") || die "Empty or missing $outD/labeled";
-    while (defined($_ = <IN>)) {
-        print $_;
+    # We will loop until we hit a marker or EOF.
+    while (defined $line && substr($line, 0, 2) ne '//') {
+        my ($fid, $family, $function) = split /\t/, $line;
+        $families{$family} = 1;
+        push @cluster, $line;
+        $line = <$ih>;
     }
-    close(IN);
+    return (\@cluster, $genomeID, [keys %families]);
 }
 
-#######################
-sub parse {
-    my($x,$genome_names) = @_;
-
-    if ($x =~ /^(\S+\t\S+)\t(\d+)\n(\S.*\S)\n\/\/\n\/\/\/\//s)
-    {
-        my($pair,$sc,$exemplars) = ($1,$2,[split(/\n\/\/\n/,$3)]);
-        my @tmp_exemplars = map { ($_ =~ /fig\|(\d+\.\d+)/) ? ("$_\n###\t" . $genome_names->{$1}) : ($_ . "\nunknown")  } @$exemplars;
-        return { pair => $pair, exemplars => \@tmp_exemplars, sc => $sc };
+##
+## Read the genome names from PATRIC.  The parameter is the genome hash.  We will replace the placeholders in there
+## with the real names.
+##
+sub read_names {
+    my ($genomesH) = @_;
+    my $results = P3Utils::get_data_keyed($p3, genome => [], ['genome_id', 'genome_name'], [keys %$genomesH]);
+    for my $result (@$results) {
+        my ($genomeID, $genomeName) = @$result;
+        $genomesH->{$genomeID} = $genomeName;
     }
-    return undef;
 }
-
-sub print_parsed {
-    my($x,$file) = @_;
-
-    my $gs = $x->{gs};
-    my $exemplars = $x->{exemplars};
-    if (! $gs) { print "missing gs\n" }
-    print $file $x->{pair}, "\t",$x->{sc}, ($gs ? "\t$gs" : '' ),"\n";
-    print $file join("\n//\n",@$exemplars),"\n//\n////\n";
-}
-
-#################
-

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>p3_scripts</name>
+	<name>p3_cli</name>
 	<comment></comment>
 	<projects>
 		<project>p3_code</project>
