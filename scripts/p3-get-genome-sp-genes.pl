@@ -76,7 +76,7 @@ $| = 1;
 # Get the command-line options.
 my $opt = P3Utils::script_opts('property', P3Utils::data_options(), P3Utils::col_options(), P3Utils::ih_options(),
     ['fields|f', 'Show available fields'],
-    ['typeNames|f', 'List available specialty types']);
+    ['typeNames|t', 'List available specialty types']);
 # Get access to PATRIC.
 my $p3 = P3DataAPI->new();
 my $fields = ($opt->fields ? 1 : 0);
