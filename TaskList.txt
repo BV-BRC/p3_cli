@@ -1,0 +1,29 @@
+Submission Scripts
+*	Comprehensive Genome Analysis - implemented as p3-submit-CGA, dry-tested
+*	Metagenomic Read Mapping - implemented as p3-submit-metagenomic-read-mapping, dry-tested
+*	FastqUtils - implemented as p3-submit-fastqutils, dry-tested
+*	RNASeq - implemented as p3-submit-rnaseq, dry-tested
+*	Codon Tree - implemented as p3-submit-codon-tree, dry-tested
+*	Taxonomic Classification - implemented as p3-submit-taxonomic-classification, dry-tested
+*	Variation Analysis - implemented as p3-submit-variation-analysis, dry-tested
+*	Metagenome Binning - implemented as p3-submit-metagenome-binning, dry-tested
+*	SARS-2 Genome Assembly and Annotation - implemented as p3-submit-sars2-assembly, dry-tested
+*	Proteome Comparison - implemented as p3-submit-proteome-comparison, dry-tested
+*	MSA - implemented as p3-submit-MSA, dry-tested
+*	GeneTree - coded as p3-submit-gene-tree, service not functioning
+*	Homology Service - implemented as p3-submit-BLAST
+*	RVA Genotyper - not available yet
+*	Ha Numbering - not available yet
+*	Short-seqsearch - not available yet
+*	SNP Analysis - not available yet
+
+Database Services
+
+*	protein_feature			p3-get-feature-protein-regions and p3-get-genome-protein-regions done
+*	protein_structure		p3-get-feature-protein-structures and p3-get-genome-protein-structures done
+*	surveillance			p3-find-surveillance-data done
+*	serology				p3-find-serology-data done
+
+Other:
+
+All error messages and PODs updated to say "BV-BRC" instead of "PATRIC".
