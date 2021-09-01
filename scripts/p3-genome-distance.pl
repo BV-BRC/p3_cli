@@ -53,7 +53,7 @@ my $debug = $opt->verbose;
 my $kmer = $opt->kmer || ($opt->dna ? 15 : 8);
 # Determine the input field to use for the sequences.
 my $mode = ($opt->dna ? 'na_sequence' : 'aa_sequence');
-# Get access to PATRIC.
+# Get access to BV-BRC.
 my $p3 = P3DataAPI->new();
 # Get the base genome ID.
 my ($baseGenome) = @ARGV;
@@ -77,7 +77,7 @@ my @others = grep { $_ ne $baseGenome } @$genomes;
 my @allGenomes = ($baseGenome, @others);
 print STDERR scalar(@others) . " genomes read from input.\n" if $debug;
 # Get the genome names.
-print STDERR "Reading genome names from PATRIC.\n" if $debug;
+print STDERR "Reading genome names from BV-BRC.\n" if $debug;
 my $gList = P3Utils::get_data_keyed($p3, genome => [], ['genome_id', 'genome_name'], \@allGenomes, 'genome_id');
 # Now we create our result hash.  For each genome, it will map the id to [id, name, score, famCount].  The score for the base will be
 # the total number of possible kmers in the genome.
@@ -94,7 +94,7 @@ for my $genome (@allGenomes) {
     }
 }
 if (@errors) {
-    die "Missing genomes in PATRIC: " . join(", ", @errors);
+    die "Missing genomes in BV-BRC: " . join(", ", @errors);
 }
 # Now we get the proteins for the base genome.  The return hash maps each protein family ID to a single sequence.  For a family with
 # multiple sequences, the longest one is kept.

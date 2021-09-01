@@ -1,8 +1,8 @@
-=head1 Return All Genomes in PATRIC
+=head1 Return All Genomes in BV-BRC
 
     p3-all-genomes [options]
 
-This script returns the IDs of all the genomes in the PATRIC database. It supports standard filtering
+This script returns the IDs of all the genomes in the BV-BRC database. It supports standard filtering
 parameters and the specification of additional columns if desired.
 
 =head2 Parameters
@@ -68,7 +68,7 @@ my $opt = P3Utils::script_opts('', P3Utils::data_options(),
         ['fields|f', 'show available fields'],
         ['public', 'only include public genomes'],
         ['private', 'only include private genomes']);
-# Get access to PATRIC.
+# Get access to BV-BRC.
 my $p3 = P3DataAPI->new();
 if ($opt->fields) {
     my $fieldList = P3Utils::list_object_fields($p3, 'genome');

@@ -22,7 +22,7 @@
 
 This script will compute an MD5 checksum for a genome's complete DNA sequence.  Every genome with identical contigs
 (that is, the same number of contigs, with the same sequence content) will hash to the same MD5.  The genomes must
-be in PATRIC, and the genome IDs are taken from the standard input.
+be in BV-BRC, and the genome IDs are taken from the standard input.
 
 =head2 Parameters
 
@@ -59,7 +59,7 @@ my $opt = P3Utils::script_opts('', P3Utils::col_options(), P3Utils::ih_options()
     ['restart=s', 'Restart after the specified genome'],
     ['verbose|debug|v', 'display debug information on STDERR']);
 
-# Get access to PATRIC.
+# Get access to BV-BRC.
 my $p3 = P3DataAPI->new();
 if ($opt->verbose) {
     $p3->debug_on(\*STDERR);

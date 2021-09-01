@@ -88,7 +88,7 @@ if ($opt->keynames) {
     } elsif (! KEYS->{$keyName}) {
         die "Key field $keyName not supported.";
     }
-    # Get access to PATRIC.
+    # Get access to BV-BRC.
     my $p3 = P3DataAPI->new();
     # Compute the output columns.
     my ($selectList, $newHeaders) = P3Utils::select_clause($p3, feature => $opt);

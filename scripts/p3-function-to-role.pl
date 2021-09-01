@@ -27,7 +27,7 @@ The additional command-line options are
 
 A tab-delimited file of roles. Each record consists of (0) a role ID, (1) the role checksum, and
 (2) the role description. Specify this file if you want a role-filtering scheme other than
-official PATRIC roles.
+official BV-BRC roles.
 
 =back
 
@@ -43,7 +43,7 @@ use RoleParse;
 my $opt = P3Utils::script_opts('', P3Utils::col_options(), P3Utils::ih_options(),
     ['roles|R=s', 'name of role file']);
 
-# Get access to PATRIC.
+# Get access to BV-BRC.
 my $p3 = P3DataAPI->new();
 # Open the input file.
 my $ih = P3Utils::ih($opt);

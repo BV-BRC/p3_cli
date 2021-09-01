@@ -15,7 +15,7 @@ reorganized.
 
 =head2 Parameters
 
-The positional parameters are the two genomes to compare. Each genome can be either (1) a PATRIC genome ID, (2) the name of a DNA FASTA file, or
+The positional parameters are the two genomes to compare. Each genome can be either (1) a BV-BRC genome ID, (2) the name of a DNA FASTA file, or
 (3) the name of a L<GenomeTypeObject> file.
 
 There is no standard input.
@@ -61,7 +61,7 @@ my $verbose = $opt->verbose;
 # Compute the kmer size.
 my $defaultKmer = ($geneticCode ? 8 : 12);
 my $kmerSize = $opt->kmersize // $defaultKmer;
-# Get access to PATRIC.
+# Get access to BV-BRC.
 my $p3 = P3DataAPI->new();
 # Get the two genomes.
 my @genomes = @ARGV;
@@ -71,7 +71,7 @@ my $count = 0;
 my $kmerDb = KmerDb->new(kmerSize => $kmerSize, maxFound => 0);
 for my $genome (@genomes) {
     if ($genome =~ /^\d+\.\d+$/) {
-        print STDERR "Processing PATRIC genome $genome.\n";
+        print STDERR "Processing BV-BRC genome $genome.\n";
         ProcessPatric($kmerDb, $genome);
     } elsif (-s $genome) {
         # Here the genome is a file.
@@ -143,7 +143,7 @@ sub ReadGto {
     return $retVal;
 }
 
-## Process a PATRIC genome. The genome's contigs will be put into the Kmer database.
+## Process a BV-BRC genome. The genome's contigs will be put into the Kmer database.
 sub ProcessPatric {
     my ($kmerDb, $genome) = @_;
     # Get the genome's contigs.

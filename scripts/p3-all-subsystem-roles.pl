@@ -1,8 +1,8 @@
-=head1 Return All Subsystems and Their Roles in PATRIC
+=head1 Return All Subsystems and Their Roles in BV-BRC
 
     p3-all-subsystem-roles [options]
 
-This script returns the IDs of all the subsystems in the PATRIC database and their roles.  There will be one output
+This script returns the IDs of all the subsystems in the BV-BRC database and their roles.  There will be one output
 line per subsystem/role pair.  It supports standard filtering parameters and the specification of additional columns if
 desired.
 
@@ -29,7 +29,7 @@ use P3Utils;
 # Get the command-line options.
 my $opt = P3Utils::script_opts('', P3Utils::data_options(),
         ['fields|f', 'show available fields']);
-# Get access to PATRIC.
+# Get access to BV-BRC.
 my $p3 = P3DataAPI->new();
 if ($opt->fields) {
     my $fieldList = P3Utils::list_object_fields($p3, 'subsystem');

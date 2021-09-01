@@ -1,4 +1,4 @@
-=head1 Return Data From Protein Families in PATRIC
+=head1 Return Data From Protein Families in BV-BRC
 
     p3-get-family-data [options]
 
@@ -31,7 +31,7 @@ use P3Utils;
 my $opt = P3Utils::script_opts('', P3Utils::data_options(), P3Utils::col_options(), P3Utils::ih_options(),
         ['fields', 'list the available field names'],
 );
-# Get access to PATRIC.
+# Get access to BV-BRC.
 my $p3 = P3DataAPI->new();
 if ($opt->fields) {
     my $fieldList = P3Utils::list_object_fields($p3, 'family');

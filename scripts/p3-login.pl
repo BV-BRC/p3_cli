@@ -1,8 +1,8 @@
-=head1 Create a PATRIC login token.
+=head1 Create a BV-BRC login token.
 
     p3-login [options] username
 
-Create a PATRIC login token, used with workspace operations. To use this script, specify your user name on
+Create a BV-BRC login token, used with workspace operations. To use this script, specify your user name on
 the command line as a positional parameter. You will be asked for your password.
 
 The following command-line options are supported.
@@ -24,7 +24,7 @@ If the command-line option C<--logout> is specified, you will be logged out. In 
 =cut
 
 #
-# Create a PATRIC login token.
+# Create a BV-BRC login token.
 #
 
 use strict;
@@ -46,7 +46,7 @@ my $auth_url = "https://user.patricbrc.org/authenticate";
 my $token_path = $P3DataAPI::token_path || "$ENV{HOME}/.patric_token";
 my $max_tries = 3;
 
-my $opt = P3Utils::script_opts('username', ['logout|logoff', 'log out of PATRIC'],
+my $opt = P3Utils::script_opts('username', ['logout|logoff', 'log out of BV-BRC'],
         ['verbose|v', 'display debugging info'],
         ['status|whoami|s', 'display login status']);
 
@@ -56,23 +56,23 @@ if ($opt->verbose) {
 }
 if ($opt->status || $opt->verbose) {
     if (! -f $token_path) {
-        print "You are currently logged out of PATRIC.\n";
+        print "You are currently logged out of BV-BRC.\n";
     } else {
         open(my $ih, '<', $token_path) || die "Could not open token file: $!";
         my $token = <$ih>;
         if ($token =~ /un=([^\|\@]+\@patricbrc\.org)/) {
             print "You are logged in as $1.\n";
         } else {
-            die "Your PATRIC login token is improperly formatted. Please log out and try again.";
+            die "Your BV-BRC login token is improperly formatted. Please log out and try again.";
         }
     }
 }
 if ($opt->logout) {
     if (-f $token_path) {
         unlink($token_path) || die "Could not delete login file $token_path: $!";
-        print "Logged out of PATRIC.\n";
+        print "Logged out of BV-BRC.\n";
     } else {
-        print "You are already logged out of PATRIC.\n";
+        print "You are already logged out of BV-BRC.\n";
     }
 }
 if (! $opt->status && ! $opt->logout) {

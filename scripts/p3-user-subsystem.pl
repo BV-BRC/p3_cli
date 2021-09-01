@@ -61,7 +61,7 @@ my $opt = P3Utils::script_opts('subName featureGroup1 featureGroup2 ... featureG
     ['genomes|g=s', 'name of a genome group onto which the subsystems should be projected'],
     ['outDir|o=s', 'output directory for subsystem spreadsheet files', { default => getcwd() }]);
 
-# Get access to PATRIC.
+# Get access to BV-BRC.
 my $p3 = P3DataAPI->new();
 # Connect to the workspace.
 my $ws = P3WorkspaceClientExt->new();

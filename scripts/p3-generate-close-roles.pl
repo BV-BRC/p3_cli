@@ -33,12 +33,12 @@ The default script assumes the four columns are in that order. This can all be o
 The input file must be sorted by genome ID and then by sequence ID within genome ID. Otherwise, the results will be
 incorrect. Use L<p3-sort.pl> to sort the file.
 
-The location is a PATRIC location string, either of the form I<start>C<..>I<end> or C<complement(>I<left>C<..>I<right>C<)>.
+The location is a BV-BRC location string, either of the form I<start>C<..>I<end> or C<complement(>I<left>C<..>I<right>C<)>.
 Given a set of genome IDs in the file C<genomes.tbl>, you can generate the proper file using the following pipe.
 
     p3-get-genome-features --attr sequence_id --attr location --attr product <genomes.tbl | p3-function-to-role
 
-(If PATRIC does not yet have roles defined, you will need to use an additional command-line option on L<p3-function-to-role.pl>.)
+(If BV-BRC does not yet have roles defined, you will need to use an additional command-line option on L<p3-function-to-role.pl>.)
 
 =head2 Parameters
 

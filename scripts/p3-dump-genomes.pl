@@ -1,8 +1,8 @@
-=head1 Create GTO or FASTA Files from PATRIC Genomes
+=head1 Create GTO or FASTA Files from BV-BRC Genomes
 
     p3-dump-genomes.pl [options] genome1 genome2 ... genomeN
 
-This script creates L<GenomeTypeObject> or FASTA files for the specified PATRIC genomes. Each file is named using the genome ID with
+This script creates L<GenomeTypeObject> or FASTA files for the specified BV-BRC genomes. Each file is named using the genome ID with
 the appropriate suffix and placed in the current directory. The C<--outDir> option can be used to specify an alternate 
 output directory. Existing files will be replaced.  This script is more general than L<p3-gto.pl>, which it replaces.
 
@@ -65,7 +65,7 @@ my $opt = P3Utils::script_opts('genome1 genome2 ... genomeN', P3Utils::ih_option
         );
 # Create a statistics object.
 my $stats = Stats->new();
-# Get access to PATRIC.
+# Get access to BV-BRC.
 my $p3 = P3DataAPI->new();
 # Get the genome list.
 print "Processing genome list.\n";

@@ -2,7 +2,7 @@
 
     p3-genus-species.pl [options]
 
-This script produces a two-column table listing each genus/species pair in the PATRIC database along with how many genomes in each.
+This script produces a two-column table listing each genus/species pair in the BV-BRC database along with how many genomes in each.
 Pseudo-species (those that are numbers, or begin with C<sp.>) are not included. Candidatus genera are also skipped. The idea is to
 produce an orthodox list suitable for an exhaustive species-by-species analysis of some sort.
 
@@ -19,7 +19,7 @@ use P3Utils;
 
 # Get the command-line options.
 my $opt = P3Utils::script_opts('');
-# Get access to PATRIC.
+# Get access to BV-BRC.
 my $p3 = P3DataAPI->new();
 # Form the full header set and write it out.
 P3Utils::print_cols(['genus', 'species', 'count']);

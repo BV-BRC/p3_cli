@@ -57,7 +57,7 @@ if (! $outFile) {
 }
 # Create the statistics object.
 my $stats = Stats->new();
-# Get access to PATRIC.
+# Get access to BV-BRC.
 my $p3 = P3DataAPI->new();
 # This hash maps a checksum to a role ID.
 my %checksums;
@@ -140,7 +140,7 @@ for my $genome (@$genomes) {
     for my $feature (@$features) {
         $stats->Add(featureIn => 1);
         my ($id, $product) = @$feature;
-        # Only process PATRIC features, as these have annotations we can parse.
+        # Only process BV-BRC features, as these have annotations we can parse.
         if ($id) {
             # Split the product into roles.
             my @roles = SeedUtils::roles_of_function($product);
@@ -171,7 +171,7 @@ print "All done.\n" . $stats->Show();
 sub get_genome_data {
     my ($genomes) = @_;
     my $genomeData = P3Utils::get_data_keyed($p3, genome => [], ['genome_id', 'genome_name', 'taxon_id'], $genomes, 'genome_id');
-    print scalar(@$genomeData) . " genomes found in PATRIC.\n";
+    print scalar(@$genomeData) . " genomes found in BV-BRC.\n";
     my %retVal = map { $_->[0] => [$_->[1], $_->[2]] } @$genomeData;
     return \%retVal;
 }

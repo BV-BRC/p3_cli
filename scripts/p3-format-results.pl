@@ -68,7 +68,7 @@ The additional command-line options are as follows.
 
 my ($opt, $helper) = P3Utils::script_opts('',["d=s","a directory created by p3-related-by-clusters", { required => 1 }]);
 my $inD = $opt->d;
-# Connect to PATRIC.
+# Connect to BV-BRC.
 my $p3 = P3DataAPI->new();
 # We start by reading in the genome clusters.  This hash contains the genome IDs found.
 my %genomes;
@@ -98,7 +98,7 @@ for my $clusterFile (@clusterFiles) {
     }
     close $ih;
 }
-# Next, we get the genome names from PATRIC.
+# Next, we get the genome names from BV-BRC.
 read_names(\%genomes);
 # Now we have all our support structures. We read through the related-families file to build the output.
 open(my $ih, '<', "$inD/related.signature.families") || die "Could not open related-families file: $!";
@@ -153,7 +153,7 @@ sub readCluster {
 }
 
 ##
-## Read the genome names from PATRIC.  The parameter is the genome hash.  We will replace the placeholders in there
+## Read the genome names from BV-BRC.  The parameter is the genome hash.  We will replace the placeholders in there
 ## with the real names.
 ##
 sub read_names {

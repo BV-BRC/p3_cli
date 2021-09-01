@@ -66,7 +66,7 @@ my $opt = P3Utils::script_opts('', P3Utils::data_options(), P3Utils::col_options
 my $type = ($opt->downstream ? 'downstream' : 'upstream');
 my $len = $opt->length;
 my $inLen = $opt->in;
-# Get access to PATRIC.
+# Get access to BV-BRC.
 my $p3 = P3DataAPI->new();
 if ($opt->debug) {
     $p3->debug_on(\*STDERR);

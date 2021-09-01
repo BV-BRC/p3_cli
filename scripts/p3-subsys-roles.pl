@@ -49,7 +49,7 @@ my $opt = P3Utils::script_opts('',
         ['nohead', 'if specified, the role file is presumed to not have headers']
         );
 my $debug = $opt->verbose;
-# Get access to PATRIC.
+# Get access to BV-BRC.
 my $p3 = P3DataAPI->new();
 # This hash will hold the role checksums.  Each checksum is mapped to an ID, checksum, and name.
 my %hash;

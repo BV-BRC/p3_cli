@@ -20,7 +20,7 @@
 
     p3-get-feature-protein-structures.pl [options]
 
-This script takes as input a list of PATRIC feature IDs and outputs the protein structures of interest associated with each.
+This script takes as input a list of BV-BRC feature IDs and outputs the protein structures of interest associated with each.
 The feature IDs will be read from the standard input (usually in the last column), and the data for each feature's known protein
 structures will be appended to the input to form the output.  Since each feature may have many identified protein structures, each
 input record can produce multiple output records.
@@ -50,7 +50,7 @@ $| = 1;
 my $opt = P3Utils::script_opts('', P3Utils::data_options(), P3Utils::col_options(), P3Utils::ih_options(),
     ['fields|f', 'Show available fields']);
 
-# Get access to PATRIC.
+# Get access to BV-BRC.
 my $p3 = P3DataAPI->new();
 my $fields = ($opt->fields ? 1 : 0);
 if ($fields) {

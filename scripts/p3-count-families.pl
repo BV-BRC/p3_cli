@@ -54,7 +54,7 @@ if ($debug) {
         print STDERR "Normal mode used.\n";
     }
 }
-# Get access to PATRIC.
+# Get access to BV-BRC.
 my $p3 = P3DataAPI->new();
 # Open the input file.
 my $ih = P3Utils::ih($opt);

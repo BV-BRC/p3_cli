@@ -1,8 +1,8 @@
-=head1 Create GTO Files from PATRIC Genomes
+=head1 Create GTO Files from BV-BRC Genomes
 
     p3-gto.pl [options] genome1 genome2 ... genomeN
 
-This script creates L<GenomeTypeObject> files for the specified PATRIC genomes. Each file is named using the genome ID with the suffix C<.gto>
+This script creates L<GenomeTypeObject> files for the specified BV-BRC genomes. Each file is named using the genome ID with the suffix C<.gto>
 and placed in the current directory. The C<--outDir> option can be used to specify an alternate output directory. Existing files will be
 replaced.
 
@@ -47,7 +47,7 @@ my $opt = P3Utils::script_opts('genome1 genome2 ... genomeN', P3Utils::ih_option
         );
 # Create a statistics object.
 my $stats = Stats->new();
-# Get access to PATRIC.
+# Get access to BV-BRC.
 my $p3 = P3DataAPI->new();
 if ($opt->debug) {
     $p3->debug_on(\*STDOUT);
@@ -105,7 +105,7 @@ for my $genome (@genomes) {
             $gto->destroy_to_file($outFile);
             $stats->Add(gtoBuilt => 1);
         } else {
-            print "$genome not found in PATRIC.\n";
+            print "$genome not found in BV-BRC.\n";
             $stats->Add(genomeNotFound => 1);
         }
     }

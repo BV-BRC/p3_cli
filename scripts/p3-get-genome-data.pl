@@ -1,4 +1,4 @@
-=head1 Return Data From Genomes in PATRIC
+=head1 Return Data From Genomes in BV-BRC
 
     p3-get-genome-data [options]
 
@@ -46,7 +46,7 @@ use P3Utils;
 my $opt = P3Utils::script_opts('', P3Utils::data_options(), P3Utils::col_options(), P3Utils::ih_options(),
     ['fields|f', 'Show available fields']);
 
-# Get access to PATRIC.
+# Get access to BV-BRC.
 my $p3 = P3DataAPI->new();
 my $fields = ($opt->fields ? 1 : 0);
 if ($fields) {

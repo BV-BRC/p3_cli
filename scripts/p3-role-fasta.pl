@@ -58,7 +58,7 @@ my $binning = $opt->binning;
 if ($binning) {
     $dna = 1; $noDups = 1;
 }
-# Get access to PATRIC.
+# Get access to BV-BRC.
 my $p3 = P3DataAPI->new();
 # Determine the FASTA type.
 my $seqField = ($dna ? 'na_sequence' : 'aa_sequence');

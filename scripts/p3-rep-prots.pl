@@ -105,7 +105,7 @@ if ($dnaFile) {
 if ($binning) {
     open($bh, '>', $binning) || die "Could not open binning output file: $!";
 }
-# Get access to PATRIC.
+# Get access to BV-BRC.
 my $p3 = P3DataAPI->new();
 if ($opt->debug) {
     $p3->debug_on(\*STDERR);

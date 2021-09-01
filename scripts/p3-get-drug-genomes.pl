@@ -1,4 +1,4 @@
-=head1 Return AMR Data for Drugs From PATRIC
+=head1 Return AMR Data for Drugs From BV-BRC
 
     p3-get-drug-genomes [options]
 
@@ -44,7 +44,7 @@ my $opt = P3Utils::script_opts('', P3Utils::data_options(), P3Utils::col_options
     ['fields|f', 'Show available fields']);
 
 my $fields = ($opt->fields ? 1 : 0);
-# Get access to PATRIC.
+# Get access to BV-BRC.
 my $p3 = P3DataAPI->new();
 if ($fields) {
     print_usage();

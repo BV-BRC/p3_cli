@@ -77,7 +77,7 @@ $| = 1;
 my $opt = P3Utils::script_opts('property', P3Utils::data_options(), P3Utils::col_options(), P3Utils::ih_options(),
     ['fields|f', 'Show available fields'],
     ['typeNames|t', 'List available specialty types']);
-# Get access to PATRIC.
+# Get access to BV-BRC.
 my $p3 = P3DataAPI->new();
 my $fields = ($opt->fields ? 1 : 0);
 my $types = ($opt->typenames ? 1 : 0);

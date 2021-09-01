@@ -59,7 +59,7 @@ my $opt = P3Utils::script_opts('workDir outDir', P3Utils::ih_options(),
           ["iterations|n=i", "number of iterations to run", { default => 4 }],
           ["missing", "process new species only"]
         );
-# Get access to PATRIC.
+# Get access to BV-BRC.
 my $p3 = P3DataAPI->new();
 # Get the options.
 my $size = $opt->size;

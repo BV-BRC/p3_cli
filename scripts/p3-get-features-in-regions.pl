@@ -54,7 +54,7 @@ my $opt = P3Utils::script_opts('genomeCol contigCol startCol endCol',
         P3Utils::data_options(), P3Utils::ih_options(),
         ['fields|f', 'Show available fields']);
 
-# Get access to PATRIC.
+# Get access to BV-BRC.
 my $p3 = P3DataAPI->new();
 my $fields = ($opt->fields ? 1 : 0);
 if ($fields) {

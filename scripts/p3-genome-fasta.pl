@@ -46,7 +46,7 @@ if (! $genomeID) {
 } elsif (! ($genomeID =~ /^\d+\.\d+$/)) {
     die "Invalid genome ID $genomeID.";
 }
-# Get access to PATRIC.
+# Get access to BV-BRC.
 my $p3 = P3DataAPI->new();
 # We will put our results in here.
 my $fastaLines;

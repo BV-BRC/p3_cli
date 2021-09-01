@@ -71,7 +71,7 @@ Sleep interval in seconds while waiting for the job to complete. The default is 
 
 =item noIndex
 
-Do not add the genome to the PATRIC index.
+Do not add the genome to the BV-BRC index.
 
 =back
 
@@ -86,7 +86,7 @@ my $opt = P3Utils::script_opts('genomeID name', P3Utils::ih_options(),
         ["domain|d=s", "domain (A or B) of the new genome", { default => 'B' }],
         ["geneticCode=i", "genetic code for the new genome", { default => 11 }],
         ["sleep=i", "sleep interval for status polling", { default => 60 }],
-        ["noIndex", "do not add the genome to the PATRIC genome index"],
+        ["noIndex", "do not add the genome to the BV-BRC genome index"],
         );
 # Open the input file.
 my $ih = P3Utils::ih($opt);

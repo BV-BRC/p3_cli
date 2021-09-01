@@ -134,7 +134,7 @@ my %pairCounts;
 my $i;
 
 #
-# Filter genome groups to remove genomes that do not appear in PATRIC.
+# Filter genome groups to remove genomes that do not appear in BV-BRC.
 #
 
 my $api = P3DataAPI->new();
@@ -148,7 +148,7 @@ for my $gid (@$genomes1)
     }
     else
     {
-        warn "Genome $gid does not appear in PATRIC\n";
+        warn "Genome $gid does not appear in BV-BRC\n";
     }
 }
 $genomes1 = $ids;
@@ -162,7 +162,7 @@ for my $gid (@$genomes2)
     }
     else
     {
-        warn "Genome $gid does not appear in PATRIC\n";
+        warn "Genome $gid does not appear in BV-BRC\n";
     }
 }
 $genomes2 = $ids;

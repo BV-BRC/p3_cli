@@ -49,7 +49,7 @@ my $opt = P3Utils::script_opts('', P3Utils::col_options(), P3Utils::ih_options()
 # Extract the key options.
 my $distance = $opt->distance;
 my $consolidated = $opt->consolidated;
-# Get access to PATRIC.
+# Get access to BV-BRC.
 my $p3 = P3DataAPI->new();
 # Open the input file.
 my $ih = P3Utils::ih($opt);

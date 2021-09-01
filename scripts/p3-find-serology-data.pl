@@ -1,9 +1,10 @@
-=head1 Return All Taxonomic Groupings in BV-BRC
+=head1 Search for Serology Data
 
-    p3-all-genomes [options]
+    p3-find-serology-data [options]
 
-This script returns the IDs of all the taxonomic groupings in the BV-BRC database. It supports standard filtering
-parameters and the specification of additional columns if desired.
+This script returns serology data from the BV_BRC database. It supports standard filtering
+parameters and the specification of alternate columns if desired.  At least one filtering
+parameter MUST be specified.
 
 =head2 Parameters
 
@@ -31,21 +32,20 @@ my $opt = P3Utils::script_opts('', P3Utils::data_options(),
 # Get access to BV-BRC.
 my $p3 = P3DataAPI->new();
 if ($opt->fields) {
-    my $fieldList = P3Utils::list_object_fields($p3, 'taxonomy');
+    my $fieldList = P3Utils::list_object_fields($p3, 'serology');
     print join("\n", @$fieldList, "");
 } else {
-    # Compute the output columns. Note we configure this as an ID-centric method.
-    my ($selectList, $newHeaders) = P3Utils::select_clause($p3, taxonomy => $opt, 1);
+    # Compute the output columns.
+    my ($selectList, $newHeaders) = P3Utils::select_clause($p3, serology => $opt);
     # Compute the filter.
     my $filterList = P3Utils::form_filter($opt);
     if (! @$filterList) {
-        # We must always have a filter, so add a dummy here.
-        push @$filterList, ['ne', 'taxon_id', 0];
+        die "At least one filtering parameter is requred.";
     }
     # Write the headers.
     P3Utils::print_cols($newHeaders);
     # Process the query.
-    my $results = P3Utils::get_data($p3, taxonomy => $filterList, $selectList);
+    my $results = P3Utils::get_data($p3, serology => $filterList, $selectList);
     # Print the results.
     for my $result (@$results) {
         P3Utils::print_cols($result, opt => $opt);

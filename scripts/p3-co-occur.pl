@@ -50,7 +50,7 @@ my $opt = P3Utils::script_opts('catFile', P3Utils::col_options(), P3Utils::ih_op
         ['type|t=s', 'type of category for clustering', { default => 'role' }],
         ['verbose|v', 'write status messages on STDERR']
         );
-# Get access to PATRIC.
+# Get access to BV-BRC.
 my $p3 = P3DataAPI->new();
 # Get the options.
 my $gap = $opt->gap;

@@ -38,7 +38,7 @@ The maximum number of base pairs allowed between two features in the same cluste
 =item location
 
 If the feature location is already present in the input file, the name of the column containing the feature location.
-The location should be in the form of a start and end with two dots in between, the format used in GenBank and PATRIC.
+The location should be in the form of a start and end with two dots in between, the format used in GenBank and BV-BRC.
 
 =item sequence
 
@@ -79,7 +79,7 @@ my ($catCol) = @ARGV;
 if (! defined $catCol) {
     die "No category column specified.";
 }
-# Get access to PATRIC.
+# Get access to BV-BRC.
 my $p3 = P3DataAPI->new();
 # Open the input file.
 my $ih = P3Utils::ih($opt);
@@ -102,7 +102,7 @@ if (defined $locCol) {
     $queryNeeded = 1;
 }
 if ($queryNeeded && $debug) {
-    print STDERR "PATRIC queries will be needed.\n";
+    print STDERR "BV-BRC queries will be needed.\n";
 }
 # Find the category column.
 $catCol = P3Utils::find_column($catCol, $outHeaders);
@@ -142,7 +142,7 @@ while (! eof $ih) {
                     die "Invalid location string \'$loc\'.";
                 }
             } elsif (! $fidData) {
-                die "$fid not found in PATRIC.";
+                die "$fid not found in BV-BRC.";
             } else {
                 ($start, $end) = ($fidData->{start}, $fidData->{end});
             }
@@ -150,7 +150,7 @@ while (! eof $ih) {
             if (defined $seqCol) {
                 $sequence = $line->[$seqCol];
             } elsif (! $fidData) {
-                die "$fid not found in PATRIC.";
+                die "$fid not found in BV-BRC.";
             } else {
                 $sequence = $fidData->{sequence_id};
             }

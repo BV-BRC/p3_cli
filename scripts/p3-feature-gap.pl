@@ -44,7 +44,7 @@ my $opt = P3Utils::script_opts('', P3Utils::col_options(), P3Utils::ih_options()
     ['inf=i', 'infinite-gap value', { default => 2000000000 }],
     ['col2|C=s', 'name or index of column containing second feature ID', { default => -1 }],
  );
-# Get access to PATRIC.
+# Get access to BV-BRC.
 my $p3 = P3DataAPI->new();
 # Get the standard input.
 my $ih = P3Utils::ih($opt);

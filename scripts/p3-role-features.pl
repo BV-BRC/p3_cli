@@ -40,7 +40,7 @@ my $opt = P3Utils::script_opts('', P3Utils::data_options(), P3Utils::col_options
         ['verbose|v', 'display status messages on STDERR']
         );
 my $debug = $opt->verbose;
-# Get access to PATRIC.
+# Get access to BV-BRC.
 my $p3 = P3DataAPI->new();
 # Compute the output columns.
 my ($selectList, $newHeaders) = P3Utils::select_clause($p3, feature => $opt);

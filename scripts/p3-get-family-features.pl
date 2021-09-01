@@ -1,8 +1,8 @@
-=head1 Return Features From Families in PATRIC
+=head1 Return Features From Families in BV-BRC
 
     p3-get-family-features [options]
 
-This script returns data for all the features in one or more protein families from the PATRIC database. It supports standard filtering
+This script returns data for all the features in one or more protein families from the BV-BRC database. It supports standard filtering
 parameters and the specification of additional columns if desired. In addition, the results can be filtered by genomes
 from a secondary input file. As currently coded, the command may fail if the number of genomes in the secondary file is
 large.
@@ -28,7 +28,7 @@ C<genome.genome_id>.
 
 =item ftype
 
-The type of family being used. The default is C<local>, indicating PATRIC local protein families. Other options are
+The type of family being used. The default is C<local>, indicating BV-BRC local protein families. Other options are
 C<figfam> or C<global>.
 
 =item fields
@@ -53,7 +53,7 @@ my $opt = P3Utils::script_opts('', P3Utils::data_options(), P3Utils::col_options
         ['gCol|gcol=s', 'index (1-based) or name of the genome file column with the IDs', { default => 'genome.genome_id'}],
         ['fields', 'list the available field names'],
         ['ftype|fType=s', 'type of protein family (local, global, figfam', { default => 'local'}]);
-# Get access to PATRIC.
+# Get access to BV-BRC.
 my $p3 = P3DataAPI->new();
 if ($opt->fields) {
     my $fieldList = P3Utils::list_object_fields($p3, 'feature');

@@ -39,7 +39,7 @@ my $opt = P3Utils::script_opts('', P3Utils::ih_options(), P3Utils::col_options()
                                           ['dna', 'feature DNA FASTA']],
                                           default => 'protein' }],
                               );
-# Get access to PATRIC.
+# Get access to BV-BRC.
 my $p3 = P3DataAPI->new();
 # Open the input file.
 my $ih = P3Utils::ih($opt);

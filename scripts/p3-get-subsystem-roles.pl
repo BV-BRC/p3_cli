@@ -58,7 +58,7 @@ my $opt = P3Utils::script_opts('', P3Utils::data_options(), P3Utils::col_options
     ['fields|f', 'Show available fields'],
     ['names|name|N', 'input contains subsystem names instead of IDs']);
 
-# Get access to PATRIC.
+# Get access to BV-BRC.
 my $p3 = P3DataAPI->new();
 $p3->set_raw(1);
 my $fields = ($opt->fields ? 1 : 0);

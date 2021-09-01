@@ -1,8 +1,8 @@
-=head1 Return All Drugs in PATRIC
+=head1 Return All Drugs in BV-BRC
 
     p3-all-drugs [options]
 
-This script returns the IDs of all the antibiotic drugs in the PATRIC database. It supports standard filtering
+This script returns the IDs of all the antibiotic drugs in the BV-BRC database. It supports standard filtering
 parameters and the specification of additional columns if desired.
 
 =head2 Parameters
@@ -37,7 +37,7 @@ use P3Utils;
 my $opt = P3Utils::script_opts('', P3Utils::data_options(),
         ['fields|f', 'show available fields'],
 );
-# Get access to PATRIC.
+# Get access to BV-BRC.
 my $p3 = P3DataAPI->new();
 if ($opt->fields) {
     my $fieldList = P3Utils::list_object_fields($p3, 'drug');

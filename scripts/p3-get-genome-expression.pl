@@ -1,8 +1,8 @@
-=head1 Return Expression Data Points From Genomes in PATRIC
+=head1 Return Expression Data Points From Genomes in BV-BRC
 
     p3-get-genome-expression [options]
 
-This script returns the expression data points for all the features in one or more genomes from the PATRIC database. It supports standard filtering
+This script returns the expression data points for all the features in one or more genomes from the BV-BRC database. It supports standard filtering
 parameters and the specification of additional columns if desired.
 
 =head2 Parameters
@@ -32,7 +32,7 @@ use P3Utils;
 my $opt = P3Utils::script_opts('', P3Utils::data_options(), P3Utils::col_options(), P3Utils::ih_options(),
     ['fields|f', 'Show available fields']);
 
-# Get access to PATRIC.
+# Get access to BV-BRC.
 my $p3 = P3DataAPI->new();
 my $fields = ($opt->fields ? 1 : 0);
 if ($fields) {

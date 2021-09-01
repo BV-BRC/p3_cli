@@ -45,7 +45,7 @@ my $opt = P3Utils::script_opts('kmerDB', P3Utils::col_options(), P3Utils::ih_opt
         ['verbose|debug|v', 'print progress to STDERR'],
         ['pegs', 'count hits against protein features, not whole genomes']
         );
-# Get access to PATRIC.
+# Get access to BV-BRC.
 my $p3 = P3DataAPI->new();
 # Open the input file.
 my $ih = P3Utils::ih($opt);
