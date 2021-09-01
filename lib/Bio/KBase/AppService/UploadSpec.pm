@@ -19,11 +19,8 @@
 package Bio::KBase::AppService::UploadSpec;
 
     use strict;
-    use warnings;
-    use File::Basename;
-    no warnings;
     use Bio::P3::Workspace::WorkspaceClientExt;
-    use warnings;
+    use File::Basename;
     use POSIX;
 
 =head1 Object for Managing Uploads in P3 CLI
