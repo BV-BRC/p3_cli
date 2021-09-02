@@ -19,13 +19,7 @@ Two paired-end libraries containing reads.  These are coded with a single invoca
 libraries must be paired FASTQ files.  A prefix of C<ws:> indicates a file is in the BV-BRC workspace; otherwise they are uploaded
 from the local file system.  This parameter may be specified multiple times.
 
-=item --interleaved-lib
-
-A single library of paired-end reads in interleaved format.  This must be a FASTQ file with paired reads mixed together, the forward read
-always preceding the reverse read.  A prefix of C<ws:> indicates a file is in the BV-BRC workspace; otherwise they are uploaded
-from the local file system.  This parameter may be specified multiple times.
-
-=item --single-end-lib
+\=item --single-end-lib
 
 A library of single reads.  This must be a FASTQ file.  A prefix of C<ws:> indicates a file is in the BV-BRC workspace; otherwise they are
 uploaded from the local file system.  This parameter may be specified multiple times.
@@ -93,7 +87,7 @@ if (! $p3token->token()) {
 # Get a common-specification processor, an uploader, and a reads-processor.
 my $commoner = Bio::KBase::AppService::CommonSpec->new();
 my $uploader = Bio::KBase::AppService::UploadSpec->new($p3token);
-my $reader = Bio::KBase::AppService::ReadSpec->new($uploader);
+my $reader = Bio::KBase::AppService::ReadSpec->new($uploader, simple => 1, srrAlt => 1);
 
 # Get the application service helper.
 my $app_service = Bio::KBase::AppService::Client->new();

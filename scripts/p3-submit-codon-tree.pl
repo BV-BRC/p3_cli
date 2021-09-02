@@ -24,11 +24,6 @@ Main list of genome IDs, comma-delimited.  Alternatively, this can be a local fi
 with a header line, containing the genome IDs in the first column.  The genome IDs in this file can optionally be enclosed in quotes,
 allowing a text file download of a BV-BRC genome group or genome display to be used.
 
-=item --optional-genome-ids
-
-Additional list of genome IDs, comma-delimited.  These genomes are not penalized for missing or duplicated genes.  As with C<--genome-ids>,
-this can also be the name of a file containing the genome IDs.
-
 =item --number-of-genes
 
 Number of marker genes to use for building the tree (default 100).
@@ -85,7 +80,6 @@ my $optionalGenomeIds;
 # Now we parse the options.
 GetOptions($commoner->options(),
         'genome-ids=s' => \$genomeIds,
-        'optional-genome-ids=s' => \$optionalGenomeIds,
         'number-of-genes=i' => \$numberOfGenes,
         'max-genomes-missing=i' => \$maxGenomesMissing,
         'max-allowed-dups=i' => \$maxAllowedDups
@@ -110,19 +104,11 @@ my $genomeList = Bio::KBase::AppService::GenomeIdSpec::validate_genomes($genomeI
 if (! $genomeList) {
     die "Error processing genome-ids.";
 }
-my $optionalGenomeList = [];
-if ($optionalGenomeIds) {
-    $optionalGenomeList = Bio::KBase::AppService::GenomeIdSpec::validate_genomes($optionalGenomeIds);
-    if (! $optionalGenomeList) {
-        die "Error processing optional-genome-ids.";
-    }
-}
 # Handle the output path and name.
 my ($outputPath, $outputFile) = $uploader->output_spec(@ARGV);
 # Build the parameter structure.
 my $params = {
     genome_ids => $genomeList,
-    optional_genome_ids => $optionalGenomeList,
     number_of_genes => $numberOfGenes,
     bootstraps => 100,
     max_genomes_missing => $maxGenomesMissing,

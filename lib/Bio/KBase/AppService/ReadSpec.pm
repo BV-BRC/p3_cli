@@ -53,12 +53,6 @@ Two paired-end libraries containing reads.  These are coded with a single invoca
 libraries must be paired FASTQ files.  A prefix of C<ws:> indicates a file is in the PATRIC workspace; otherwise they are uploaded
 from the local file system.  This parameter may be specified multiple times.
 
-=item --interleaved-lib
-
-A single library of paired-end reads in interleaved format.  This must be a FASTQ file with paired reads mixed together, the forward read
-always preceding the reverse read.  A prefix of C<ws:> indicates a file is in the PATRIC workspace; otherwise they are uploaded
-from the local file system.  This parameter may be specified multiple times.
-
 =item --single-end-lib
 
 A library of single reads.  This must be a FASTQ file.  A prefix of C<ws:> indicates a file is in the PATRIC workspace; otherwise they are
@@ -156,6 +150,14 @@ If TRUE, then it is presumed the reads are being assembled, and additional optio
 
 If TRUE, this it is presumed the reads contain RNA Seq expression data.  The default is FALSE.
 
+=item srrAlt
+
+If TRUE, the SRR IDs will be coded as structures instead of lists.
+
+=item simple
+
+If TRUE, the read library structures will be simplified.
+
 =back
 
 =back
@@ -172,12 +174,14 @@ sub new {
         insert_size_stdev => undef,
         paired_end_libs => [],
         single_end_libs => [],
+        simple => ($options{simple} // 0),
         srr_ids => [],
         saved_file => undef,
         errors => [],
         conditions => {},
         curr_condition => undef,
         assembling => ($options{assembling} // 0),
+        srrAlt => ($options{srrAlt} // 0),
         rnaseq => ($options{rnaseq} // 0)
     };
     bless $retVal, $class;
@@ -198,7 +202,6 @@ incorporated in the list.
 sub lib_options {
     my ($self) = @_;
     my @parms =  ("paired-end-lib|paired-end-libs=s{2}" => sub { $self->_pairedLib($_[1]); },
-            "interleaved-lib|interlaced-lib=s" => sub { $self->_interleavedLib($_[1]); },
             "single-end-lib=s" => sub { $self->_singleLib($_[1]); },
             "srr-id=s" => sub { $self->_srrDownload($_[1]); });
     if ($self->{assembling}) {
@@ -208,7 +211,7 @@ sub lib_options {
             "read-orientation-inward" => sub { $self->{read_orientation_outward} = 0; },
             "insert-size-mean=i" => sub { $self->{insert_size_mean} = $_[1]; },
             "insert-size-stdev=i" => sub { $self->{insert_size_stdev} = $_[1]; };
-         $self->{platform} = 'infer';
+        $self->{platform} = 'infer';
     }
     if ($self->{rnaseq}) {
         push @parms,
@@ -253,11 +256,14 @@ sub _pairedLib {
             # Here it is the second file. Create the libraries spec.
             my $lib = {
                 read1 => $saved,
-                read2 => $wsFile,
-                interleaved => 0
+                read2 => $wsFile
             };
-            # Add the optional parameters.
-            $self->_processTweaks($lib);
+            # If we are not simple, we need more.
+            if (! $self->{simple}) {
+                # Add the optional parameters.
+                $lib->{interleaved} = 0;
+                $self->_processTweaks($lib);
+            }
             # Queue the library pair.
             push @{$self->{paired_end_libs}}, $lib;
             # Denote we are starting over.
@@ -274,6 +280,8 @@ sub _pairedLib {
     $reader->_interleavedLib($fileName);
 
 Store a file as an interleaved paired-end library.  In this case, only a single library is specified.
+
+NOTE that this is a placeholder for the future, since BV-BRC doesn't support this yet.
 
 =over 4
 
@@ -332,8 +340,10 @@ sub _singleLib {
         my $lib = {
             read => $wsFile
         };
-        # Add the optional parameters.
-        $self->_processTweaks($lib);
+        # Add the optional parameters if we are not simple.
+        if (! $self->{simple}) {
+            $self->_processTweaks($lib);
+        }
         # Add it to the single-end queue.
         push @{$self->{single_end_libs}}, $lib;
     };
@@ -367,6 +377,9 @@ sub _srrDownload {
         if (defined $self->{condition}) {
             $srrSpec->{condition} = $self->{condition};
         }
+    } elsif ($self->{srrAlt}) {
+        # Format the SRA accession without a condition.
+        $srrSpec = { srr_accession => $srr_id };
     }
     push @{$self->{srr_ids}}, $srrSpec;
 }

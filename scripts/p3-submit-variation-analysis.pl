@@ -41,12 +41,6 @@ Two paired-end libraries containing reads.  These are coded with a single invoca
 libraries must be paired FASTQ files.  A prefix of C<ws:> indicates a file is in the BV-BRC workspace; otherwise they are uploaded
 from the local file system.  This parameter may be specified multiple times.
 
-=item --interleaved-lib
-
-A single library of paired-end reads in interleaved format.  This must be a FASTQ file with paired reads mixed together, the forward read
-always preceding the reverse read.  A prefix of C<ws:> indicates a file is in the BV-BRC workspace; otherwise they are uploaded
-from the local file system.  This parameter may be specified multiple times.
-
 =item --single-end-lib
 
 A library of single reads.  This must be a FASTQ file.  A prefix of C<ws:> indicates a file is in the BV-BRC workspace; otherwise they are
