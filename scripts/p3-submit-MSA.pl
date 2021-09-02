@@ -30,10 +30,6 @@ If a file to be uploaded already exists and this parameter is specified, it will
 
 The type of sequences to align-- C<dna> or C<protein>.  The default is C<dna>.
 
-=item --aligner
-
-Alignment tool to use-- C<Muscle>, C<Mafft>, or C<progressiveMauve>.  The default is C<Muscle>.
-
 =item --fasta-file
 
 A FASTA file containing sequences to align.  If a local DNA file is specified, it will be uploaded as C<feature_dna_fasta>.
@@ -89,7 +85,6 @@ my $fastaFilesIn;
 my $featureGroupsIn;
 # Now we parse the options.
 GetOptions($commoner->options(),
-        'aligner=s' => \$aligner,
         'alphabet=s' => \$alphabet,
         'fasta-file=s@' => \$fastaFilesIn,
         'feature-groups=s@' => \$featureGroupsIn,
@@ -104,21 +99,19 @@ my $fileType = ALPHABET_TYPE->{$alphabet};
 if (! $fileType) {
     die "Invalid alphabet-- must be 'dna' or 'protein'.";
 }
-if (! ALIGNER->{$aligner}) {
-    die "Unknown aligner name '$aligner'.";
-}
 # Handle the output path and name.
 my ($outputPath, $outputFile) = $uploader->output_spec(@ARGV);
 # Build the parameter structure.
 my $params = {
     alphabet => $alphabet,
-    aligner => $aligner,
+    aligner => 'muscle',
     output_path => $outputPath,
     output_file => $outputFile,
 };
 # Get the list of FASTA files.
 if ($fastaFilesIn) {
-    $params->{fasta_files} = $uploader->fix_file_list($fastaFilesIn, $fileType);
+    my $files = $uploader->fix_file_list($fastaFilesIn, $fileType);
+    $params->{fasta_files} = [map { { file => $_, type => $fileType } } @$files];
 } elsif (! $featureGroupsIn) {
     die "Must specify either --fasta-file or --feature-group.";
 }
