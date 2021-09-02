@@ -25,7 +25,7 @@ package Bio::KBase::AppService::ReadSpec;
 
 This object handles input specifications for reads.  The user can specify multiple read sources, including paired-end libraries,
 IDs from the NCBI Sequence Read Archive, interleaved single-end libraries, and simple single-end libraries.  This object generates
-the L<Getop::Long/GetOptions> specifications for the four input types as well as their modifiers and provides a method to parse
+the L<GetopT::Long/GetOptions> specifications for the four input types as well as their modifiers and provides a method to parse
 the options into a parameter object.
 
 Note that because L<Getopt::Long> suppresses errors, this method collects errors in a queue instead of calling C<die>.
@@ -510,6 +510,8 @@ Add the optional parameters to a library specification.
 =item lib
 
 Hash reference containing the current library specification.  Optional parameters with values will be added to it.
+
+=back
 
 =cut
 
