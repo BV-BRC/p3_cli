@@ -158,6 +158,10 @@ If TRUE, the SRR IDs will be coded as structures instead of lists.
 
 If TRUE, the read library structures will be simplified.
 
+=item single
+
+If TRUE, only one read library can be specified.
+
 =back
 
 =back
@@ -169,7 +173,7 @@ sub new {
     my $retVal = {
         uploader => $uploader,
         platform => undef,
-        read_orientation_outward => 0,
+        read_orientation_outward => undef,
         insert_size_mean => undef,
         insert_size_stdev => undef,
         paired_end_libs => [],
@@ -182,6 +186,7 @@ sub new {
         curr_condition => undef,
         assembling => ($options{assembling} // 0),
         srrAlt => ($options{srrAlt} // 0),
+        single => ($options{single} // 0),
         rnaseq => ($options{rnaseq} // 0)
     };
     bless $retVal, $class;
@@ -261,7 +266,6 @@ sub _pairedLib {
             # If we are not simple, we need more.
             if (! $self->{simple}) {
                 # Add the optional parameters.
-                $lib->{interleaved} = 0;
                 $self->_processTweaks($lib);
             }
             # Queue the library pair.
@@ -430,7 +434,7 @@ sub _setCondition {
     my $conditionH = $self->{conditions};
     if (! $conditionH->{$condition}) {
         # Here we need to add this condition.
-        $conditionH->{$condition} = scalar keys %$conditionH;
+        $conditionH->{$condition} = scalar(keys %$conditionH) + 1;
     }
     $self->{condition} = $conditionH->{$condition};
 }
@@ -478,16 +482,31 @@ Parameter structure into which the read libraries specified on the command line 
 sub store_libs {
     my ($self, $params) = @_;
     $self->_errCheck();
-    $params->{paired_end_libs} = $self->{paired_end_libs};
-    $params->{single_end_libs} = $self->{single_end_libs};
-    if (! $self->{rnaseq}) {
-        $params->{srr_ids} = $self->{srr_ids};
-    } else {
-        $params->{srr_libs} = $self->{srr_ids};
+    if ($self->{single}) {
+        my @libs = (@{$self->{paired_end_libs}}, @{$self->{single_end_libs}},
+            @{$self->{srr_ids}});
+        if (scalar @libs > 1) {
+            die "Too many read libraries specified.  Only one is allowed.";
+        }
+    }
+    if (scalar @{$self->{paired_end_libs}}) {
+        $params->{paired_end_libs} = $self->{paired_end_libs};
+    }
+    if (scalar @{$self->{single_end_libs}}) {
+        $params->{single_end_libs} = $self->{single_end_libs};
+    }
+    if (scalar @{$self->{srr_ids}}) {
+        if (! $self->{rnaseq}) {
+            $params->{srr_ids} = $self->{srr_ids};
+        } else {
+            $params->{srr_libs} = $self->{srr_ids};
+        }
+    }
+    if ($self->{rnaseq}) {
         my $conditionH = $self->{conditions};
         my @conditions;
         for my $cond (keys %$conditionH) {
-            $conditions[$conditionH->{$cond}] = $cond;
+            $conditions[$conditionH->{$cond} - 1] = $cond;
         }
         $params->{experimental_conditions} = \@conditions;
     }

@@ -76,15 +76,21 @@ Group name to be assigned to the output genomes (optional).
 
 If specified, the genomes created will NOT be added to the BV-BRC database.
 
+=item --prokaryotes
+
+If specified, bacterial/archaeal binning will be performed.  This defaults to TRUE unless
+C<--viruses> is specified.
+
+=item --viruses
+
+If specified, viral binning will be performed.  This defaults to TRUE unless C<--prokaryotes>
+is specified.
+
 =back
 
 These options are provided for user assistance and debugging.
 
 =over 4
-
-=item --recipe
-
-Name of a non-standard annotation recipe to use.
 
 =item --help
 
@@ -115,21 +121,24 @@ if (! $p3token->token()) {
 # Get a common-specification processor, an uploader, and a reads-processor.
 my $commoner = Bio::KBase::AppService::CommonSpec->new();
 my $uploader = Bio::KBase::AppService::UploadSpec->new($p3token);
-my $reader = Bio::KBase::AppService::ReadSpec->new($uploader, simple => 1);
+my $reader = Bio::KBase::AppService::ReadSpec->new($uploader, simple => 1, single => 1);
 
 # Get the application service helper.
 my $app_service = Bio::KBase::AppService::Client->new();
 
 # Declare the option variables and their defaults.
 my $genomeGroup;
-my $recipe;
 my $skipIndexing;
 my $contigs;
+my $prok = 0;
+my $viral = 0;
 # Now we parse the options.
 GetOptions($commoner->options(), $reader->lib_options(),
         'contigs=s' => \$contigs,
         'genome-group=s' => \$genomeGroup,
-        'skip-indexing' => \$skipIndexing
+        'skip-indexing' => \$skipIndexing,
+        'viruses|viral|vir' => \$viral,
+        'bacteria|prokaryotes|prok' => \$prok
         );
 # Verify the argument count.
 if (! $ARGV[0] || ! $ARGV[1]) {
@@ -152,6 +161,7 @@ my $params = {
     skip_indexing => ($skipIndexing ? "true" : "false"),
     output_path => $outputPath,
     output_file => $outputFile,
+    assembler => 'auto',
 };
 # Add the optional parameters.
 if ($contigs) {
@@ -159,11 +169,17 @@ if ($contigs) {
 } else {
     $reader->store_libs($params);
 }
-if ($recipe) {
-    $params->{recipe} = $recipe;
-}
 if ($genomeGroup) {
     $params->{genome_group} = $genomeGroup;
 }
+# Handle the bacteria/virus thing.
+if (! $prok && ! $viral) {
+    $prok = 1;
+    $viral = 1;
+}
+$prok = ($prok ? "true" : "false");
+$viral = ($viral ? "true" : "false");
+$params->{perform_bacterial_annotation} = $prok;
+$params->{perform_viral_annotation} = $viral;
 # Submit the job.
 $commoner->submit($app_service, $uploader, $params, MetagenomeBinning => 'binning');

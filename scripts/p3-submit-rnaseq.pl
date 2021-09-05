@@ -74,7 +74,7 @@ These options specify what is to be done to the RNA Seq reads.
 
 =item --contrast
 
-Contrast name to be used for labelling the run.  This parameter can be specified multiple times.
+Comma-separated pair of conditions to be contrasted.  This parameter can be specified multiple times.
 
 =item --tuxedo
 
@@ -140,7 +140,7 @@ my @contrasts;
 GetOptions($commoner->options(), $reader->lib_options(),
         'tuxedo' => \$rnaRocket,
         'hisat' => \$hisat,
-        'contrast=s' => \@contrasts,
+        'contrast|contrasts=s' => \@contrasts,
         'reference-genome-id|ref|genome=s' => \$referenceGenomeId
         );
 # Verify the argument count.
@@ -163,7 +163,6 @@ if (! $referenceGenomeId) {
 }
 # Build the parameter structure.
 my $params = {
-    contrasts => \@contrasts,
     recipe => $recipe,
     reference_genome_id => $referenceGenomeId,
     output_path => $outputPath,
@@ -174,6 +173,23 @@ if (! $reader->check_for_reads()) {
 }
 # Add the input FASTQ files.
 $reader->store_libs($params);
-
+# Now we process the contrasts.  Each should be a pair of conditions.  We need to convert
+# the condition names to numbers.
+my %conditionsH;
+my $conditionsL = $params->{experimental_conditions};
+for (my $i = 0; $i < @$conditionsL; $i++) {
+    $conditionsH{$conditionsL->[$i]} = $i+1;
+}
+my @contrastTuples;
+for my $contrast (@contrasts) {
+    my ($c1, $c2) = split /,/, $contrast;
+    if (! $c2) {
+        die "Invalid contrast $contrast:  must be two conditions separated by a comma.";
+    } elsif (! $conditionsH{$c1} || ! $conditionsH{$c2}) {
+        die "Invalid condition specified in contrast $contrast.";
+    }
+    push @contrastTuples, [$conditionsH{$c1}, $conditionsH{$c2}];
+}
+$params->{contrasts} = \@contrastTuples;
 # Submit the job.
 $commoner->submit($app_service, $uploader, $params, RNASeq => 'RNASeq utilities');
