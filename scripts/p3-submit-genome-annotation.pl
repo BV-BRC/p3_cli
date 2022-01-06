@@ -70,7 +70,7 @@ use Try::Tiny;
 use IO::Handle;
 use Data::Dumper;
 $Data::Dumper::Sortkeys = 1;
-no warnings 'shadow';
+
 
 use File::Basename;
 use JSON::XS;
