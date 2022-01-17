@@ -6,57 +6,94 @@ Submit a genome to the BV-BRC genome annotation service.
 
 =head1 Usage synopsis
 
-    p3-submit-genome-annotation [-h] output-path output-name
-
-    Submit an annotation job with output written to output-path and named
-    output-name.
-
-        The following options describe the inputs to the annotation:
-
-           --workspace-path-prefix STR   Prefix for workspace pathnames as given
-                               to input parameters.
-           --workspace-upload-path STR	 If local pathnames are given as library or
-                           reference assembly parameters, upload the
-                         files to this directory in the workspace.
-                         Defaults to the output path.
-           --overwrite			 If a file to be uploaded already exists in
-                            the workspace, overwrite it on upload. Otherwise
-                         we will not continue the service submission.
-           --genbank-file FILE		 A genbank file to be annotated.
-       --contigs FILE		 A file of DNA contigs to be annotated.
-           --phage			 Set annotation defaults for phage annotation.
-           --recipe NAME		 Use the given annotation recipe for this genome.
-           --reference-genome GID	 The BV-BRC identifier of a reference genome
-                              whose annotations will be propagated as
-                     part of this annotation.
-
-        The following options describe the genome to be annotated. In each case
-    where the value for the specified option may be drawn from a submitted
-    genbank file it is optional to supply the value. If a value is supplied,
-    it will override the value in the genbank file.
-
-           --scientific-name "Genus species strain"
-                                  Scientific name for this genome.
-       --taxonomy-id NUM		 Numeric NCBI taxonomy ID for this genome.
-                         If not specified an estimate will be
-                     computed, and if that is not possible the
-                     catchall taxonomy ID 6666666 will be used.
-       --genetic-code NUM		 Genetic code for this genome; either 11 or 4.
-                          If not specified defaults to 11 unless it
-                     can be determined from the declared or computed
-                     taxonomy ID.
-       --domain STR			 Domain for this genome (Bacteria or Archaea)
-
-
-    Advanced options:
-
-       --workflow-file STR		 Use the given workflow document to process
-                           annotate this genome.
-       --index-nowait		 Do not wait for indexing to complete before
-                     the job is marked as complete.
-       --no-index			 Do not index this genome. If this option
-                        is selected the genome will not be visible
-                     on the BV-BRC website.
+p3-submit-genome-annotation [-dfghnPpt] [long options...] output-path output-name
+	Submit an annotation job with output written to output-path and named output-name.
+	The output-path parameter is a BV-BRC workspace path.
+	The output-name parameter is a name that will describe this annotation in the workspace.
+	It may not contain slash (/) characters.
+	                                    
+	The following options describe the inputs to the annotation.
+	                                    
+	-p STR --workspace-path-prefix STR    Prefix for workspace pathnames
+	                                      as given to input parameters.
+	-P STR --workspace-upload-path STR    If local pathnames are given as
+	                                      genbank or contigs file
+	                                      parameters, upload the files to
+	                                      this directory in the
+	                                      workspace. Defaults to the
+	                                      output path.
+	-f --overwrite                        If a file to be uploaded
+	                                      already exists in the
+	                                      workspace, overwrite it on
+	                                      upload. Otherwise we will not
+	                                      continue the service submission.
+	--genbank-file STR                    A genbank file to be annotated.
+	--contigs-file STR                    A file of DNA contigs to be
+	                                      annotated.
+	--phage                               Set defaults for phage
+	                                      annotation.
+	--recipe STR                          Use the given non-default
+	                                      recipe for this annotation
+	--reference-genome STR                The BV-BRC identifier of a
+	                                      reference genome whose
+	                                      annotations will be propagated
+	                                      as part of this annotation.
+	--reference-virus STR                 The name of a virus from the
+	                                      VIGOR_DB collection to use as
+	                                      the reference for a vigor4
+	                                      viral annotation.
+	                                    
+	The following options describe the genome to be annotated.
+	In each case where the value for the specified option may be drawn
+	from a submitted genbank file it is optional to supply the value.
+	If a value is supplied, it will override the value in the genbank file.
+	                                    
+	-n STR --scientific-name STR          Scientific name for this genome.
+	-t INT --taxonomy-id INT              Numeric NCBI taxonomy ID for
+	                                      this genome. If not specified
+	                                      an estimate will be computed,
+	                                      and if that is not possible the
+	                                      catchall taxonomy ID 6666666
+	                                      will be used.
+	-g INT --genetic-code INT             Genetic code for this genome;
+	                                      either 11 or 4. If not
+	                                      specified defaults to 11 unless
+	                                      it can be determined from the
+	                                      declared or computed taxonomy
+	                                      ID.
+	-d STR --domain STR                   Domain for this genome
+	                                      (Bacteria or Archaea)
+	                                    
+	Advanced options:                   
+	                                    
+	--workflow-file STR                   Use the given workflow document
+	                                      to process annotate this genome.
+	--import-only                         Import this genome as is - do
+	                                      not reannotate gene calls or
+	                                      gene function. Only valid for
+	                                      genbank file input.
+	--raw-import-only                     Perform a raw import on this
+	                                      this genome - do not reannotate
+	                                      gene calls or gene function and
+	                                      perform a bare minimum of
+	                                      postprocessing. Only valid for
+	                                      genbank file input
+	--skip-contigs                        Do not load contigs data. Only
+	                                      valid for genbank file input.
+	--index-nowait                        Do not wait for indexing to
+	                                      complete before the job is
+	                                      marked as complete.
+	--no-index                            Do not index this genome. If
+	                                      this option is selected the
+	                                      genome will not be visible on
+	                                      the BV-BRC website.
+	--no-workspace-output                 Do not write any workspace
+	                                      output.
+	--dry-run                             Dry run. Upload files and
+	                                      validate input but do not
+	                                      submit annotation
+	                                    
+	-h --help                             Show this help message
 
 =cut
 
@@ -87,41 +124,49 @@ my $app_service = Bio::KBase::AppService::Client->new();
 
 my($opt, $usage) =
     describe_options("%c %o output-path output-name",
-             ["Submit an annotation job with output written to output-path and named output-name."],
-             ["The output-path parameter is a BV-BRC workspace path."],
-             ["The output-name parameter is a name that will describe this annotation in the workspace."],
-             ["It may not contain slash (/) characters."],
-             [],
-             ["The following options describe the inputs to the annotation."],
-             [],
-             ["workspace-path-prefix|p=s", "Prefix for workspace pathnames as given to input parameters."],
-             ["workspace-upload-path|P=s", "If local pathnames are given as genbank or contigs file parameters, upload the files to this directory in the workspace. Defaults to the output path."],
-             ["overwrite|f", "If a file to be uploaded already exists in the workspace, overwrite it on upload. Otherwise we will not continue the service submission."],
-             ["genbank-file=s", "A genbank file to be annotated."],
-             ["contigs-file=s", "A file of DNA contigs to be annotated."],
-             ["phage", "Set defaults for phage annotation."],
-             ["recipe=s", "Use the given non-default recipe for this annotation"],
-             ["reference-genome=s", "The BV-BRC identifier of a reference genome whose annotations will be propagated as part of this annotation."],
-             [],
-             ["The following options describe the genome to be annotated."],
-             ["In each case where the value for the specified option may be drawn"],
-             ["from a submitted genbank file it is optional to supply the value."],
-             ["If a value is supplied, it will override the value in the genbank file."],
-             [],
-             ["scientific-name|n=s", "Scientific name for this genome."],
-             ["taxonomy-id|t=i", "Numeric NCBI taxonomy ID for this genome. If not specified an estimate will be computed, and if that is not possible the catchall taxonomy ID 6666666 will be used."],
-             ["genetic-code|g=i", "Genetic code for this genome; either 11 or 4. If not specified defaults to 11 unless it can be determined from the declared or computed taxonomy ID."],
-             ["domain|d=s", "Domain for this genome (Bacteria or Archaea)"],
-             [],
-             ["Advanced options:"],
-             [],
-             ["workflow-file=s", "Use the given workflow document to process annotate this genome."],
-             ["import-only", "Import this genome as is - do not reannotate gene calls or gene function. Only valid for genbank file input."],
-             ["index-nowait", "Do not wait for indexing to complete before the job is marked as complete."],
-             ["no-index", "Do not index this genome. If this option is selected the genome will not be visible on the BV-BRC website."],
-             ["dry-run", "Dry run. Upload files and validate input but do not submit annotation"],
-             [],
-             ["help|h", "Show this help message"],
+		     ["Submit an annotation job with output written to output-path and named output-name."],
+		     ["The output-path parameter is a BV-BRC workspace path."],
+		     ["The output-name parameter is a name that will describe this annotation in the workspace."],
+		     ["It may not contain slash (/) characters."],
+		     [],
+		     ["The following options describe the inputs to the annotation."],
+		     [],
+		     ["workspace-path-prefix|p=s", "Prefix for workspace pathnames as given to input parameters."],
+		     ["workspace-upload-path|P=s", "If local pathnames are given as genbank or contigs file parameters, upload the files to this directory in the workspace. Defaults to the output path."],
+		     ["overwrite|f", "If a file to be uploaded already exists in the workspace, overwrite it on upload. Otherwise we will not continue the service submission."],
+		     ["genbank-file=s", "A genbank file to be annotated."],
+		     ["contigs-file=s", "A file of DNA contigs to be annotated."],
+		     ["phage", "Set defaults for phage annotation."],
+		     ["recipe=s", "Use the given non-default recipe for this annotation"],
+		     ["reference-genome=s", "The BV-BRC identifier of a reference genome whose annotations will be propagated as part of this annotation."],
+		     ["reference-virus=s", "The name of a virus from the VIGOR_DB collection to use as the reference for a vigor4 viral annotation."],
+		     [],
+		     ["The following options describe the genome to be annotated."],
+		     ["In each case where the value for the specified option may be drawn"],
+		     ["from a submitted genbank file it is optional to supply the value."],
+		     ["If a value is supplied, it will override the value in the genbank file."],
+		     [],
+		     ["scientific-name|n=s", "Scientific name for this genome."],
+		     ["taxonomy-id|t=i", "Numeric NCBI taxonomy ID for this genome. If not specified an estimate will be computed, and if that is not possible the catchall taxonomy ID 6666666 will be used."],
+		     ["genetic-code|g=i", "Genetic code for this genome; either 11 or 4. If not specified defaults to 11 unless it can be determined from the declared or computed taxonomy ID."],
+		     ["domain|d=s", "Domain for this genome (Bacteria or Archaea)"],
+		     [],
+		     ["Advanced options:"],
+		     [],
+		     ["workflow-file=s", "Use the given workflow document to process annotate this genome."],
+		     ["import-only", "Import this genome as is - do not reannotate gene calls or gene function. Only valid for genbank file input."],
+		     ["raw-import-only", "Perform a raw import on this this genome - do not reannotate gene calls or gene function and perform a bare minimum of postprocessing. Only valid for genbank file input"],
+		     ["skip-contigs", "Do not load contigs data. Only valid for genbank file input."],
+		     ["index-nowait", "Do not wait for indexing to complete before the job is marked as complete."],
+		     ["no-index", "Do not index this genome. If this option is selected the genome will not be visible on the BV-BRC website."],
+		     ["no-workspace-output", "Do not write any workspace output."],
+		     ["dry-run", "Dry run. Upload files and validate input but do not submit annotation"],
+		     ["container-id=s", "Container id for non-default container execution", { hidden => 1 }],
+		     ["indexing-url=s", "Specify an override data api for indexing", { hidden => 1 }],
+		     ["base-url=s", "Specify the site base url for this submission", { hidden => 1, default => 'https://www.bv-brc.org' }],
+		     ["public", "Make the indexed genome publicly available", { hidden => 1 }],
+		     [],
+		     ["help|h", "Show this help message"],
             );
 print($usage->text), exit 0 if $opt->help;
 die($usage->text) if @ARGV != 2;
@@ -166,6 +211,10 @@ elsif ($opt->contigs_file)
 if ($opt->workflow_file && $opt->import_only)
 {
     die "A custom workflow may not be supplied when using --import-only\n";
+}
+if ($opt->workflow_file && $opt->raw_import_only)
+{
+    die "A custom workflow may not be supplied when using --raw-import-only\n";
 }
 if ($opt->workflow_file && $opt->recipe)
 {
@@ -267,12 +316,23 @@ my $params = {
     ($opt->recipe ? (recipe => $opt->recipe) : ()),
     (defined($workflow) ? (workflow => $workflow_txt) : ()),
     ($opt->no_index ? (skip_indexing => 1) : ()),
+    ($opt->no_workspace_output ? (skip_workspace_output => 1) : ()),
+    ($opt->reference_virus ? (reference_virus_name => $opt->reference_virus) : ()),
+    ($opt->container_id ? (container_id => $opt->container_id) : ()),
+    ($opt->indexing_url ? (indexing_url => $opt->indexing_url) : ()),
+    ($opt->public ? (public => 1) : ()),
+};
+
+my $start_params = {
+    ($opt->base_url ? (base_url => $opt->base_url) : ()),
 };
 
 if ($input_mode eq 'genbank')
 {
     $params->{genbank_file} = strip_ws_prefix($input_wspath);
     $params->{import_only} = $opt->import_only ? 1 : 0;
+    $params->{raw_import_only} = $opt->raw_import_only ? 1 : 0;
+    $params->{skip_contigs} = $opt->skip_contigs ? 1 : 0;
 
     #
     # Overrides if given.
@@ -349,7 +409,7 @@ if ($opt->dry_run)
 }
 else
 {
-    my $task = eval { $app_service->start_app($app_name, $params, '') };
+    my $task = eval { $app_service->start_app2($app_name, $params, $start_params) };
     if ($@)
     {
     die "Error submitting annotation to service:\n$@\n";
