@@ -85,7 +85,7 @@ my $params = {
 my @cur_pair = ();
 my $read_orientation_outward = 0;
 my $platform = "infer";
-my $base_url = "https://bv-brc.org";
+my $base_url = "https://www.bv-brc.org";
 my $container_id;
 
 #

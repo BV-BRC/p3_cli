@@ -165,6 +165,7 @@ my($opt, $usage) =
 		     ["indexing-url=s", "Specify an override data api for indexing", { hidden => 1 }],
 		     ["base-url=s", "Specify the site base url for this submission", { hidden => 1, default => 'https://www.bv-brc.org' }],
 		     ["public", "Make the indexed genome publicly available", { hidden => 1 }],
+		     ["preflight=s\@", "Specify a preflight parameter using e.g. --preflight cpu=2. Disables automated preflight, requires administrator access", { hidden => 1, default => []}],
 		     [],
 		     ["help|h", "Show this help message"],
             );
@@ -224,7 +225,7 @@ if ($opt->workflow_file && $opt->recipe)
 #
 # Set up some defaults.
 #
-my $default_domain = "B";
+my $default_domain = "Bacteria";
 my $default_taxon_id = 6666666;
 my $default_scientific_name = "Unknown sp.";
 my $default_genetic_code = 11;
@@ -232,7 +233,7 @@ my $default_genetic_code = 11;
 if ($opt->phage)
 {
     $opt->{recipe} = "phage" unless $opt->recipe;
-    $default_domain = "V";
+    $default_domain = "Viruses";
 }
 
 #
@@ -281,33 +282,54 @@ if ($opt->workflow_file)
 
     if ($wf_ws)
     {
-    $wf_ws = expand_workspace_path($wf_ws);
-    $workflow_txt = $ws->download_file_to_string($wf_ws, $token);
+	$wf_ws = expand_workspace_path($wf_ws);
+	$workflow_txt = $ws->download_file_to_string($wf_ws, $token);
     }
     else
     {
-    open(F, "<", $opt->workflow_file) or die "Cannot open workflow file " . $opt->workflow_file . ": $!\n";
-    local $/;
-    undef $/;
-    $workflow_txt = <F>;
-    close(F);
+	open(F, "<", $opt->workflow_file) or die "Cannot open workflow file " . $opt->workflow_file . ": $!\n";
+	local $/;
+	undef $/;
+	$workflow_txt = <F>;
+	close(F);
     }
 
     eval {
-    $workflow = decode_json($workflow_txt);
+	$workflow = decode_json($workflow_txt);
     };
     if (!$workflow)
     {
-    die "Error parsing workflow file " . $opt->workflow_file . "\n";
+	die "Error parsing workflow file " . $opt->workflow_file . "\n";
     }
 
     if (ref($workflow) ne 'HASH' ||
-    !exists($workflow->{stages}) ||
-    ref($workflow->{stages}) ne 'ARRAY')
+	!exists($workflow->{stages}) ||
+	ref($workflow->{stages}) ne 'ARRAY')
     {
-    die "Invalid workflow document (must be a object containing a list of stage definitions)\n";
+	die "Invalid workflow document (must be a object containing a list of stage definitions)\n";
     }
 }
+
+#
+# Populate preflight data if requested.
+#
+
+my %preflight_params;
+if (@{$opt->preflight})
+{
+    my $phash = {};
+    for my $p (@{$opt->preflight})
+    {
+	my($k, $v) = split(/=/, $p, 2);
+	if (!defined($k) || !defined($v))
+	{
+	    die "Invalid preflight option $p\n";
+	}
+	$phash->{$k} = $v;
+    }
+    %preflight_params = (disable_preflight => 1, preflight_data => $phash );
+}
+
 
 my $params = {
     output_path => $output_path,
@@ -325,6 +347,7 @@ my $params = {
 
 my $start_params = {
     ($opt->base_url ? (base_url => $opt->base_url) : ()),
+    %preflight_params,
 };
 
 if ($input_mode eq 'genbank')
@@ -346,7 +369,7 @@ else
 {
     $params->{contigs} = strip_ws_prefix($input_wspath);
     my $taxon_id = $opt->taxonomy_id;
-
+    
     #
     # When we have a taxonomy estimation service, hook in here.
     #
@@ -356,49 +379,49 @@ else
     # code, and domain.
     #
     my $api = P3DataAPI->new();
-
+    
     if ($taxon_id)
     {
-    #
-    # If something has been omitted, attempt to look it up via the taxonomy
-    # identifier.
-    #
-
-    if (!($opt->domain && $opt->scientific_name && $opt->genetic_code))
-    {
-        my($db_domain, $db_name, $db_genetic_code);
-
-        my @res = $api->query("taxonomy",
-                  ["select", "lineage_names,genetic_code,taxon_name"],
-                  ["eq", "taxon_id", $taxon_id]);
-        if (@res)
-        {
-        my $t = $res[0];
-        $db_name = $t->{taxon_name};
-        $db_genetic_code = $t->{genetic_code};
-        my $lin = $t->{lineage_names};
-        shift @$lin if $lin->[0] =~ /^cellular/;
-        $db_domain = $lin->[0];
-        }
-
-        $params->{domain} = $opt->domain // $db_domain;
-        $params->{code} = $opt->genetic_code // $db_genetic_code;
-        $params->{scientific_name} = $opt->scientific_name // $db_name;
+	#
+	# If something has been omitted, attempt to look it up via the taxonomy
+	# identifier.
+	#
+	
+	if (!($opt->domain && $opt->scientific_name && $opt->genetic_code))
+	{
+	    my($db_domain, $db_name, $db_genetic_code);
+	    
+	    my @res = $api->query("taxonomy",
+				  ["select", "lineage_names,genetic_code,taxon_name"],
+				  ["eq", "taxon_id", $taxon_id]);
+	    if (@res)
+	    {
+		my $t = $res[0];
+		$db_name = $t->{taxon_name};
+		$db_genetic_code = $t->{genetic_code};
+		my $lin = $t->{lineage_names};
+		shift @$lin if $lin->[0] =~ /^cellular/;
+		$db_domain = $lin->[0];
+	    }
+	    
+	    $params->{domain} = $opt->domain // $db_domain;
+	    $params->{code} = $opt->genetic_code // $db_genetic_code;
+	    $params->{scientific_name} = $opt->scientific_name // $db_name;
+	}
+	else
+	{
+	    $params->{domain} = $opt->domain;
+	    $params->{code} = $opt->genetic_code;
+	    $params->{scientific_name} = $opt->scientific_name;
+	}
+	$params->{taxonomy_id} = $taxon_id;
     }
     else
     {
-        $params->{domain} = $opt->domain;
-        $params->{code} = $opt->genetic_code;
-        $params->{scientific_name} = $opt->scientific_name;
-    }
-    $params->{taxonomy_id} = $taxon_id;
-    }
-    else
-    {
-    $params->{taxonomy_id} = $default_taxon_id;
-    $params->{domain} //= $default_domain;
-    $params->{code} //= $default_genetic_code;
-    $params->{scientific_name} //= $default_scientific_name;
+	$params->{taxonomy_id} = $default_taxon_id;
+	$params->{domain} //= $default_domain;
+	$params->{code} //= $default_genetic_code;
+	$params->{scientific_name} //= $default_scientific_name;
     }
 }
 
@@ -406,17 +429,19 @@ if ($opt->dry_run)
 {
     print "Would submit with data:\n";
     print JSON::XS->new->pretty(1)->encode($params);
+    print "and start parameters:\n";
+    print JSON::XS->new->pretty(1)->encode($start_params);
 }
 else
 {
     my $task = eval { $app_service->start_app2($app_name, $params, $start_params) };
     if ($@)
     {
-    die "Error submitting annotation to service:\n$@\n";
+	die "Error submitting annotation to service:\n$@\n";
     }
     elsif (!$task)
     {
-    die "Error submitting annotation to service (unknown error)\n";
+	die "Error submitting annotation to service (unknown error)\n";
     }
     print "Submitted annotation with id $task->{id}\n";
 }
