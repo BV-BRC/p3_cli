@@ -63,7 +63,10 @@ Create the common-options object.
 
 sub new {
     my ($class) = @_;
-    my $retVal = { dry => 0 };
+    my $retVal = {
+	dry => 0,
+	base_url => "https://www.bv-brc.org",
+    };
     bless $retVal, $class;
     return $retVal;
 }
@@ -80,6 +83,7 @@ sub options {
     my ($self) = @_;
     return ("dry-run" => sub { $self->{dry} = 1; },
             "help|h" => sub { print pod2usage({-verbose => 99, '-sections' => 'Usage Synopsis', -exitVal => 0}); },
+	    "base-url=s" => sub { $self->{base_url} = $_[1] },
             "reservation=s" => sub { $self->{reservation} = $_[1] },
             "container-id=s" => sub { $self->{container_id} = $_[1] },
             );
@@ -143,11 +147,13 @@ Informal service name for messages.
 sub submit {
     my ($self, $app_service, $uploader, $params, $serviceName, $messageName) = @_;
     # Add the container ID and reservation.
-    if (exists $self->{container_id}) {
-        $params->{container_id} = $self->{container_id};
-    }
-    if (exists $self->{reservation}) {
-        $params->{reservation} = $self->{reservation};
+    my $start_params = {};
+
+    for my $key (qw(container_id reservation base_url))
+    {
+	if (exists $self->{$key}) {
+	    $start_params->{key} = $self->{$key};
+	}
     }
     # Do the dry-run check.
     $self->check_dry_run($params);
@@ -156,7 +162,7 @@ sub submit {
         $uploader->process_uploads();
     }
     # Now submit the job request.
-    my $task = eval { $app_service->start_app($serviceName, $params, ''); };
+    my $task = eval { $app_service->start_app2($serviceName, $params, $start_params); };
     if ($@) {
         die "Error submitting $messageName to PATRIC: $@";
     } elsif (! $task) {
