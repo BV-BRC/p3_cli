@@ -165,6 +165,8 @@ my($opt, $usage) =
 		     ["indexing-url=s", "Specify an override data api for indexing", { hidden => 1 }],
 		     ["base-url=s", "Specify the site base url for this submission", { hidden => 1, default => 'https://www.bv-brc.org' }],
 		     ["public", "Make the indexed genome publicly available", { hidden => 1 }],
+		     ["reservation=s", "Slurm reservation", { hidden => 1 }],
+		     ["constraint=s", "Slurm constraint", { hidden => 1 }],
 		     ["preflight=s\@", "Specify a preflight parameter using e.g. --preflight cpu=2. Disables automated preflight, requires administrator access", { hidden => 1, default => []}],
 		     [],
 		     ["help|h", "Show this help message"],
@@ -340,13 +342,15 @@ my $params = {
     ($opt->no_index ? (skip_indexing => 1) : ()),
     ($opt->no_workspace_output ? (skip_workspace_output => 1) : ()),
     ($opt->reference_virus ? (reference_virus_name => $opt->reference_virus) : ()),
-    ($opt->container_id ? (container_id => $opt->container_id) : ()),
     ($opt->indexing_url ? (indexing_url => $opt->indexing_url) : ()),
     ($opt->public ? (public => 1) : ()),
 };
 
 my $start_params = {
     ($opt->base_url ? (base_url => $opt->base_url) : ()),
+    ($opt->container_id ? (container_id => $opt->container_id) : ()),
+    $opt->reservation ? (reservation => $opt->reservation) : (),
+    $opt->constraint ? (constraint => $opt->constraint) : (),
     %preflight_params,
 };
 
