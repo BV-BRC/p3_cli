@@ -86,6 +86,12 @@ C<--viruses> is specified.
 If specified, viral binning will be performed.  This defaults to TRUE unless C<--prokaryotes>
 is specified.
 
+=item --danglen
+
+Set the DNA kmer length used to map "dangling" contings back to the binned genomes. Defaults to 50;
+if set to 0 this mapping will not be performed. This can reduce the memory requirement for binning
+jobs with a large number of found bins.
+
 =back
 
 These options are provided for user assistance and debugging.
@@ -132,13 +138,15 @@ my $skipIndexing;
 my $contigs;
 my $prok = 0;
 my $viral = 0;
+my $danglen = 50;
 # Now we parse the options.
 GetOptions($commoner->options(), $reader->lib_options(),
         'contigs=s' => \$contigs,
         'genome-group=s' => \$genomeGroup,
         'skip-indexing' => \$skipIndexing,
         'viruses|viral|vir' => \$viral,
-        'bacteria|prokaryotes|prok' => \$prok
+        'bacteria|prokaryotes|prok' => \$prok,
+        'danglen=i' => \$danglen
         );
 # Verify the argument count.
 if (! $ARGV[0] || ! $ARGV[1]) {
@@ -176,6 +184,15 @@ if ($genomeGroup) {
 if (! $prok && ! $viral) {
     $prok = 1;
     $viral = 1;
+}
+
+if ($danglen =~ /^\d+$/)
+{
+    $params->{danglen} = $danglen;
+}
+else
+{
+    die "Invalid value \"$danglen\" specified in --danglen\n";
 }
 $prok = ($prok ? "true" : "false");
 $viral = ($viral ? "true" : "false");
