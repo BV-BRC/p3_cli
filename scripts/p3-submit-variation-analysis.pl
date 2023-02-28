@@ -67,7 +67,7 @@ Mapping utility to use-- C<BWA-mem>, C<BWA-mem-strict>, C<Bowtie2>, or C<LAST>. 
 
 =item --caller
 
-SNP-calling utility to use-- C<FreeBayes> or C<SAMtools>.  Default is C<FreeBayes>.
+SNP-calling utility to use-- C<FreeBayes> or C<BCFtools>.  Default is C<FreeBayes>.
 
 =back
 
@@ -97,7 +97,7 @@ use Bio::KBase::AppService::ReadSpec;
 use Bio::KBase::AppService::UploadSpec;
 use Bio::KBase::AppService::GenomeIdSpec;
 
-use constant CALLERS => { 'FreeBayes' => 1, 'SAMtools' => 1};
+use constant CALLERS => { 'FreeBayes' => 1, 'BCFtools' => 1};
 use constant MAPPERS => { 'BWA-mem' => 1, 'BWA-mem-strict' => 1, 'Bowtie2' => 1, 'LAST' => 1 };
 
 # Insure we're logged in.
