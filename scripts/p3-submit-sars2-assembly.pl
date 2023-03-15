@@ -156,12 +156,19 @@ my $taxonomyId = 2697049;
 my $taxonomyName;
 my $recipe = 'auto';
 my $label;
+my $primers;
+my $primer_version;
+my $min_depth;
+
 # Now we parse the options.
 GetOptions($commoner->options(), $reader->lib_options(),
         'taxonomy-id=i' => \$taxonomyId,
         'taxonomy-name=s' => \$taxonomyName,
         'recipe=s' => \$recipe,
-        'label=s' => \$label
+	   'label=s' => \$label,
+	   'primers=s' => \$primers,
+	   'primer-version=s' => \$primer_version,
+	   'min-depth=i' => \$min_depth
         );
 # Verify the argument count.
 if (! $ARGV[0] || ! $ARGV[1]) {
@@ -195,6 +202,9 @@ my $params = {
     scientific_name => $scientificName,
     output_path => $outputPath,
     output_file => $outputFile,
+    ($primers ? (primers => $primers) : ()),
+    ($primer_version ? (primer_version => $primer_version) : ()),
+    ($min_depth ? (min_depth => $min_depth) : ()),
 };
 # Store the read libraries.
 $reader->store_libs($params);
