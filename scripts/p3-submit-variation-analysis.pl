@@ -63,7 +63,7 @@ The ID of the genome in BV-BRC to be used as a reference.
 
 =item --mapper
 
-Mapping utility to use-- C<BWA-mem>, C<BWA-mem-strict>, C<Bowtie2>, or C<LAST>.  Default is C<BWA-mem>.
+Mapping utility to use-- C<BWA-mem>, C<BWA-mem-strict>, C<Bowtie2>, C<LAST>, C<minimap2>.  Default is C<BWA-mem>.
 
 =item --caller
 
@@ -98,7 +98,7 @@ use Bio::KBase::AppService::UploadSpec;
 use Bio::KBase::AppService::GenomeIdSpec;
 
 use constant CALLERS => { 'FreeBayes' => 1, 'BCFtools' => 1};
-use constant MAPPERS => { 'BWA-mem' => 1, 'BWA-mem-strict' => 1, 'Bowtie2' => 1, 'LAST' => 1 };
+use constant MAPPERS => { 'BWA-mem' => 1, 'BWA-mem-strict' => 1, 'Bowtie2' => 1, 'LAST' => 1, 'minimap2' => 1 };
 
 # Insure we're logged in.
 my $p3token = P3AuthToken->new();
