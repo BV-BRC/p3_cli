@@ -87,21 +87,29 @@ Indicates that all subseqyent read libraries have reverse read orientation, with
 
 =back
 
-If contigs are being classified, specify the following parameter.  All the above parameters relating to reads should not be used
-if contigs are specified.
-
-=over 4
-
-=item --contigs
-
-Input FASTA file of assembled contigs.  (If specified, all options relating to assembly will be ignored.  This is mutually exclusive with
-C<--paired-end-libs>, C<--single-end-libs>, and C<srr-ids>)
-
-=back
-
 The following options modify the classification process.
 
 =over 4
+
+=item --16S
+
+If specified, then the sample is presumed to be a 16S sample instead of a whole-genome sample.
+
+=item --confidence
+
+Confidence interval.  Must be 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, or 1.  The default
+is 0.1.
+
+=item --analysis-type
+
+"pathogen" or "microbiome".  If "microbiome" is specified, an additional analysis step is added that provides useful reports
+on microbiome-specific issues such as alpha and beta diversity.  The default is "pathogen".  This parameter is ignored if
+B<16s> is specified.
+
+=item --database
+
+Type of database to use.  For a "wgs" sequence, this is "bvbrc" or "standard"; for a "16S" sequence, this is "SILVA" or
+"Greengenes".  The default is "bvbrc" for the whole-genome sequences and "SILVA" for 16S.
 
 =item --save-classified
 
@@ -137,6 +145,12 @@ use Data::Dumper;
 use Bio::KBase::AppService::CommonSpec;
 use Bio::KBase::AppService::ReadSpec;
 use Bio::KBase::AppService::UploadSpec;
+use constant DB_16S => { SILVA => 1, Greengenes => 1 };
+use constant DB_WGS => { standard => 1, bvbrc => 1 };
+use constant AT_WGS => { pathogen => 1, microbiome => 1 };
+use constant CONFIDENCE => { '0' => 1, '0.1' => 1, '0.2' => 1, '0.3' => 1, '0.4' => 1, '0.5' => 1, '0.6' => 1,
+                             '0.7' => 1, '0.8' => 1, '0.9' => 1, '1' => 1 };
+
 
 # Insure we're logged in.
 my $p3token = P3AuthToken->new();
@@ -154,12 +168,19 @@ my $app_service = Bio::KBase::AppService::Client->new();
 # Declare the option variables and their defaults.
 my $saveClassified;
 my $saveUnclassified;
-my $contigs;
+my $st16s = 0;
+my $analysisType;
+my $database;
+my $sequenceType;
+my $confidence = '0.1';
 # Now we parse the options.
 GetOptions($commoner->options(), $reader->lib_options(),
-        'contigs=s' => \$contigs,
+        '16S' => \$st16s,
+        'analysis-type=s' => \$analysisType,
+        'database=s' => \$database,
         'save-classified' => \$saveClassified,
-        'save-unclassified' => \$saveUnclassified
+        'save-unclassified' => \$saveUnclassified,
+        'confidence=s' => \$confidence,
         );
 # Verify the argument count.
 if (! $ARGV[0] || ! $ARGV[1]) {
@@ -167,33 +188,48 @@ if (! $ARGV[0] || ! $ARGV[1]) {
 } elsif (scalar @ARGV > 2) {
     die "Too many parameters-- only output path and output name should be specified.  Found : \"" . join('", "', @ARGV) . '"';
 }
-# Insure we are compatible with the input type.
-my $inputType = "reads";
-if ($contigs) {
-    $inputType = "contigs";
-    if ($reader->check_for_reads()) {
-        die "Cannot specify both contigs and FASTQ input.";
+if ($st16s) {
+    # Here we have a 16S sample.  The default database is "SILVA" and the analysis type is 16S only.  We allow both "16S" and "16s".
+    $sequenceType = "16S";
+    $analysisType //= "16S";
+    $analysisType = uc $analysisType;
+    if ($analysisType ne "16S") {
+        die "For a 16S sample the analysis type must be \"16S\".";
     }
-} elsif (! $reader->check_for_reads()) {
-    die "Must specify either contigs or FASTQ input.";
+    $database //= "SILVA";
+    if (! DB_16S->{$database}) {
+        die "Invalid database type for 16S samples: must be \"SILVA\" or \"Greengenes\".";
+    }
+    # In fact, we actually have to pass an analysis type of NULL.
+    undef $analysisType;
+} else {
+    $sequenceType = "wgs";
+    # Here we have a normal sample.  The default database is "bvbrc" and the analysis type can be "pathogen" or "microbiome".
+    $analysisType //= "pathogen";
+    if (! AT_WGS->{$analysisType}) {
+        die "Invalid analysis type for WGS samples: must be \"pathogen\" or \"microbiome\".";
+    }
+    $database //= "bvbrc";
+    if (! DB_WGS->{$database}) {
+        die "Invalid database type for WGS samples: must be \"bvbrc\" or \"standard\".";
+    }
+}
+# Validate the confidence interval.
+if (! CONFIDENCE->{$confidence}) {
+    die "Invalid confidence interval.  Must be 0, 1, or 0.X where X is a single digit.";
 }
 # Handle the output path and name.
 my ($outputPath, $outputFile) = $uploader->output_spec(@ARGV);
 # Build the parameter structure.
 my $params = {
-    input_type => $inputType,
-    algorithm => 'Kraken2',
-    database => 'Kraken2',
+    analysis_type => $analysisType,
+    sequence_type => $sequenceType,
+    database => $database,
+    confidence => $confidence,
     save_unclassified_sequences => $saveUnclassified,
     save_classified_sequences => $saveClassified,
     output_path => $outputPath,
     output_file => $outputFile,
 };
-# Add the optional parameters.
-if ($contigs) {
-    $params->{contigs} = $uploader->fix_file_name($contigs);
-} else {
-    $reader->store_libs($params);
-}
 # Submit the job.
 $commoner->submit($app_service, $uploader, $params, TaxonomicClassification => 'classification');
