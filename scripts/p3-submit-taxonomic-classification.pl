@@ -37,7 +37,7 @@ The following options specify the reads to be classified.
 
 =item --paired-end-lib
 
-Two paired-end libraries containing reads.  These are coded with a single invocation, e.g. C<--paired-end-lib left.fa right.fa>.  The
+Two paired-end libraries containing reads.  These are coded with a single invocation, e.g. C<--paired-end-lib left.fastq right.fastq>.  The
 libraries must be paired FASTQ files.  A prefix of C<ws:> indicates a file is in the BV-BRC workspace; otherwise they are uploaded
 from the local file system.  This parameter may be specified multiple times.
 
@@ -166,8 +166,8 @@ my $reader = Bio::KBase::AppService::ReadSpec->new($uploader, assembling => 1);
 my $app_service = Bio::KBase::AppService::Client->new();
 
 # Declare the option variables and their defaults.
-my $saveClassified;
-my $saveUnclassified;
+my $saveClassified = 0;
+my $saveUnclassified = 0;
 my $st16s = 0;
 my $analysisType;
 my $database;
@@ -200,8 +200,6 @@ if ($st16s) {
     if (! DB_16S->{$database}) {
         die "Invalid database type for 16S samples: must be \"SILVA\" or \"Greengenes\".";
     }
-    # In fact, we actually have to pass an analysis type of NULL.
-    undef $analysisType;
 } else {
     $sequenceType = "wgs";
     # Here we have a normal sample.  The default database is "bvbrc" and the analysis type can be "pathogen" or "microbiome".
