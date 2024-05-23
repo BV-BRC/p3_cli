@@ -53,40 +53,6 @@ multiple times.
 
 =back
 
-These options modify the way reads are processed during assembly, so they should precede any library specifications to which they apply.
-For example,
-
-    --platform illumina --paired-end-lib S1.fq S2.fq --platform pacbio --single-end-lib ERR12345.fq  --srr-id SRR54321
-
-means that the local files C<S1.fq> and C<S2.fq> are from the illumina platform, but the single-end library C<ERR12345.fq> comes
-from the pacbio platform.  These options B<only> apply to FASTQ libraries, and not to libraries accessed via na NBCI ID.  Thus
-C<SRR54321> above will use the default mode of having its platform inferred from the data.
-
-=over 4
-
-=item --platform
-
-The sequencing platform for the subsequent read library or libraries.  Valid values are C<infer>, C<illumina>, C<pacbio>, or <nanopore>.
-The default is C<infer>.
-
-=item --insert-size-mean
-
-The average size of an insert in all subsequent read libraries, used for optimization.
-
-=item --insert-size-stdev
-
-The standard deviation of the insert sizes in all subsequent read libraries, used for optimization.
-
-=item --read-orientation-inward
-
-Indicates that all subsequent read libraries have the standard read orientation, with the paired ends facing inward.  This is the default.
-
-=item --read-orientation-outward
-
-Indicates that all subseqyent read libraries have reverse read orientation, with the paired ends facing outward.
-
-=back
-
 The following options modify the classification process.
 
 =over 4
@@ -102,8 +68,8 @@ is 0.1.
 
 =item --analysis-type
 
-"pathogen" or "microbiome".  If "microbiome" is specified, an additional analysis step is added that provides useful reports
-on microbiome-specific issues such as alpha and beta diversity.  The default is "pathogen".  This parameter is ignored if
+"species-identification" or "microbiome".  If "microbiome" is specified, an additional analysis step is added that provides useful reports
+on microbiome-specific issues such as alpha and beta diversity.  The default is "species-identification".  This parameter is ignored if
 B<16s> is specified.
 
 =item --database
@@ -150,7 +116,19 @@ use constant DB_WGS => { standard => 1, bvbrc => 1 };
 use constant AT_WGS => { pathogen => 1, microbiome => 1 };
 use constant CONFIDENCE => { '0' => 1, '0.1' => 1, '0.2' => 1, '0.3' => 1, '0.4' => 1, '0.5' => 1, '0.6' => 1,
                              '0.7' => 1, '0.8' => 1, '0.9' => 1, '1' => 1 };
-
+use constant HOSTS => {
+        homo_sapiens => 1,
+        mus_musculus => 1,
+        rattus_norvegicus => 1,
+        caenorhabditis_elegans => 1,
+        drosophila_melanogaster_strain => 1,
+        danio_rerio_strain_tuebingen => 1,
+        gallus_gallus => 1,
+        macaca_mulatta => 1,
+        mustela_putorius_furo => 1,
+        sus_scrofa => 1,
+        no_host => 1
+};
 
 # Insure we're logged in.
 my $p3token = P3AuthToken->new();
@@ -172,6 +150,7 @@ my $st16s = 0;
 my $analysisType;
 my $database;
 my $sequenceType;
+my $hostGenome = "none";
 my $confidence = '0.1';
 # Now we parse the options.
 GetOptions($commoner->options(), $reader->lib_options(),
@@ -181,6 +160,7 @@ GetOptions($commoner->options(), $reader->lib_options(),
         'save-classified' => \$saveClassified,
         'save-unclassified' => \$saveUnclassified,
         'confidence=s' => \$confidence,
+        'host-genome=s' => \$hostGenome,
         );
 # Verify the argument count.
 if (! $ARGV[0] || ! $ARGV[1]) {
@@ -204,13 +184,24 @@ if ($st16s) {
     $sequenceType = "wgs";
     # Here we have a normal sample.  The default database is "bvbrc" and the analysis type can be "pathogen" or "microbiome".
     $analysisType //= "pathogen";
+    # Fix the analysis type.  The external name is different from the internal one.
+    if ($analysisType eq "species-identification") {
+        $analysisType = "pathogen";
+    }
     if (! AT_WGS->{$analysisType}) {
-        die "Invalid analysis type for WGS samples: must be \"pathogen\" or \"microbiome\".";
+        die "Invalid analysis type for WGS samples: must be \"species-identification\" or \"microbiome\".";
     }
     $database //= "bvbrc";
     if (! DB_WGS->{$database}) {
         die "Invalid database type for WGS samples: must be \"bvbrc\" or \"standard\".";
     }
+}
+# Fix the default for the host genome.
+if ($hostGenome eq "none") {
+    $hostGenome = "no_host";
+}
+if (! HOSTS->{$hostGenome}) {
+    die "Invalid host name \"$hostGenome\".";
 }
 # Validate the confidence interval.
 if (! CONFIDENCE->{$confidence}) {
@@ -218,16 +209,36 @@ if (! CONFIDENCE->{$confidence}) {
 }
 # Handle the output path and name.
 my ($outputPath, $outputFile) = $uploader->output_spec(@ARGV);
+# Validate the read libraries.
+if (! $reader->check_for_reads()) {
+    die "Must specify at least one source of reads.";
+}
 # Build the parameter structure.
 my $params = {
     analysis_type => $analysisType,
-    sequence_type => $sequenceType,
     database => $database,
     confidence => $confidence,
     save_unclassified_sequences => $saveUnclassified,
     save_classified_sequences => $saveClassified,
     output_path => $outputPath,
     output_file => $outputFile,
+    host_genome => $hostGenome,
 };
+# Store the read libraries.
+$reader->store_libs($params);
+# Now fix all the weird changes to the library specs.
+my $srrList = $params->{srr_ids};
+if ($srrList) {
+    delete $params->{srr_ids};
+    my @newSrrList;
+    for my $srr (@$srrList) {
+        my $srrValue = { srr_accession => $srr, sample_id => $srr };
+        push @newSrrList, $srrValue;
+    }
+    $params->{srr_libs} = \@newSrrList;
+}
+my $pairList = $params->{paired_end_libs};
+my $singleList = $params->{single_end_libs};
+## TODO fix the libraries
 # Submit the job.
 $commoner->submit($app_service, $uploader, $params, TaxonomicClassification => 'classification');
