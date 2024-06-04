@@ -1,6 +1,6 @@
 =head1 Submit a Taxonomic Classification Job
 
-This script submits a Taxonomic Classification job to BV-BRC.  It allows input from either read libraries or a FASTA file and uses
+This script submits a Taxonomic Classification job to BV-BRC.  It allows input from various types of read libraries and uses
 the Kraken2 algorithm to determine the taxonomic makeup of the input.
 
 =head1 Usage Synopsis
@@ -108,6 +108,7 @@ use Getopt::Long;
 use Bio::KBase::AppService::Client;
 use P3AuthToken;
 use Data::Dumper;
+use File::Basename;
 use Bio::KBase::AppService::CommonSpec;
 use Bio::KBase::AppService::ReadSpec;
 use Bio::KBase::AppService::UploadSpec;
@@ -138,7 +139,7 @@ if (! $p3token->token()) {
 # Get a common-specification processor, an uploader, and a reads-processor.
 my $commoner = Bio::KBase::AppService::CommonSpec->new();
 my $uploader = Bio::KBase::AppService::UploadSpec->new($p3token);
-my $reader = Bio::KBase::AppService::ReadSpec->new($uploader, assembling => 1);
+my $reader = Bio::KBase::AppService::ReadSpec->new($uploader, simple => 1, samples => 1);
 
 # Get the application service helper.
 my $app_service = Bio::KBase::AppService::Client->new();
@@ -226,19 +227,5 @@ my $params = {
 };
 # Store the read libraries.
 $reader->store_libs($params);
-# Now fix all the weird changes to the library specs.
-my $srrList = $params->{srr_ids};
-if ($srrList) {
-    delete $params->{srr_ids};
-    my @newSrrList;
-    for my $srr (@$srrList) {
-        my $srrValue = { srr_accession => $srr, sample_id => $srr };
-        push @newSrrList, $srrValue;
-    }
-    $params->{srr_libs} = \@newSrrList;
-}
-my $pairList = $params->{paired_end_libs};
-my $singleList = $params->{single_end_libs};
-## TODO fix the libraries
 # Submit the job.
 $commoner->submit($app_service, $uploader, $params, TaxonomicClassification => 'classification');

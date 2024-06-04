@@ -20,6 +20,7 @@ package Bio::KBase::AppService::ReadSpec;
 
     use strict;
     use warnings;
+    use File::Basename;
 
 =head1 Object for Generating Read Input Specifications in P3 CLI Scripts
 
@@ -101,6 +102,26 @@ Indicates that all subseqyent read libraries have reverse read orientation, with
 
 =back
 
+The following options are provided for analysis mode.  These modify the way the reads are analyzed, and should precede any library specifications
+to which they apply.  For example,
+
+    --date 01/12/2024 --primers midnight,V1 --paired-end-lib S1.fq S2.fq --primers ARTIC,V5.3.2 --single-end-lib ERR12345.fq  --srr-id SRR54321
+
+means that the local files C<S1.fq> and C<S2.fq> used V1 of the midnight primers, but the single-end library C<ERR12345.fq> and
+the NCBI library SRR54321 use the ARTIC V5.3.2 primers.  All of the samples are dated 01/12/2024.
+
+=over 4
+
+=item date
+
+Date of the subsequent samples, in I<MM/DD/YYYY> format.
+
+=item primers
+
+Name and version of the primer set used, separated by a comma.  The default is C<ARTIC,V5.3.2>.  Note that the C<V> is required in the version.
+
+=back
+
 The following options are available in RNA Seq mode.
 
 These options modify the way reads are labelled during processing, so they must precede the library specifications to which
@@ -121,6 +142,10 @@ Name of a condition that applies to this library.
 =cut
 
 use constant LEGAL_PLATFORMS => { infer => 1, illumina => 1, pacbio => 1, nanopore => 1 };
+use constant LEGAL_PRIMERS => {
+        'ARTIC,V5.3.2' => 1, 'ARTIC,V4.1' => 1, 'ARTIC,V4' => 1, 'ARTIC,V3' => 1,  'ARTIC,V2' => 1, 'ARTIC,V1' => 1,
+        'midnight,V1' => 1, 'qiagen,V1' => 1, 'swift,V1' => 1, 'varskip,V2' => 1, 'varskip,V1a' => 1, 'varskip-long,V1a' => 1
+     };
 
 =head2 Special Methods
 
@@ -162,6 +187,15 @@ If TRUE, the read library structures will be simplified.
 
 If TRUE, only one read library can be specified.
 
+=item samples
+
+If specified, default sample IDs will be added to all the libraries (counting each paired set as a single library).  This automatically
+implies C<srrAlt> and changes the SRR parameter label to "srr_libs".
+
+=item analysis
+
+If specified, special analysis metadata can be specified.  This automatically implies C<srrAlt> and changes the SRR parameter label to "srr_libs".
+
 =back
 
 =back
@@ -184,11 +218,23 @@ sub new {
         errors => [],
         conditions => {},
         curr_condition => undef,
+        sample_date => undef,
+        sample_primers => 'ARTIC/V5.3.2',
         assembling => ($options{assembling} // 0),
         srrAlt => ($options{srrAlt} // 0),
         single => ($options{single} // 0),
-        rnaseq => ($options{rnaseq} // 0)
+        rnaseq => ($options{rnaseq} // 0),
+        samples => ($options{samples} // 0),
+        analysis => ($options{analysis} // 0),
+        srr_label => 'srr_ids'
     };
+    if ($retVal->{samples} || $retVal->{analysis}) {
+        $retVal->{srrAlt} = 1;
+    }
+    if ($retVal->{samples} || $retVal->{analysis} || $retVal->{rnaseq}) {
+        $retVal->{srr_label} = 'srr_libs';
+    }
+
     bless $retVal, $class;
     return $retVal;
 }
@@ -221,6 +267,11 @@ sub lib_options {
     if ($self->{rnaseq}) {
         push @parms,
             "condition=s" => sub { $self->_setCondition($_[1]); };
+    }
+    if ($self->{analysis}) {
+        push @parms,
+            "date=s" => sub { $self->_setDate($_[1])},
+            "primers=s" => sub { $self->_setPrimers($_[1])};
     }
     return @parms;
 }
@@ -268,6 +319,22 @@ sub _pairedLib {
                 # Add the optional parameters.
                 $self->_processTweaks($lib);
             }
+            # If we are doing samples, compute the default sample ID.
+            if ($self->{samples}) {
+                # Get the base file names.
+                my $read1Base = basename($saved);
+                my $read2Base = basename($wsFile);
+                # The default is to use the common prefix.  Otherwise, we use single-file
+                # technology on the left reads.
+                my $i = 1;
+                while (substr($read1Base, 0, $i) eq substr($read2Base, 0, $i)) { $i++; }
+                if ($i >= 5) {
+                    $lib->{sample_id} = substr($read1Base, 0, $i-1);
+                } else {
+                    $lib->{sample_id} = _compute_sample_id($saved);
+                }
+
+            }
             # Queue the library pair.
             push @{$self->{paired_end_libs}}, $lib;
             # Denote we are starting over.
@@ -310,6 +377,10 @@ sub _interleavedLib {
         };
         # Add the optional parameters.
         $self->_processTweaks($lib);
+        # If we are doing samples, compute the default sample ID.
+        if ($self->{samples}) {
+            $lib->{sample_id} = _compute_sample_id($wsFile);
+        }
         # Add it to the paired-end queue.
         push @{$self->{paired_end_libs}}, $lib;
     };
@@ -348,6 +419,10 @@ sub _singleLib {
         if (! $self->{simple}) {
             $self->_processTweaks($lib);
         }
+        # Compute the sample ID if needed.
+        if ($self->{samples}) {
+            $lib->{sample_id} = _compute_sample_id($wsFile);
+        }
         # Add it to the single-end queue.
         push @{$self->{single_end_libs}}, $lib;
     };
@@ -385,6 +460,12 @@ sub _srrDownload {
         # Format the SRA accession without a condition.
         $srrSpec = { srr_accession => $srr_id };
     }
+    if ($self->{samples}) {
+        $srrSpec->{sample_id} = $srr_id;
+    }
+    if ($self->{analysis}) {
+        $self->_tweakLibs2($srrSpec);
+    }
     push @{$self->{srr_ids}}, $srrSpec;
 }
 
@@ -410,6 +491,60 @@ sub _setPlatform {
         push @{$self->{errors}}, "Invalid platform name \"$platform\" specified.";
     } else {
         $self->{platform} = $platform;
+    }
+}
+
+=head3 _setPrimers
+
+    $reader->_setPrimers($spec);
+
+Specify the primer type and version for subsequent read libraries.  This throws an error if the specification is invalid.
+
+=over 4
+
+=item spec
+
+Primer type Platform name to use.
+
+=back
+
+=cut
+
+sub _setPrimers {
+    my ($self, $spec) = @_;
+    if (! LEGAL_PRIMERS->{$spec}) {
+        push @{$self->{errors}}, "Invalid primer spec \"$spec\" specified.";
+    } else {
+        $self->{primers} = $spec;
+    }
+}
+
+=head3 _setDate
+
+    $reader->_setDate($date);
+
+Specify the sample level date for subsequent read libraries.  The date must be a valid date string.
+
+=over 4
+
+=item date
+
+Sample level date to use, in I<MM/DD/YYYY> format.
+
+=back
+
+=cut
+
+sub _setDate {
+    my ($self, $date) = @_;
+    if ($date =~ /^([0-1][0-9])\/([0-3][0-9])\/([1-2][0-9][0-9][0-9])/) {
+        if ($1 > 12 || $1 <= 0 || $2 <= 0 || $2 > 31) {
+            push @{$self->{errors}}, "Invalid sample date \"$date\".";
+        } else {
+            $self->{date} = $date;
+        }
+    } else {
+        push @{$self->{errors}}, "Invalid format for date \"$date\".  Should be MM/DD/YYYY.";
     }
 }
 
@@ -496,11 +631,7 @@ sub store_libs {
         $params->{single_end_libs} = $self->{single_end_libs};
     }
     if (scalar @{$self->{srr_ids}}) {
-        if (! $self->{rnaseq}) {
-            $params->{srr_ids} = $self->{srr_ids};
-        } else {
-            $params->{srr_libs} = $self->{srr_ids};
-        }
+        $params->{$self->{srr_label}} = $self->{srr_ids};
     }
     if ($self->{rnaseq}) {
         my $conditionH = $self->{conditions};
@@ -556,6 +687,67 @@ sub _processTweaks {
             }
         }
     }
+    if ($self->{analysis}) {
+        $self->_tweakLibs2($lib);
+    }
+}
+
+=head3 _tweakLibs2
+
+    $reader->_tweakLibs2($lib);
+
+Add analysis parameters to the read-library specification.
+
+=over 4
+
+=item lib
+
+Library specification to modify.
+
+=back
+
+=cut
+
+sub _tweakLibs2 {
+    my ($self, $lib) = @_;
+    my ($type, $v) = split /,/, $self->{primers};
+    $lib->{primers} = $type;
+    $lib->{primer_version} = $v;
+    if ($self->{date}) {
+        $lib->{sample_level_date} = $self->{date};
+    }
+}
+
+=head3 _compute_sample_id
+
+    my $sample_id = _compute_sample_id($fileName);
+
+Compute the default sample ID for a filename.
+
+=over 4
+
+=item fileName		name of the file containing the sample's reads
+
+=item RETURN
+
+Returns the desired default sample ID.
+
+=back
+
+=cut
+
+sub _compute_sample_id {
+    my ($fileName) = @_;
+    # Get the base name.
+    my $readBase = basename($fileName);
+    my $retVal = $readBase;
+    # Remove the extension, if possible.
+    if ($readBase =~ /^(.+)\.[a-z]+\.gz$/i) {
+        $retVal = $1;
+    } elsif ($readBase =~ /^(.+)\.[a-z]+$/i) {
+        $retVal = $1;
+    }
+    return $retVal;
 }
 
 1;
