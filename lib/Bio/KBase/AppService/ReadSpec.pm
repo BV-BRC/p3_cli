@@ -329,7 +329,7 @@ sub _pairedLib {
                 my $i = 1;
                 while (substr($read1Base, 0, $i) eq substr($read2Base, 0, $i)) { $i++; }
                 if ($i >= 5) {
-                    $lib->{sample_id} = substr($read1Base, 0, $i-1);
+                    $lib->{sample_id} = _remove_suffixes(substr($read1Base, 0, $i-1));
                 } else {
                     $lib->{sample_id} = _compute_sample_id($saved);
                 }
@@ -747,7 +747,39 @@ sub _compute_sample_id {
     } elsif ($readBase =~ /^(.+)\.[a-z]+$/i) {
         $retVal = $1;
     }
+    $retVal = _remove_suffixes($retVal);
     return $retVal;
+}
+
+=head3 _remove_suffixes
+
+    my $fixed = _remove_suffixes($name);
+
+Remove common suffixes from a sample ID.
+
+=over 4
+
+=item name
+
+Sample ID name to process.
+
+=item RETURN
+
+Returns a slightly friendlier version of the sample ID name.
+
+=cut
+
+sub _remove_suffixes {
+    my ($name) = @_;
+    my $retVal;
+    # Remove common suffixes.
+    if ($name =~ /^(.+)_[a-z]?$/i) {
+        $retVal = $1;
+    } else {
+        $retVal = $name;
+    }
+    return $retVal;
+
 }
 
 1;

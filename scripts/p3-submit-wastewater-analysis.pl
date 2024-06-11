@@ -6,7 +6,7 @@ This script submits a Wastewater Analysis job to BV-BRC.  It allows input from v
 
     p3-submit-wastewater-analysis [options] output-path output-name
 
-Start a taxonomic classification, producing output in the specified workspace path, using the specified name for the base filename
+Start a wastewater analysis, producing output in the specified workspace path, using the specified name for the base filename
 of the output files.
 
 =head2 Command-Line Options
@@ -59,6 +59,26 @@ The following options modify the analysis process.
 =item strategy
 
 Analysis strategy to use.  Currently the only option is C<onecodex>.
+
+=back
+
+These options modify the way the reads are analyzed, and should precede any library specifications
+to which they apply.  For example,
+
+    --date 01/12/2024 --primers midnight,V1 --paired-end-lib S1.fq S2.fq --primers ARTIC,V5.3.2 --single-end-lib ERR12345.fq  --srr-id SRR54321
+
+means that the local files C<S1.fq> and C<S2.fq> used V1 of the midnight primers, but the single-end library C<ERR12345.fq> and
+the NCBI library SRR54321 use the ARTIC V5.3.2 primers.  All of the samples are dated 01/12/2024.
+
+=over 4
+
+=item date
+
+Date of the subsequent samples, in I<MM/DD/YYYY> format.
+
+=item primers
+
+Name and version of the primer set used, separated by a comma.  The default is C<ARTIC,V5.3.2>.  Note that the C<V> is required in the version.
 
 =back
 

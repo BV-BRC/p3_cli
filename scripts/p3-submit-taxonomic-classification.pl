@@ -85,6 +85,10 @@ If specified, the classified sequences will be saved in the output folder.
 
 If specified, the unclassified sequences will be saved in the output folder.
 
+=item --host-genome
+
+Specifies the host genome for a microbiome sample.  The default is C<no_host>.
+
 =back
 
 These options are provided for user assistance and debugging.
