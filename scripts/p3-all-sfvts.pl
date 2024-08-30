@@ -31,7 +31,7 @@ my $opt = P3Utils::script_opts('', P3Utils::data_options(),
 # Get access to BV-BRC.
 my $p3 = P3DataAPI->new();
 if ($opt->fields) {
-    my $fieldList = P3Utils::list_object_fields($p3, 'sf');
+    my $fieldList = P3Utils::list_object_fields($p3, 'sfvt');
     print join("\n", @$fieldList, "");
 } else {
     # Compute the output columns. Note we configure this as an ID-centric method.

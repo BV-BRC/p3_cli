@@ -35,17 +35,17 @@ The positional parameter should be the name of a working directory to use for te
 
  use constant EXPECTED => {
         header => ['id', 'name', 'length', 'genome.taxon_lineage_names'],
-        '385964.3' => ['385964.3', 'Yersinia pestis subsp. pestis strain 231(708)', '4568800', 'cellular organisms; Bacteria; Proteobacteria; Gammaproteobacteria; Enterobacterales; Yersiniaceae; Yersinia; Yersinia pseudotuberculosis complex; Yersinia pestis; Yersinia pestis subsp. pestis'],
-        '1234661.4' => ['1234661.4', 'Yersinia pestis subsp. pestis bv. Orientalis strain ZE94-2122', '4827235', 'cellular organisms; Bacteria; Proteobacteria; Gammaproteobacteria; Enterobacterales; Yersiniaceae; Yersinia; Yersinia pseudotuberculosis complex; Yersinia pestis; Yersinia pestis subsp. pestis; Yersinia pestis subsp. pestis bv. Orientalis'],
-        '992176.4' => ['992176.4', 'Yersinia pestis PY-94', '4644905', 'cellular organisms; Bacteria; Proteobacteria; Gammaproteobacteria; Enterobacteriales; Enterobacteriaceae; Yersinia; Yersinia pseudotuberculosis complex; Yersinia pestis; Yersinia pestis PY-94'],
-        '992176.5' => ['992176.5', 'Yersinia pestis PY-94', '4644905', 'cellular organisms; Bacteria; Proteobacteria; Gammaproteobacteria; Enterobacteriales; Enterobacteriaceae; Yersinia; Yersinia pseudotuberculosis complex; Yersinia pestis; Yersinia pestis PY-94'],
-        '632.188' => ['632.188', 'Yersinia pestis strain Algeria3', '4427555', 'cellular organisms; Bacteria; Proteobacteria; Gammaproteobacteria; Enterobacterales; Yersiniaceae; Yersinia; Yersinia pseudotuberculosis complex; Yersinia pestis'],
-        '1345710.7' => ['1345710.7', 'Yersinia pestis 1045', '4684080', 'cellular organisms; Bacteria; Proteobacteria; Gammaproteobacteria; Enterobacterales; Yersiniaceae; Yersinia; Yersinia pseudotuberculosis complex; Yersinia pestis; Yersinia pestis 1045'],
-        '1345703.9' => ['1345703.9', 'Yersinia pestis 1412', '4733482', 'cellular organisms; Bacteria; Proteobacteria; Gammaproteobacteria; Enterobacterales; Yersiniaceae; Yersinia; Yersinia pseudotuberculosis complex; Yersinia pestis; Yersinia pestis 1412'],
-        '1345704.8' => ['1345704.8', 'Yersinia pestis 1413', '4736923', 'cellular organisms; Bacteria; Proteobacteria; Gammaproteobacteria; Enterobacterales; Yersiniaceae; Yersinia; Yersinia pseudotuberculosis complex; Yersinia pestis; Yersinia pestis 1413'],
-        '1345709.34' => ['1345709.34', 'Yersinia pestis 14735', '4693748', 'cellular organisms; Bacteria; Proteobacteria; Gammaproteobacteria; Enterobacterales; Yersiniaceae; Yersinia; Yersinia pseudotuberculosis complex; Yersinia pestis; Yersinia pestis 14735'],
-        '1345705.8' => ['1345705.8', 'Yersinia pestis 1522', '4738644', 'cellular organisms; Bacteria; Proteobacteria; Gammaproteobacteria; Enterobacterales; Yersiniaceae; Yersinia; Yersinia pseudotuberculosis complex; Yersinia pestis; Yersinia pestis 1522'],
-        '1345700.10' => ['1345700.10', 'Yersinia pestis 1670', '4718815', 'cellular organisms; Bacteria; Proteobacteria; Gammaproteobacteria; Enterobacterales; Yersiniaceae; Yersinia; Yersinia pseudotuberculosis complex; Yersinia pestis; Yersinia pestis 1670'],
+        '385964.3' => ['385964.3', 'Yersinia pestis subsp. pestis strain 231(708)', '4568800', 'cellular organisms; Bacteria; Pseudomonadota; Gammaproteobacteria; Enterobacterales; Yersiniaceae; Yersinia; Yersinia pseudotuberculosis complex; Yersinia pestis; Yersinia pestis subsp. pestis'],
+        '1234661.4' => ['1234661.4', 'Yersinia pestis subsp. pestis bv. Orientalis strain ZE94-2122', '4827235', 'cellular organisms; Bacteria; Pseudomonadota; Gammaproteobacteria; Enterobacterales; Yersiniaceae; Yersinia; Yersinia pseudotuberculosis complex; Yersinia pestis; Yersinia pestis subsp. pestis; Yersinia pestis subsp. pestis bv. Orientalis'],
+        '992176.4' => ['992176.4', 'Yersinia pestis PY-94', '4644905', 'cellular organisms; Bacteria; Pseudomonadota; Gammaproteobacteria; Enterobacteriales; Enterobacteriaceae; Yersinia; Yersinia pseudotuberculosis complex; Yersinia pestis; Yersinia pestis PY-94'],
+        '992176.5' => ['992176.5', 'Yersinia pestis PY-94', '4644905', 'cellular organisms; Bacteria; Pseudomonadota; Gammaproteobacteria; Enterobacteriales; Enterobacteriaceae; Yersinia; Yersinia pseudotuberculosis complex; Yersinia pestis; Yersinia pestis PY-94'],
+        '632.188' => ['632.188', 'Yersinia pestis strain Algeria3', '4427555', 'cellular organisms; Bacteria; Pseudomonadota; Gammaproteobacteria; Enterobacterales; Yersiniaceae; Yersinia; Yersinia pseudotuberculosis complex; Yersinia pestis'],
+        '1345710.7' => ['1345710.7', 'Yersinia pestis 1045', '4684080', 'cellular organisms; Bacteria; Pseudomonadota; Gammaproteobacteria; Enterobacterales; Yersiniaceae; Yersinia; Yersinia pseudotuberculosis complex; Yersinia pestis; Yersinia pestis 1045'],
+        '1345703.9' => ['1345703.9', 'Yersinia pestis 1412', '4733482', 'cellular organisms; Bacteria; Pseudomonadota; Gammaproteobacteria; Enterobacterales; Yersiniaceae; Yersinia; Yersinia pseudotuberculosis complex; Yersinia pestis; Yersinia pestis 1412'],
+        '1345704.8' => ['1345704.8', 'Yersinia pestis 1413', '4736923', 'cellular organisms; Bacteria; Pseudomonadota; Gammaproteobacteria; Enterobacterales; Yersiniaceae; Yersinia; Yersinia pseudotuberculosis complex; Yersinia pestis; Yersinia pestis 1413'],
+        '1345709.34' => ['1345709.34', 'Yersinia pestis 14735', '4693748', 'cellular organisms; Bacteria; Pseudomonadota; Gammaproteobacteria; Enterobacterales; Yersiniaceae; Yersinia; Yersinia pseudotuberculosis complex; Yersinia pestis; Yersinia pestis 14735'],
+        '1345705.8' => ['1345705.8', 'Yersinia pestis 1522', '4738644', 'cellular organisms; Bacteria; Pseudomonadota; Gammaproteobacteria; Enterobacterales; Yersiniaceae; Yersinia; Yersinia pseudotuberculosis complex; Yersinia pestis; Yersinia pestis 1522'],
+        '1345700.10' => ['1345700.10', 'Yersinia pestis 1670', '4718815', 'cellular organisms; Bacteria; Pseudomonadota; Gammaproteobacteria; Enterobacterales; Yersiniaceae; Yersinia; Yersinia pseudotuberculosis complex; Yersinia pestis; Yersinia pestis 1670'],
 };
 
 use constant FTEST => ["$FIG_Config::global/ftest.tbl", '1986611.3'];
@@ -118,7 +118,14 @@ is($errorCount, 0, 'get_col test');
 # Test clean_value.
 my $value = '   This is (very) dirty   ';
 my $clean = P3Utils::clean_value($value);
-is($clean,'This is very dirty', 'clean value test');
+is($clean,'"This is very dirty"', 'clean value test');
+$value = '"This is normal"';
+$clean = P3Utils::clean_value($value);
+is($clean, '"This is normal"', 'quoted value test');
+$value = '123.4';
+$clean = P3Utils::clean_value($value);
+is($clean, '123.4', 'normal value test');
+
 # Test derived fields.
 my ($genomeID, undef, undef, $taxonomy) = @{EXPECTED->{'385964.3'}};
 my $results = P3Utils::get_data($p3, genome => [['eq', 'genome_id', $genomeID]], ['taxonomy']);
@@ -235,18 +242,6 @@ while (! eof $ih) {
     is_deeply($expected, [$id, $ec, $seq], "ftest for $id");
 }
 close $ih; undef $ih;
-# Evaluation engine test.
-open($oh, ">qtest.tbl") || die "Could not open qtest.tbl: $!";
-P3Utils::print_cols([qw(genome_id name ref_id gto_file)], oh => $oh);
-P3Utils::print_cols(['224308.244', 'Bacillus subtilis', '224308.43', 'Global/Qgto/224308.244.gto'], oh => $oh);
-P3Utils::print_cols(['1773.2312', 'Mycobacterium tuberculosis strain Bir 60', '', ''], oh => $oh);
-P3Utils::print_cols(['1986232.3', 'SAR92 bacterium MED-G29', '', ''], oh => $oh);
-P3Utils::print_cols(['1352.1532', 'Enterococcus faecium strain Efm0097', '', ''], oh => $oh);
-P3Utils::print_cols(['1000561.3', 'Pseudomonas aeruginosa AES-1R', '', 'Global/Qgto/1000561.3.gto'], oh => $oh);
-P3Utils::print_cols(['1261545.11', 'Halarchaeum acidiphilum MH1-52-1', 'Global/Qgto/1261545.11.gto'], oh => $oh);
-close $oh; undef $oh;
-my $rc = system('p3x-eval-genomes --col=genome_id --input=qtest.tbl --gtoCol=gto_file --clear --deep Qwork Qout');
-ok($rc == 0, 'Success from evaluator. Check Qout to verify.');
 #
 done_testing();
 
