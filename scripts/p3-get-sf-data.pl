@@ -72,7 +72,6 @@ if (! $opt->nohead) {
 # Loop through the input.
 while (! eof $ih) {
     my $couplets = P3Utils::get_couplets($ih, $keyCol, $opt);
-    ##TODO process the input to produce the output
     # Get the output rows for these input couplets.
     my $resultList = P3Utils::get_data_batch($p3, sf => $filterList, $selectList, $couplets);
     # Print them.

@@ -15,6 +15,10 @@ Additional command-line options are those given in L<P3Utils/data_options> and L
 
 =over 4
 
+=item batch
+
+If the number of contigs per genome is expected to be small, use this option to improve performance.
+
 =item fields
 
 Display the available field names.
@@ -29,7 +33,7 @@ use P3Utils;
 
 # Get the command-line options.
 my $opt = P3Utils::script_opts('', P3Utils::data_options(), P3Utils::col_options(), P3Utils::ih_options(),
-    ['fields|f', 'Show available fields']);
+    ['fields|f', 'Show available fields'], ['batch|b', 'Use batched queries']);
 
 # Get access to BV-BRC.
 my $p3 = P3DataAPI->new();
@@ -55,7 +59,13 @@ if (! $opt->nohead) {
 while (! eof $ih) {
     my $couplets = P3Utils::get_couplets($ih, $keyCol, $opt);
     # Get the output rows for these input couplets.
-    my $resultList = P3Utils::get_data($p3, contig => $filterList, $selectList, genome_id => $couplets);
+    my $resultList;
+    if ($opt->batch) {
+        $resultList = P3Utils::get_data_keyed($p3, contig => $filterList, $selectList, genome_id => $couplets);
+    } else {
+        $resultList = P3Utils::get_data($p3, contig => $filterList, $selectList, genome_id => $couplets);
+    }
+
     # Print them.
     for my $result (@$resultList) {
         P3Utils::print_cols($result);
