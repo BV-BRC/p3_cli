@@ -41,6 +41,10 @@ Drug Target
 
 Transporter
 
+=item virulence
+
+Virulence Factor
+
 =back
 
 =head2 Parameters
@@ -61,8 +65,6 @@ List the available field names.
 
 List the available specialty gene types.
 
-##TODO additional options
-
 =back
 
 =cut
@@ -70,7 +72,8 @@ List the available specialty gene types.
 use strict;
 use P3DataAPI;
 use P3Utils;
-use constant TYPES => { human => "Human Homolog", amr => "Antibiotic Resistance", transporter => "Transporter", target => "Drug Target" };
+use constant TYPES => { human => "Human Homolog", amr => "Antibiotic Resistance", transporter => "Transporter", target => "Drug Target",
+        virulence => "Virulence Factor" };
 
 $| = 1;
 # Get the command-line options.
