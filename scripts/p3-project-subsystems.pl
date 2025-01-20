@@ -22,7 +22,9 @@ use warnings;
 use P3DataAPI;
 use SubsystemProjector;
 use File::Copy::Recursive;
+use File::Basename;
 use ScriptUtils;
+use GenomeTypeObject;
 
 =head1 Project Subsystems onto BV-BRC Genomes
 
@@ -33,7 +35,8 @@ specified output directory.
 
 =head2 Parameters
 
-The positional parameters are the name of the output directory followed by one or more BV-BRC genome IDs.
+The positional parameters are the name of the output directory followed by one or more BV-BRC genome IDs or GTO file
+names.
 
 The command-line options are the following:
 
@@ -48,6 +51,11 @@ Name of a tab-delimited file containing [role checksum, subsystem name] pairs.
 Name of a tab-delimited file containing in each record (0) a subsystem name, (1) a variant code, and
 (2) a space-delimited list of role checksums.
 
+=item subListFile
+
+Name of a text file containing the subsystem role lists and classifications. This defaults to B<subList.tbl> in the
+same directory as the variant file in order to create a compatible signature with the old script.
+
 =back
 
 =cut
@@ -56,7 +64,8 @@ $| = 1;
 # Get the command-line parameters.
 my $opt = ScriptUtils::Opts('outDir genome1 genome2 ... genomeN',
         ['roleFile|r=s', 'name of file containing subsystems for roles', { required => 1 }],
-        ['variantFile|v=s', 'name of file containing variant maps', { required => 1}]
+        ['variantFile|v=s', 'name of file containing variant maps', { required => 1}],
+        ['subListFile|s=s', 'name of file containing subsystem classes and role lists']
         );
 # Get the positional parameters.
 my ($outDir, @genomes) = @ARGV;
@@ -73,15 +82,29 @@ if (! @genomes) {
 # Connect to BV-BRC.
 print "Connecting to BV-BRC.\n";
 my $p3 = P3DataAPI->new();
+# Get the subsystem list file name.
+my $variantFile = $opt->variantfile;
+my $subListFile = $opt->sublistfile;
+if (! $subListFile) {
+    # Get the directory part of the variant file.
+    my $dir = dirname($variantFile);
+    $subListFile = "$dir/subList.tbl";
+}
 # Create the subsystem projector.
 print "Initializing projector.\n";
-my $projector = SubsystemProjector->new($opt->rolefile, $opt->variantfile);
+my $projector = SubsystemProjector->new($opt->rolefile, $variantFile, $subListFile);
 # Get the statistics object.
 my $stats = $projector->stats;
 # Loop through the genomes.
 for my $genome (@genomes) {
     print "Reading $genome.\n";
-    my $gto = $p3->gto_of($genome);
+    my $gto;
+    if (-s $genome) {
+        $gto = GenomeTypeObject->create_from_file($genome);
+    } else {
+        $gto = $p3->gto_of($genome);
+    }
+    my $genomeId = $gto->{id};
     if (! $gto) {
         print "ERROR: genome not found.\n";
         $stats->Add(badGenome => 1);
@@ -90,7 +113,7 @@ for my $genome (@genomes) {
         my $subsystemHash = $projector->ProjectForGto($gto, store => 1);
         my $count = scalar(keys %$subsystemHash);
         print "$count subsystems found.\n";
-        my $outFile = "$outDir/$genome.gto";
+        my $outFile = "$outDir/$genomeId.gto";
         print "Writing output to $outFile.\n";
         $gto->destroy_to_file($outFile);
     }
