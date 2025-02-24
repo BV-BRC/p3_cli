@@ -66,6 +66,11 @@ Reference to a hash mapping each role checksum to a list of subsystem names.
 Reference to a hash mapping each subsystem name to a list of variant tuples. Each variant tuple consists of
 a variant code followed by a list of role checksums.
 
+=item subMap
+
+Reference to a hash mapping each subsystem name to a 2-tuple. Each 2-tuple consists of a list of the classifications
+followed by a list of the roles. Each role is given by the role name.
+
 =item stats
 
 A statistics object containing statistics for this process.
@@ -74,7 +79,7 @@ A statistics object containing statistics for this process.
 
 =head2 Special Methods
 
-    my $projector = SubsystemProjector->new($roleFile, $variantFile);
+    my $projector = SubsystemProjector->new($roleFile, $variantFile, $subListFile);
 
 Create a projector object. The projector object contains a map of roles to subsystems and a map of
 subsystems to variants. Each variant is a list of roles. Each role is stored in the form of the checksum
@@ -91,12 +96,17 @@ Name of a tab-delimited file containing [role checksum, subsystem name] pairs.
 Name of a tab-delimited file containing in each record (0) a subsystem name, (1) a variant code, and
 (2) a space-delimited list of role checksums.
 
+=item subListFile
+
+Name of an optional text file containing the subsystem names, classifications, and roles. This file is
+only necessary if you are calling L</ProjectForGto>.
+
 =back
 
 =cut
 
 sub new {
-    my ($class, $roleFile, $variantFile) = @_;
+    my ($class, $roleFile, $variantFile, $subListFile) = @_;
     # Get the statistics object.
     my $stats = Stats->new();
     # Start by processing the role file.
@@ -121,10 +131,41 @@ sub new {
         my @roleList = split /\s+/, $roles;
         push @{$variantMap{$ssName}}, [$vCode, @roleList];
     }
+    close $ih; undef $ih;
+    # Next process the subsystem map. This comes from the optional subsystem list file.
+    my $subMap;
+    if (defined $subListFile) {
+        open($ih, '<', $subListFile) || die "Could not open subsystem list file $subListFile: $!";
+        $subMap = {};
+        # Loop through the file.
+        while (! eof $ih) {
+            # First line is subsystem name.
+            my $line = <$ih>;
+            chomp $line;
+            my $subName = $line;
+            # Second line is classifications.
+            $line = <$ih>;
+            chomp $line;
+            my @classes = split /\t/, $line, 3;
+            # Remaining lines are roles.
+            my @roles;
+            $line = <$ih>;
+            chomp $line;
+            while ($line ne "//") {
+                my ($role) = split /\t/, $line;
+                push @roles, $role;
+                $line = <$ih>;
+                chomp $line;
+            }
+            # Store the subsystem.
+            $subMap->{$subName} = [\@classes, \@roles];
+        }
+    }
     # Create the projector object.
     my $retVal = {
         variantMap => \%variantMap,
         roleMap => \%roleHash,
+        subMap => $subMap,
         stats => $stats
     };
     # Bless and return it.
@@ -319,8 +360,12 @@ reference to a list of [role, fid] tuples.
 
 sub ProjectForGto {
     my ($self, $gto, %options) = @_;
+    # Verify we have the subsystem list.
+    if (! $self->{subMap}) {
+        die "Must have a subsystem list file to use this feature.";
+    }
     # Get the feature list.
-    my $featureList = P3Utils::json_field($gto, 'features');
+    my $featureList = $gto->{features};
     # Loop through the features, creating the assignment hash.
     my %assigns;
     for my $featureData (@$featureList) {
@@ -331,18 +376,36 @@ sub ProjectForGto {
     my $retVal = $self->Project(\%assigns);
     # Store the results if needed.
     if ($options{store}) {
-        my %subs;
+        my $subMap = $self->{subMap};
+        my @subs;
         for my $sub (keys %$retVal) {
+            # Start the subsystem descriptor with the name and variant code.
             my $projectionData = $retVal->{$sub};
             my ($variant, $subRow) = @$projectionData;
+            my %subDesc = (name => $sub, variant => $variant);
+            # Get the classification and the role list.
+            my ($classList, $roleList) = @{$subMap->{$sub}};
+            # The classification goes into the descriptor.
+            $subDesc{classification} = $classList;
+            # Now unroll the roles to create the bindings. First we create a hash of
+            # role names to features
             my %cells;
             for my $subCell (@$subRow) {
                 my ($role, $fid) = @$subCell;
                 push @{$cells{$role}}, $fid;
             }
-            $subs{$sub} = [$variant, \%cells];
+            # Use this hash to translate the role list to a binding list.
+            my @bindings;
+            for my $role (@$roleList) {
+                my $fids = $cells{$role} // [];
+                push @bindings, { features => $fids, role_id => $role };
+            }
+            # Add the bindings to the descriptor.
+            $subDesc{role_bindings} = \@bindings;
+            # Add the descriptor to the subsystem list.
+            push @subs, \%subDesc;
         }
-        $gto->{subsystems} = \%subs;
+        $gto->{subsystems} = \@subs;
     }
     return $retVal;
 }

@@ -56,10 +56,10 @@ my ($selectList, $newHeaders) = P3Utils::select_clause($p3, genome_drug => $opt)
 my $filterList = P3Utils::form_filter($opt);
 # Add the special filters.
 if ($opt->resistant) {
-    push @$filterList, ['eq', 'resistant_phenotype', 'resistant'];
+    push @$filterList, ['eq', 'resistant_phenotype', 'Resistant'];
 }
 if ($opt->susceptible) {
-    push @$filterList, ['eq', 'resistant_phenotype', 'susceptible'];
+    push @$filterList, ['eq', 'resistant_phenotype', 'Susceptible'];
 }
 # Open the input file.
 my $ih = P3Utils::ih($opt);
