@@ -61,11 +61,11 @@ use Bio::KBase::AppService::UploadSpec;
 
 # Map of virus type codes to virus names.
 use constant VIRUS_TYPE => {
-		BOVDIARRHEA1 => 'Flaviridae - Bovine viral diarrhea virus',
-		DENGUE => 'Flaviridae - Dengue virus',
-		HCV => 'Flaviridae - Hepatitis C virus',
+		BOVDIARRHEA1 => 'Flaviviridae - Bovine viral diarrhea virus',
+		DENGUE => 'Flaviviridae - Dengue virus',
+		HCV => 'Flaviviridae - Hepatitis C virus',
 		INFLUENZAH5 => 'Orthomyxoviridae - Influenza A H5',
-		JAPANENCEPH => 'Flaviridae - Japanese encephalitis virus',
+		JAPANENCEPH => 'Flaviviridae - Japanese encephalitis virus',
 		MASTADENOA => 'Adenoviridae - Human mastadenovirus A',
 		MASTADENOB => 'Adenoviridae - Human mastadenovirus B',
 		MASTADENOC => 'Adenoviridae - Human mastadenovirus C',
@@ -74,18 +74,18 @@ use constant VIRUS_TYPE => {
 		MEASLES => 'Paramyxoviridae - Measles morbilivirus',
 		MPOX => 'Poxviridae - Monkeypox virus',
 		MUMPS => 'Paramyxoviridae - Mumps orthorubulavirus',
-		MURRAY => 'Flaviridae - Murray Valley encephalitis virus',
-		NOROORF1 => 'Caliciridae - Norovirus [VP1]',
-		NOROORF2 => 'Caliciridae - Norovirus [VP2]',
+		MURRAY => 'Flaviviridae - Murray Valley encephalitis virus',
+		NOROORF1 => 'Caliciviridae - Norovirus [VP1]',
+		NOROORF2 => 'Caliciviridae - Norovirus [VP2]',
 		ROTAA => 'Reoviridae - Rotavirus A',
-		STLOUIS => 'Flaviridae - St. Louis encephalitis virus',
+		STLOUIS => 'Flaviviridae - St. Louis encephalitis virus',
 		SWINEH1 => 'Orthomyxoviridae - Swine influenza H1 (global)',
 		SWINEH1US => 'Orthomyxoviridae - Swine influenza H1 (US)',
 		SWINEH3 => 'Orthomyxoviridae - Swine influenza H3 (global)',
-		TKBENCEPH => 'Flaviridae - Tick-borne encephalitis virus',
-		WESTNILE => 'Flaviridae - West Nile virus',
-		YELLOWFEVER => 'Flaviridae - Yellow fever',
-		ZIKA => 'Flaviridae - Zika virus',
+		TKBENCEPH => 'Flaviviridae - Tick-borne encephalitis virus',
+		WESTNILE => 'Flaviviridae - West Nile virus',
+		YELLOWFEVER => 'Flaviviridae - Yellow fever',
+		ZIKA => 'Flaviviridae - Zika virus',
 		};
 
 # Insure we're logged in.
