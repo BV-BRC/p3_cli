@@ -106,15 +106,15 @@ my $fastaFileIn;
 my $showFlag;
 # Now we parse the options.
 GetOptions($commoner->options(),
-        'virus-type' => \$virusType,
+        'virus-type=s' => \$virusType,
         'fasta-file=s' => \$fastaFileIn,
         'show-names' => \$showFlag,
         );
 if ($showFlag) {
 	# This is a short-circuit option. We display some help text and exit.
-	print STDERR "virus_type\tname\n";
+	print STDERR sprintf("%-20s %s\n", "virus_type", "name");
 	for my $type (sort keys %{VIRUS_TYPE()}) {
-		print STDERR "$type\t" . VIRUS_TYPE->{$type} . "\n";
+		print STDERR sprintf("%-20s %s\n", $type, VIRUS_TYPE->{$type});
 	}
 	exit(0);
 }
@@ -142,7 +142,7 @@ if (! $fastaFileIn) {
 	die "You must specify an input FASTA file.";
 } else {
     my $file = $uploader->fix_file_name($fastaFileIn, 'contigs');
-    $params->{fasta_file_in} = $file;
+    $params->{input_fasta_file} = $file;
 }
 # Submit the job.
 $commoner->submit($app_service, $uploader, $params, SubspeciesClassification => 'subspecies classification');
