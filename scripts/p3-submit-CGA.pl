@@ -269,6 +269,7 @@ my $params = {
     domain => $domain,
     output_path => $outputPath,
     output_file => $outputFile,
+    skip_indexing => 0
 };
 # Add the optional parameters.
 if ($contigs) {
@@ -277,6 +278,9 @@ if ($contigs) {
     $reader->store_libs($params);
 }
 if ($scientificName) {
+	if ($label) {
+		$scientificName .= " $label";
+	}
     $params->{scientific_name} = $scientificName;
 }
 # Submit the job.
