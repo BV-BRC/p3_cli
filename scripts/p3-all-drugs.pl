@@ -46,7 +46,7 @@ if ($opt->fields) {
     # Compute the output columns. Note we configure this as an ID-centric method.
     my ($selectList, $newHeaders) = P3Utils::select_clause($p3, drug => $opt, 1);
     # Compute the filter.
-    my $filterList = P3Utils::form_filter($opt);
+    my $filterList = P3Utils::form_filter($p3, $opt);
     # Add a safety check to eliminate null drugs.
     push @$filterList, ['ne', 'pubchem_cid', 0];
     # Write the headers.

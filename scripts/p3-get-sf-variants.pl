@@ -43,7 +43,7 @@ if ($fields) {
 # Compute the output columns.
 my ($selectList, $newHeaders) = P3Utils::select_clause($p3, sfvt => $opt);
 # Compute the filter.
-my $filterList = P3Utils::form_filter($opt);
+my $filterList = P3Utils::form_filter($p3, $opt);
 # Add the special filters.
 # Open the input file.
 my $ih = P3Utils::ih($opt);

@@ -38,7 +38,7 @@ if ($opt->fields) {
     # Compute the output columns.
     my ($selectList, $newHeaders) = P3Utils::select_clause($p3, serology => $opt);
     # Compute the filter.
-    my $filterList = P3Utils::form_filter($opt);
+    my $filterList = P3Utils::form_filter($p3, $opt);
     if (! @$filterList) {
         die "At least one filtering parameter is requred.";
     }

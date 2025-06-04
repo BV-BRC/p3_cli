@@ -51,7 +51,7 @@ if ($fields) {
 # Compute the output columns.
 my ($selectList, $newHeaders) = P3Utils::select_clause($p3, genome_drug => $opt);
 # Compute the filter.
-my $filterList = P3Utils::form_filter($opt);
+my $filterList = P3Utils::form_filter($p3, $opt);
 # Add the special filters.
 if ($opt->resistant) {
     push @$filterList, ['eq', 'resistant_phenotype', 'resistant'];
