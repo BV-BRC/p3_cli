@@ -6,6 +6,10 @@ This script finds features based on the value in one of several feature-identify
 It provides standard filtering parameters to otherwise limit the output. (So, for example, you can require that the
 features output belong only to a specific genome using C<--eq genome_id>.)
 
+This script supports views. If a view is specified, the key name must be the untranslated (pre-view) version of the
+key's name. Thus, if the view presents the product as C<annotation>, you would use C<annotation> for the key name
+instead of C<product>.
+
 =head2 Parameters
 
 The positional parameter is the name of the field used to match the incoming keys. The following fields are permitted.
@@ -81,19 +85,24 @@ if ($opt->keynames) {
     # Here the user just wants a key name list.
     print map { "$_\n" } keys %{KEYS()};
 } else {
-    # Validate the field name.
-    my ($keyName) = @ARGV;
-    if (! $keyName) {
-        die "No key field name specified.";
-    } elsif (! KEYS->{$keyName}) {
-        die "Key field $keyName not supported.";
-    }
     # Get access to BV-BRC.
     my $p3 = P3DataAPI->new();
     # Compute the output columns.
     my ($selectList, $newHeaders) = P3Utils::select_clause($p3, feature => $opt);
     # Compute the filter.
     my $filterList = P3Utils::form_filter($p3, $opt);
+    # Validate the field name. It must be translated from the view (if any).
+    my ($keyName) = @ARGV;
+    my ($realKeyName, $batchType);
+    if (! $keyName) {
+        die "No key field name specified.";
+    } else {
+        $realKeyName = $p3->{view}->col_to_internal($keyName);
+        $batchType = KEYS->{$realKeyName};
+        if (! $batchType) {
+            die "Key field $keyName not supported.";
+        }
+    }
     # Open the input file.
     my $ih = P3Utils::ih($opt);
     # Read the incoming headers.
@@ -108,10 +117,10 @@ if ($opt->keynames) {
         my $couplets = P3Utils::get_couplets($ih, $keyCol, $opt);
         my $resultsL;
         # Process according to whether the key is common (2) or uncommon (1).
-        if (KEYS->{$keyName} == 2) {
-            $resultsL = P3Utils::get_data($p3, feature => $filterList, $selectList, $keyName, $couplets);
+        if ($batchType == 2) {
+            $resultsL = P3Utils::get_data($p3, feature => $filterList, $selectList, $realKeyName, $couplets);
         } else {
-            $resultsL = P3Utils::get_data_batch($p3, feature => $filterList, $selectList, $couplets, $keyName);
+            $resultsL = P3Utils::get_data_batch($p3, feature => $filterList, $selectList, $couplets, $realKeyName);
         }
         for my $result (@$resultsL) {
             P3Utils::print_cols($result);
