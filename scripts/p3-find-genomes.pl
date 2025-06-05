@@ -49,7 +49,10 @@ use P3DataAPI;
 use P3Utils;
 
 # Common keys are type 2, uncommon type 1. This influences batching.
-use constant KEYS => { genome_name => 1, genbank_accessions => 1, assembly_accession => 1, sra_accession => 1 };
+use constant KEYS => { genome_name => 1, genbank_accessions => 1, assembly_accession => 1, sra_accession => 1,
+                        genus => 2, species => 2, taxon_id => 2, family => 2, order => 2, class => 2,
+                        phylum => 2
+};
 
 # Get the command-line options.
 my $opt = P3Utils::script_opts('keyName', P3Utils::data_options(), P3Utils::col_options(), P3Utils::ih_options(),
