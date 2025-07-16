@@ -33,7 +33,7 @@ use P3Utils;
 
 # Get the command-line options.
 my $opt = P3Utils::script_opts('', P3Utils::data_options(), P3Utils::col_options(), P3Utils::ih_options(),
-    ['fields|f', 'Show available fields'], ['batch|b', 'Use batched queries']);
+    ['fields|f', 'Show available fields'], ['batch', 'Use batched queries']);
 
 # Get access to BV-BRC.
 my $p3 = P3DataAPI->new();
@@ -61,7 +61,7 @@ while (! eof $ih) {
     # Get the output rows for these input couplets.
     my $resultList;
     if ($opt->batch) {
-        $resultList = P3Utils::get_data_keyed($p3, contig => $filterList, $selectList, genome_id => $couplets);
+        $resultList = P3Utils::get_data_batch($p3, contig => $filterList, $selectList, $couplets, 'genome_id');
     } else {
         $resultList = P3Utils::get_data($p3, contig => $filterList, $selectList, genome_id => $couplets);
     }
