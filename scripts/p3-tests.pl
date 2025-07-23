@@ -257,8 +257,106 @@ for my $result (@results) {
                          ['eq', 'annotation', 'PATRIC'],
                          ['select', 'patric_id,product']);
 is(scalar @results, 35, 'no limit test for 11053.35 features');
+my %aBuffer;
 for my $result (@results) {
-    ok($result->{patric_id} =~ /^fig\|11053\.35\.[^.]+\.\d+$/, "feature ID format test result for \"$result->{patric_id}\"");
+    my $fid = $result->{patric_id};
+    ok($fid =~ /^fig\|11053\.35\.[^.]+\.\d+$/, "feature ID format test result for \"$fid\"");
+    # Save for the re-checks.
+    $aBuffer{$fid} = $result->{product};
+}
+# Try all the features of 511145.12. There are 5657.
+@results = $p3->query(genome_feature => ['eq', 'genome_id', '511145.12'],
+                         ['eq', 'annotation', 'PATRIC'],
+                         ['eq', 'feature_type', 'CDS'],
+                         ['select', 'patric_id,product']);
+my %cBuffer;
+for my $result (@results) {
+    my $fid = $result->{patric_id};
+    ok($fid =~ /^fig\|511145.12\.peg\.\d+$/, "feature ID format test result for \"$fid\"");
+    ok(defined $result->{product}, "product test result for \"$fid\"");
+    # Save for the re-checks.
+    $cBuffer{$fid} = $result->{product};
+}
+# Now do it again with chunking active.
+$p3->{chunk_size} = 1000;
+@results = $p3->query(genome_feature => ['eq', 'genome_id', '511145.12'],
+                         ['eq', 'annotation', 'PATRIC'],
+                         ['eq', 'feature_type', 'CDS'],
+                         ['select', 'patric_id,product']);
+ok(scalar(@results) == scalar(keys %cBuffer), "result size from chunked query");
+for my $result (@results) {
+    my $fid = $result->{patric_id};
+    my $oldResult = $cBuffer{$fid};
+    ok(defined $oldResult, "chunked feature test for \"$fid\"");
+    if (defined($oldResult)) {
+        ok($result->{product} eq $oldResult, "chunked product test for \"$fid\"");
+    }
+}
+# Here we do a raw query. The raw query doesn't parse filters.
+@results = $p3->raw_query(genome_feature => 'eq(genome_id,11053.35)',
+                         'eq(annotation,PATRIC)',
+                         'select(patric_id,product)');
+is(scalar @results, 35, 'raw test for 11053.35 features');
+for my $result (@results) {
+    my $fid = $result->{patric_id};
+    my $oldResult = $aBuffer{$fid};
+    ok(exists $aBuffer{$fid}, "raw feature test for \"$fid\"");
+    if (defined $oldResult) {
+        ok($result->{product} eq $oldResult, "raw product test for \"$fid\"");
+    } else {
+        ok(! defined $result->{product}, "raw product test for \"$fid\"");
+    }
+}
+# Now we do a raw query with chunking.
+@results = $p3->raw_query(genome_feature => 'eq(genome_id,511145.12)',
+                         'eq(annotation,PATRIC)',
+                         'eq(feature_type,CDS)',
+                         'select(patric_id,product)');
+ok(scalar(@results) == scalar(keys %cBuffer), "result size from chunked raw query");
+for my $result (@results) {
+    my $fid = $result->{patric_id};
+    my $oldResult = $cBuffer{$fid};
+    ok(defined $oldResult, "raw chunked feature test for \"$fid\"");
+    if (defined($oldResult)) {
+        ok($result->{product} eq $oldResult, "raw chunked product test for \"$fid\"");
+    }
+}
+# Here we do a calback query. The callback query allows us to examine results in-flight.
+my $cbChunks = 0;
+my $cbRecords = 0;
+@results = ();
+$p3->query_cb('genome_feature', \&fidCall, ['eq', 'genome_id', '11053.35'],
+              ['eq', 'annotation', 'PATRIC'],
+              ['select', 'patric_id,product']);
+is(scalar @results, 35, 'callback test for 11053.35 features');
+is ($cbChunks, 1, "callback test chunk count");
+is ($cbRecords, 35, "callback test record count");
+for my $result (@results) {
+    my $fid = $result->{patric_id};
+    my $oldResult = $aBuffer{$fid};
+    ok(exists $aBuffer{$fid}, "raw feature test for \"$fid\"");
+    if (defined $oldResult) {
+        ok($result->{product} eq $oldResult, "raw product test for \"$fid\"");
+    } else {
+        ok(! defined $result->{product}, "raw product test for \"$fid\"");
+    }
+}
+# Now we do a callback query with chunking.
+$cbChunks = 0;
+$cbRecords = 0;
+@results = ();
+$p3->query_cb('genome_feature', \&fidCall, ['eq', 'genome_id', '511145.12'],
+              ['eq', 'annotation', 'PATRIC'],
+              ['eq', 'feature_type', 'CDS'],
+              ['select', 'patric_id,product']);
+is(scalar(@results), scalar(keys %cBuffer), "result size from chunked raw query");
+ok($cbChunks > 1, "chunk callback test chunk count");
+is($cbRecords, scalar(@results), "chunk callback test record count");
+for my $result (@results) {
+    my $fid = $result->{patric_id};
+    my $oldResult = $cBuffer{$fid};
+    ok(defined $oldResult, "raw chunked feature test for \"$fid\"");
+    ok($result->{product} eq $oldResult, "raw chunked product test for \"$fid\"");
 }
 done_testing();
 
@@ -271,4 +369,11 @@ sub CreateInFile {
     for my $row (@$rows) {
         P3Utils::print_cols($row, oh => $oh);
     }
+}
+
+sub fidCall {
+    my ($records, $stats) = @_;
+    $cbChunks++;
+    $cbRecords += scalar @$records;
+    push @results, @$records;
 }

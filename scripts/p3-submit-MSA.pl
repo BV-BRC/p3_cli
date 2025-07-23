@@ -26,6 +26,10 @@ Name of workspace directory to which local files should be uplaoded.
 
 If a file to be uploaded already exists and this parameter is specified, it will be overwritten; otherwise, the script will error out.
 
+=item --aligner
+
+The aligner to use for the MSA.  Valid values are C<Muscle> and C<Mafft>.  The default is C<Muscle>.
+
 =item --alphabet
 
 The type of sequences to align-- C<dna> or C<protein>.  The default is C<dna>.
@@ -64,7 +68,7 @@ use Bio::KBase::AppService::UploadSpec;
 
 use constant ALPHABET_TYPE => { 'dna' => 'feature_dna_fasta', 'protein' => 'feature_protein_fasta' };
 
-use constant ALIGNER => { 'Muscle' => 1, 'Mafft' => 1, 'progressiveMauve' => 1 };
+use constant ALIGNER => { 'Muscle' => 1, 'Mafft' => 1 };
 
 # Insure we're logged in.
 my $p3token = P3AuthToken->new();
@@ -85,6 +89,7 @@ my $fastaFilesIn;
 my $featureGroupsIn;
 # Now we parse the options.
 GetOptions($commoner->options(),
+        'aligner=s' => \$aligner,
         'alphabet=s' => \$alphabet,
         'fasta-file=s@' => \$fastaFilesIn,
         'feature-groups=s@' => \$featureGroupsIn,
@@ -99,12 +104,15 @@ my $fileType = ALPHABET_TYPE->{$alphabet};
 if (! $fileType) {
     die "Invalid alphabet-- must be 'dna' or 'protein'.";
 }
+if (! ALIGNER->{$aligner}) {
+    die "Invalid aligner-- must be one of " . join(', ', keys %{ALIGNER()}) . ".";
+}
 # Handle the output path and name.
 my ($outputPath, $outputFile) = $uploader->output_spec(@ARGV);
 # Build the parameter structure.
 my $params = {
     alphabet => $alphabet,
-    aligner => 'muscle',
+    aligner => $aligner,
     output_path => $outputPath,
     output_file => $outputFile,
 };
