@@ -44,7 +44,7 @@ use P3Utils;
 
 # Get the command-line options.
 my $opt = P3Utils::script_opts('', P3Utils::data_options(), P3Utils::col_options(), P3Utils::ih_options(),
-    ['fields|f', 'Show available fields']);
+    ['fields|f', 'Show available fields'], ['keyField=s', 'Use the given field as a lookup key']);
 
 # Get access to BV-BRC.
 my $p3 = P3DataAPI->new();
@@ -70,7 +70,7 @@ if (! $opt->nohead) {
 while (! eof $ih) {
     my $couplets = P3Utils::get_couplets($ih, $keyCol, $opt);
     # Get the output rows for these input couplets.
-    my $resultList = P3Utils::get_data_batch($p3, genome => $filterList, $selectList, $couplets);
+    my $resultList = P3Utils::get_data_batch($p3, genome => $filterList, $selectList, $couplets, $opt->keyField);
     # Print them.
     for my $result (@$resultList) {
         P3Utils::print_cols($result, opt => $opt);
