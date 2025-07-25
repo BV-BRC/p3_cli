@@ -16,15 +16,16 @@
 # http://www.theseed.org/LICENSE.TXT.
 #
 
-=head1 ##TODO description
+=head1 Get Taxonomy Data from BV-BRC
 
     p3-get-taxonomy-data.pl [options]
 
-##TODO detailed description
+This script retrieves taxonomy data from the BV-BRC database. It supports standard filtering parameters and 
+allows the specification of additional columns if desired.
 
 =head2 Parameters
 
-The positional parameters are ##TODO positionals
+There are no positional parameters.
 
 The standard input can be overridden using the options in L<P3Utils/ih_options>.
 
@@ -35,8 +36,6 @@ Additional command-line options are those given in L<P3Utils/data_options> and L
 =item fields
 
 List the available field names.
-
-##TODO additional options
 
 =back
 
@@ -62,7 +61,7 @@ if ($fields) {
 # Compute the output columns.
 my ($selectList, $newHeaders) = P3Utils::select_clause($p3, taxonomy => $opt);
 # Compute the filter.
-my $filterList = P3Utils::form_filter($opt);
+my $filterList = P3Utils::form_filter($p3, $opt);
 # Open the input file.
 my $ih = P3Utils::ih($opt);
 # Read the incoming headers.

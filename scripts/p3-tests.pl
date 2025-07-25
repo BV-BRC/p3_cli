@@ -35,17 +35,17 @@ The positional parameter should be the name of a working directory to use for te
 
  use constant EXPECTED => {
         header => ['id', 'name', 'length', 'genome.taxon_lineage_names'],
-        '385964.3' => ['385964.3', 'Yersinia pestis subsp. pestis strain 231(708)', '4568800', 'cellular organisms; Bacteria; Pseudomonadota; Gammaproteobacteria; Enterobacterales; Yersiniaceae; Yersinia; Yersinia pseudotuberculosis complex; Yersinia pestis; Yersinia pestis subsp. pestis'],
-        '1234661.4' => ['1234661.4', 'Yersinia pestis subsp. pestis bv. Orientalis strain ZE94-2122', '4827235', 'cellular organisms; Bacteria; Pseudomonadota; Gammaproteobacteria; Enterobacterales; Yersiniaceae; Yersinia; Yersinia pseudotuberculosis complex; Yersinia pestis; Yersinia pestis subsp. pestis; Yersinia pestis subsp. pestis bv. Orientalis'],
+        '385964.3' => ['385964.3', 'Yersinia pestis subsp. pestis strain 231(708)', '4568800', 'cellular organisms; Bacteria; Pseudomonadati; Pseudomonadota; Gammaproteobacteria; Enterobacterales; Yersiniaceae; Yersinia; Yersinia pseudotuberculosis complex; Yersinia pestis; Yersinia pestis subsp. pestis'],
+        '1234661.4' => ['1234661.4', 'Yersinia pestis subsp. pestis bv. Orientalis strain ZE94-2122', '4827235', 'cellular organisms; Bacteria; Pseudomonadati; Pseudomonadota; Gammaproteobacteria; Enterobacterales; Yersiniaceae; Yersinia; Yersinia pseudotuberculosis complex; Yersinia pestis; Yersinia pestis subsp. pestis; Yersinia pestis subsp. pestis bv. Orientalis'],
         '992176.4' => ['992176.4', 'Yersinia pestis PY-94', '4644905', 'cellular organisms; Bacteria; Pseudomonadota; Gammaproteobacteria; Enterobacteriales; Enterobacteriaceae; Yersinia; Yersinia pseudotuberculosis complex; Yersinia pestis; Yersinia pestis PY-94'],
         '992176.5' => ['992176.5', 'Yersinia pestis PY-94', '4644905', 'cellular organisms; Bacteria; Pseudomonadota; Gammaproteobacteria; Enterobacteriales; Enterobacteriaceae; Yersinia; Yersinia pseudotuberculosis complex; Yersinia pestis; Yersinia pestis PY-94'],
-        '632.188' => ['632.188', 'Yersinia pestis strain Algeria3', '4427555', 'cellular organisms; Bacteria; Pseudomonadota; Gammaproteobacteria; Enterobacterales; Yersiniaceae; Yersinia; Yersinia pseudotuberculosis complex; Yersinia pestis'],
-        '1345710.7' => ['1345710.7', 'Yersinia pestis 1045', '4684080', 'cellular organisms; Bacteria; Pseudomonadota; Gammaproteobacteria; Enterobacterales; Yersiniaceae; Yersinia; Yersinia pseudotuberculosis complex; Yersinia pestis; Yersinia pestis 1045'],
-        '1345703.9' => ['1345703.9', 'Yersinia pestis 1412', '4733482', 'cellular organisms; Bacteria; Pseudomonadota; Gammaproteobacteria; Enterobacterales; Yersiniaceae; Yersinia; Yersinia pseudotuberculosis complex; Yersinia pestis; Yersinia pestis 1412'],
-        '1345704.8' => ['1345704.8', 'Yersinia pestis 1413', '4736923', 'cellular organisms; Bacteria; Pseudomonadota; Gammaproteobacteria; Enterobacterales; Yersiniaceae; Yersinia; Yersinia pseudotuberculosis complex; Yersinia pestis; Yersinia pestis 1413'],
-        '1345709.34' => ['1345709.34', 'Yersinia pestis 14735', '4693748', 'cellular organisms; Bacteria; Pseudomonadota; Gammaproteobacteria; Enterobacterales; Yersiniaceae; Yersinia; Yersinia pseudotuberculosis complex; Yersinia pestis; Yersinia pestis 14735'],
-        '1345705.8' => ['1345705.8', 'Yersinia pestis 1522', '4738644', 'cellular organisms; Bacteria; Pseudomonadota; Gammaproteobacteria; Enterobacterales; Yersiniaceae; Yersinia; Yersinia pseudotuberculosis complex; Yersinia pestis; Yersinia pestis 1522'],
-        '1345700.10' => ['1345700.10', 'Yersinia pestis 1670', '4718815', 'cellular organisms; Bacteria; Pseudomonadota; Gammaproteobacteria; Enterobacterales; Yersiniaceae; Yersinia; Yersinia pseudotuberculosis complex; Yersinia pestis; Yersinia pestis 1670'],
+        '632.188' => ['632.188', 'Yersinia pestis strain Algeria3', '4427555', 'cellular organisms; Bacteria; Pseudomonadati; Pseudomonadota; Gammaproteobacteria; Enterobacterales; Yersiniaceae; Yersinia; Yersinia pseudotuberculosis complex; Yersinia pestis'],
+        '1345710.7' => ['1345710.7', 'Yersinia pestis 1045', '4684080', 'cellular organisms; Bacteria; Pseudomonadati; Pseudomonadota; Gammaproteobacteria; Enterobacterales; Yersiniaceae; Yersinia; Yersinia pseudotuberculosis complex; Yersinia pestis; Yersinia pestis 1045'],
+        '1345703.9' => ['1345703.9', 'Yersinia pestis 1412', '4733482', 'cellular organisms; Bacteria; Pseudomonadati; Pseudomonadota; Gammaproteobacteria; Enterobacterales; Yersiniaceae; Yersinia; Yersinia pseudotuberculosis complex; Yersinia pestis; Yersinia pestis 1412'],
+        '1345704.8' => ['1345704.8', 'Yersinia pestis 1413', '4736923', 'cellular organisms; Bacteria; Pseudomonadati; Pseudomonadota; Gammaproteobacteria; Enterobacterales; Yersiniaceae; Yersinia; Yersinia pseudotuberculosis complex; Yersinia pestis; Yersinia pestis 1413'],
+        '1345709.34' => ['1345709.34', 'Yersinia pestis 14735', '4693748', 'cellular organisms; Bacteria; Pseudomonadati; Pseudomonadota; Gammaproteobacteria; Enterobacterales; Yersiniaceae; Yersinia; Yersinia pseudotuberculosis complex; Yersinia pestis; Yersinia pestis 14735'],
+        '1345705.8' => ['1345705.8', 'Yersinia pestis 1522', '4738644', 'cellular organisms; Bacteria; Pseudomonadati; Pseudomonadota; Gammaproteobacteria; Enterobacterales; Yersiniaceae; Yersinia; Yersinia pseudotuberculosis complex; Yersinia pestis; Yersinia pestis 1522'],
+        '1345700.10' => ['1345700.10', 'Yersinia pestis 1670', '4718815', 'cellular organisms; Bacteria; Pseudomonadati; Pseudomonadota; Gammaproteobacteria; Enterobacterales; Yersiniaceae; Yersinia; Yersinia pseudotuberculosis complex; Yersinia pestis; Yersinia pestis 1670'],
 };
 
 use constant FTEST => ["$FIG_Config::global/ftest.tbl", '1986611.3'];
@@ -151,7 +151,7 @@ is(scalar @$newHeaders, 3, 'select clause length test');
 is($newHeaders->[0], 'genome.genome_id', 'select clause field 1 test');
 is($newHeaders->[1], 'genome.genome_name', 'select clause field 2 test');
 is($newHeaders->[2], 'genome.genome_length', 'select clause field 3 test');
-my $filterList = P3Utils::form_filter($opt);
+my $filterList = P3Utils::form_filter($p3, $opt);
 $results = P3Utils::get_data($p3, genome => $filterList, $selectList);
 my %map = map { $_->[0] => $_ } @$results;
 for my $row (@rowCopy) {
@@ -176,7 +176,7 @@ open(my $oh, '>', $outFile) || die "Could not open test output file.\n";
 @ARGV = ('--col', 'id', '--input', $inFile, '--delim', 'semi', '--attr', 'taxon_lineage_names');
 $opt = P3Utils::script_opts('', P3Utils::col_options(), P3Utils::ih_options(), P3Utils::data_options());
 ($selectList, $newHeaders) = P3Utils::select_clause($p3, genome => $opt);
-$filterList = P3Utils::form_filter($opt);
+$filterList = P3Utils::form_filter($p3, $opt);
 $ih = P3Utils::ih($opt);
 ($headers, $keyCol) = P3Utils::process_headers($ih, $opt);
 push @$headers, @$newHeaders;
@@ -242,7 +242,122 @@ while (! eof $ih) {
     is_deeply($expected, [$id, $ec, $seq], "ftest for $id");
 }
 close $ih; undef $ih;
-#
+# Test raw limits here. Ask for the first 100 features of genome 100226.15.
+my @results = $p3->query(genome_feature => ['eq', 'genome_id', '100226.15'],
+                         ['limit', 100],
+                         ['eq', 'feature_type', 'CDS'],
+                         ['eq', 'annotation', 'PATRIC'],
+                         ['select', 'patric_id,product,na_sequence_md5']);
+is(scalar @results, 100, 'raw limit test for 100226.15 features');
+for my $result (@results) {
+    ok($result->{patric_id} =~ /^fig\|100226\.15\.peg\.\d+$/, "feature ID format test result for \"$result->{patric_id}\"");
+}
+# Test no limits here. Ask for all features of genome 11053.35 (there are 35).
+@results = $p3->query(genome_feature => ['eq', 'genome_id', '11053.35'],
+                         ['eq', 'annotation', 'PATRIC'],
+                         ['select', 'patric_id,product']);
+is(scalar @results, 35, 'no limit test for 11053.35 features');
+my %aBuffer;
+for my $result (@results) {
+    my $fid = $result->{patric_id};
+    ok($fid =~ /^fig\|11053\.35\.[^.]+\.\d+$/, "feature ID format test result for \"$fid\"");
+    # Save for the re-checks.
+    $aBuffer{$fid} = $result->{product};
+}
+# Try all the features of 511145.12. There are 5657.
+@results = $p3->query(genome_feature => ['eq', 'genome_id', '511145.12'],
+                         ['eq', 'annotation', 'PATRIC'],
+                         ['eq', 'feature_type', 'CDS'],
+                         ['select', 'patric_id,product']);
+my %cBuffer;
+for my $result (@results) {
+    my $fid = $result->{patric_id};
+    ok($fid =~ /^fig\|511145.12\.peg\.\d+$/, "feature ID format test result for \"$fid\"");
+    ok(defined $result->{product}, "product test result for \"$fid\"");
+    # Save for the re-checks.
+    $cBuffer{$fid} = $result->{product};
+}
+# Now do it again with chunking active.
+$p3->{chunk_size} = 1000;
+@results = $p3->query(genome_feature => ['eq', 'genome_id', '511145.12'],
+                         ['eq', 'annotation', 'PATRIC'],
+                         ['eq', 'feature_type', 'CDS'],
+                         ['select', 'patric_id,product']);
+ok(scalar(@results) == scalar(keys %cBuffer), "result size from chunked query");
+for my $result (@results) {
+    my $fid = $result->{patric_id};
+    my $oldResult = $cBuffer{$fid};
+    ok(defined $oldResult, "chunked feature test for \"$fid\"");
+    if (defined($oldResult)) {
+        ok($result->{product} eq $oldResult, "chunked product test for \"$fid\"");
+    }
+}
+# Here we do a raw query. The raw query doesn't parse filters.
+@results = $p3->raw_query(genome_feature => 'eq(genome_id,11053.35)',
+                         'eq(annotation,PATRIC)',
+                         'select(patric_id,product)');
+is(scalar @results, 35, 'raw test for 11053.35 features');
+for my $result (@results) {
+    my $fid = $result->{patric_id};
+    my $oldResult = $aBuffer{$fid};
+    ok(exists $aBuffer{$fid}, "raw feature test for \"$fid\"");
+    if (defined $oldResult) {
+        ok($result->{product} eq $oldResult, "raw product test for \"$fid\"");
+    } else {
+        ok(! defined $result->{product}, "raw product test for \"$fid\"");
+    }
+}
+# Now we do a raw query with chunking.
+@results = $p3->raw_query(genome_feature => 'eq(genome_id,511145.12)',
+                         'eq(annotation,PATRIC)',
+                         'eq(feature_type,CDS)',
+                         'select(patric_id,product)');
+ok(scalar(@results) == scalar(keys %cBuffer), "result size from chunked raw query");
+for my $result (@results) {
+    my $fid = $result->{patric_id};
+    my $oldResult = $cBuffer{$fid};
+    ok(defined $oldResult, "raw chunked feature test for \"$fid\"");
+    if (defined($oldResult)) {
+        ok($result->{product} eq $oldResult, "raw chunked product test for \"$fid\"");
+    }
+}
+# Here we do a calback query. The callback query allows us to examine results in-flight.
+my $cbChunks = 0;
+my $cbRecords = 0;
+@results = ();
+$p3->query_cb('genome_feature', \&fidCall, ['eq', 'genome_id', '11053.35'],
+              ['eq', 'annotation', 'PATRIC'],
+              ['select', 'patric_id,product']);
+is(scalar @results, 35, 'callback test for 11053.35 features');
+is ($cbChunks, 1, "callback test chunk count");
+is ($cbRecords, 35, "callback test record count");
+for my $result (@results) {
+    my $fid = $result->{patric_id};
+    my $oldResult = $aBuffer{$fid};
+    ok(exists $aBuffer{$fid}, "raw feature test for \"$fid\"");
+    if (defined $oldResult) {
+        ok($result->{product} eq $oldResult, "raw product test for \"$fid\"");
+    } else {
+        ok(! defined $result->{product}, "raw product test for \"$fid\"");
+    }
+}
+# Now we do a callback query with chunking.
+$cbChunks = 0;
+$cbRecords = 0;
+@results = ();
+$p3->query_cb('genome_feature', \&fidCall, ['eq', 'genome_id', '511145.12'],
+              ['eq', 'annotation', 'PATRIC'],
+              ['eq', 'feature_type', 'CDS'],
+              ['select', 'patric_id,product']);
+is(scalar(@results), scalar(keys %cBuffer), "result size from chunked raw query");
+ok($cbChunks > 1, "chunk callback test chunk count");
+is($cbRecords, scalar(@results), "chunk callback test record count");
+for my $result (@results) {
+    my $fid = $result->{patric_id};
+    my $oldResult = $cBuffer{$fid};
+    ok(defined $oldResult, "raw chunked feature test for \"$fid\"");
+    ok($result->{product} eq $oldResult, "raw chunked product test for \"$fid\"");
+}
 done_testing();
 
 ######### UTILITY METHODS
@@ -254,4 +369,11 @@ sub CreateInFile {
     for my $row (@$rows) {
         P3Utils::print_cols($row, oh => $oh);
     }
+}
+
+sub fidCall {
+    my ($records, $stats) = @_;
+    $cbChunks++;
+    $cbRecords += scalar @$records;
+    push @results, @$records;
 }

@@ -8,7 +8,7 @@ produce an orthodox list suitable for an exhaustive species-by-species analysis 
 
 =head2 Parameters
 
-There are no positional parameters.##TODO positional parameters
+There are no positional parameters.
 
 =cut
 

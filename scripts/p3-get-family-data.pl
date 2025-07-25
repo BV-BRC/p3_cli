@@ -9,7 +9,7 @@ parameters and the specification of additional columns if desired.
 
 There are no positional parameters.
 
-The standard input can be overriddn using the options in L<P3Utils/ih_options>.
+The standard input can be overridden using the options in L<P3Utils/ih_options>.
 
 Additional command-line options are those given in L<P3Utils/data_options> and L<P3Utils/col_options> plus the following.
 
@@ -40,7 +40,7 @@ if ($opt->fields) {
     # Compute the output columns.
     my ($selectList, $newHeaders) = P3Utils::select_clause($p3, family => $opt);
     # Compute the filter.
-    my $filterList = P3Utils::form_filter($opt);
+    my $filterList = P3Utils::form_filter($p3, $opt);
     # Open the input file.
     my $ih = P3Utils::ih($opt);
     # Read the incoming headers.

@@ -42,7 +42,7 @@ if ($opt->fields) {
     # Add the role name to the output header.
     push @$newHeaders, 'subsystem.role_name';
     # Compute the filter.
-    my $filterList = P3Utils::form_filter($opt);
+    my $filterList = P3Utils::form_filter($p3, $opt);
     if (! @$filterList) {
         # We must always have a filter, so add a dummy here.
         push @$filterList, ['ne', 'subsystem_id', 'x'];

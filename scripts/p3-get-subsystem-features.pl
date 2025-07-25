@@ -73,7 +73,7 @@ if ($fields) {
 my ($selectList, $newHeaders) = P3Utils::select_clause($p3, subsystemItem => $opt,
         0, [qw(patric_id role_name genome_id)]);
 # Compute the filter.
-my $filterList = P3Utils::form_filter($opt);
+my $filterList = P3Utils::form_filter($p3, $opt);
 # Open the input file.
 my $ih = P3Utils::ih($opt);
 # Read the incoming headers.

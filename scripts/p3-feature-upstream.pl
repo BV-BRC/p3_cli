@@ -58,9 +58,7 @@ use constant RULES => { downstream => { '+' => '+', '-' => '-' },
 # Get the command-line options.
 my $opt = P3Utils::script_opts('', P3Utils::data_options(), P3Utils::col_options(10), P3Utils::ih_options(),
         ['downstream|down|d', 'display downstream rather than upstream'],
-        ['length|l=i', 'length outside the feature to display', { default => 100 }],
-        ['in=i', 'length inside the feature to display', {default => 0}],
-        ['debug|verbose|v', 'show data API trace messages on STDERR']
+        ['length|l=i', 'length outside the feature to display', { default => 100 }]
         );
 # Get the options.
 my $type = ($opt->downstream ? 'downstream' : 'upstream');

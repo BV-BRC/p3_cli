@@ -62,7 +62,7 @@ if ($opt->fields) {
     # Compute the output columns.
     my ($selectList, $newHeaders) = P3Utils::select_clause($p3, feature => $opt);
     # Compute the filter.
-    my $filterList = P3Utils::form_filter($opt);
+    my $filterList = P3Utils::form_filter($p3, $opt);
     # Open the input file.
     my $ih = P3Utils::ih($opt);
     # Read the incoming headers.
