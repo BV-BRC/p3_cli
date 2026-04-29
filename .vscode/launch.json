@@ -1,0 +1,73 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python Debugger: Current File with Arguments",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "args": "${command:pickArgs}",
+            "cwd": "${userHome}/Documents/SEEDtk/Data",
+            "stopOnEntry": true
+        },
+        {
+            "type": "perl",
+            "request": "launch",
+            "name": "Perl Debug",
+            "program": "${userHome}/Documents/SEEDtk/git/p3_cli/scripts/p3-feature-upstream.pl",
+            "cwd": "${userHome}/Documents/SEEDtk/Data",
+            "stopOnEntry": true,
+            "args": ["-i bc.tbl", "-c 1", "--batch"]
+        },
+        {
+            "type": "perl",
+            "request": "launch",
+            "name": "CLI Tests",
+            "program": "${userHome}/Documents/SEEDtk/git/p3_cli/scripts/p3-tests.pl",
+            "stopOnEntry": false,
+            "args": [
+                "Temp"
+            ],
+            "cwd": "${userHome}/Documents/SEEDtk/Data"
+        },
+        {
+            "type": "perl",
+            "request": "launch",
+            "name": "Reconfiguration",
+            "program": "${userHome}/Documents/SEEDtk/git/seedtk/Config.pl",
+            "stopOnEntry": false,
+            "args": ["--eclipse", "seedtk"],
+            "cwd": "${userHome}/Documents/SEEDtk/Data"
+        },
+        {
+            "type": "perl",
+            "request": "launch",
+            "name": "CLI Debug",
+            "program": "${userHome}/Documents/SEEDtk/git/p3_cli/scripts/p3-submit-MSA.pl",
+            "stopOnEntry": false,
+            "args": [
+                "--aligner",
+                "Mafft",
+                "--alphabet",
+                "protein",
+                "--fasta-file",
+                "ws:/rastuser25@patricbrc.org/home/Experiments/features1.fasta",
+                "/rastuser25@patricbrc.org/home/Experiments",
+                "MSA_cli2"
+            ],
+            "cwd": "${userHome}/Documents/SEEDtk/Data"
+        }
+    ],
+    "inputs": [
+        {
+            "id": "pickArgs",
+            "type": "promptString",
+            "description": "Enter command-line arguments for the selected application (e.g., --help, --verbose, etc.)",
+            "default": "--help"
+        }
+    ]
+}
