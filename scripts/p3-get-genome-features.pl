@@ -46,7 +46,13 @@ use P3Utils;
 
 # Get the command-line options.
 
-my $opt = P3Utils::script_opts('', P3Utils::data_options(), P3Utils::col_options(), P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('',
+    { _input_spec => P3Utils::input_spec(
+        input   => "tab-delimited genome IDs on stdin (or --input file)",
+        output  => "tab-delimited feature data",
+        example => "p3-all-genomes --eq genus,Methylobacillus | p3-get-genome-features --attr patric_id --attr product",
+    )},
+    P3Utils::data_options(), P3Utils::col_options(), P3Utils::ih_options(),
     ['fields|f', 'Show available fields'], ['selective', 'Use batch query (only for small number of features per genome)']);
 # Get access to BV-BRC.
 my $p3 = P3DataAPI->new();

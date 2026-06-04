@@ -40,7 +40,12 @@ use KmerDb;
 
 $| = 1;
 # Get the command-line options.
-my $opt = P3Utils::script_opts('kmerDB', P3Utils::col_options(), P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('kmerDB',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited genome IDs on stdin (or --input file); kmer DB is positional',
+            output  => 'kmer hit counts',
+            example => 'p3-all-genomes --eq genus,Buchnera | p3-genome-kmer-hits kmer.db',
+        )}, P3Utils::col_options(), P3Utils::ih_options(),
         ['prot', 'kmer database contains proteins'],
         ['verbose|debug|v', 'print progress to STDERR'],
         ['pegs', 'count hits against protein features, not whole genomes']

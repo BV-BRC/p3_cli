@@ -96,7 +96,12 @@ Type of protein family-- local, global, or figfam.
 
 =cut
 
-my $opt = P3Utils::script_opts('', P3Utils::data_options(), P3Utils::col_options(), P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited feature IDs on stdin (or --input file)',
+            output  => 'related features via clusters',
+            example => 'p3-echo fig|83332.12.peg.1 | p3-related-by-clusters',
+        )}, P3Utils::data_options(), P3Utils::col_options(), P3Utils::ih_options(),
                                           ["gs1=s","a file containing genome set 1", { required => 1 }],
                                           ["gs2=s","a file containing genome set 2", { required => 1 }],
                                           ["sz1=i","size of sample from gs1", { default => 20 }],

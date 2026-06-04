@@ -42,7 +42,12 @@ use RepGenome;
 use Stats;
 
 # Get the command-line options.
-my $opt = P3Utils::script_opts('baseGenome', P3Utils::col_options(), P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('baseGenome',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited genome IDs on stdin (or --input file)',
+            output  => 'genome distance matrix',
+            example => 'p3-all-genomes --eq genus,Buchnera | p3-genome-distance',
+        )}, P3Utils::col_options(), P3Utils::ih_options(),
         ['dna', 'use DNA kmers'],
         ['kmer|kmerSize|K|k=i', 'kmer size'],
         ['verbose|debug|v', 'show progress on STDERR']

@@ -21,7 +21,12 @@ use P3Utils;
 
 
 # Get the command-line options.
-my $opt = P3Utils::script_opts('N', P3Utils::col_options(), P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('N',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited data on stdin (or --input file)',
+            output  => 'collated groups',
+            example => 'p3-all-genomes -a genus | p3-collate genus',
+        )}, P3Utils::col_options(), P3Utils::ih_options(),
         );
 # Open the input file.
 my $ih = P3Utils::ih($opt);

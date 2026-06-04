@@ -49,7 +49,12 @@ use P3Utils;
 
 $| = 1;
 # Get the command-line options.
-my $opt = P3Utils::script_opts('col1 col2', P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('col1 col2',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited data on stdin (or --input file)',
+            output  => 'column comparison results',
+            example => 'p3-echo foo bar | p3-compare-cols 1 2',
+        )}, P3Utils::ih_options(),
         ['save=s', 'file in which to save mismatches']
         );
 

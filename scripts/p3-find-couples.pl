@@ -58,7 +58,12 @@ use P3Utils;
 use Math::Round;
 
 # Get the command-line options.
-my $opt = P3Utils::script_opts('catCol', P3Utils::delim_options(), P3Utils::col_options(), P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('catCol',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited genome IDs on stdin (or --input file); role is positional',
+            output  => 'coupled role pairs',
+            example => 'p3-all-genomes --eq genus,Buchnera | p3-find-couples PheS',
+        )}, P3Utils::delim_options(), P3Utils::col_options(), P3Utils::ih_options(),
         ['minCount|mincount|min|m=i', 'minimum occurrence count', { default => 5 }],
         ['maxGap|maxgap|maxG|maxg|g=i', 'maximum feature gap', { default => 2000 }],
         ['location|loc|l=s', 'index (1-based) or name of column containing feature location (if any)'],

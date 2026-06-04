@@ -20,7 +20,12 @@ use Data::Dumper;
 use JSON::XS;
 use P3Utils;
 
-my $opt = P3Utils::script_opts('groupName', P3Utils::col_options(), P3Utils::ih_options());
+my $opt = P3Utils::script_opts('groupName',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited feature IDs on stdin (or --input file)',
+            output  => 'creates/updates a workspace feature group',
+            example => 'p3-get-genome-features | p3-put-feature-group MyFeatures',
+        )}, P3Utils::col_options(), P3Utils::ih_options());
 
 my $group = shift;
 if (! $group) {

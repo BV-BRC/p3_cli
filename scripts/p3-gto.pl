@@ -40,7 +40,13 @@ use File::Copy::Recursive;
 
 $| = 1;
 # Get the command-line options.
-my $opt = P3Utils::script_opts('genome1 genome2 ... genomeN', P3Utils::ih_options(), P3Utils::col_options(),
+my $opt = P3Utils::script_opts('genome1 genome2 ... genomeN',
+        { _input_spec => P3Utils::input_spec(
+            input   => "genome IDs as arguments, or - to read IDs from stdin (or --input file)",
+            output  => "GTO files written to --outDir (one per genome)",
+            example => "p3-gto 83332.1  or:  p3-all-genomes --eq genus,Buchnera | p3-gto -",
+        )},
+        P3Utils::ih_options(), P3Utils::col_options(),
         ['outDir|o=s', 'output directory name', { default => '.'} ],
         ['missing|safe|m', 'only process new genomes without replacing files'],
         ['debug|verbose|v', 'display data API status messages in the standard output']

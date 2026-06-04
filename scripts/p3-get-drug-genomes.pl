@@ -38,7 +38,12 @@ use P3DataAPI;
 use P3Utils;
 
 # Get the command-line options.
-my $opt = P3Utils::script_opts('', P3Utils::data_options(), P3Utils::col_options(), P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited drug IDs on stdin (or --input file)',
+            output  => 'tab-delimited genome data for drugs',
+            example => 'p3-all-drugs | p3-get-drug-genomes -a genome_name',
+        )}, P3Utils::data_options(), P3Utils::col_options(), P3Utils::ih_options(),
     ['resistant|resist|strong', 'filter for genomes resistant to the drug'],
     ['susceptible|suscept|weak', 'filter for genomes susceptible to the drug'],
     ['fields|f', 'Show available fields']);

@@ -55,7 +55,12 @@ Write progress messages to STDERR.
 
 =cut
 
-my $opt = P3Utils::script_opts('', P3Utils::col_options(),
+my $opt = P3Utils::script_opts('',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited genome IDs on stdin (or --input file)',
+            output  => 'signature protein families',
+            example => 'p3-signature-families < genomes.tbl',
+        )}, P3Utils::col_options(),
         ["gs1=s", "genomes with property"],
         ["gs2=s", "genomes without property"],
         ["min|m=f","minimum fraction of Gs1",{default => 0.8}],

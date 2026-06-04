@@ -20,7 +20,12 @@ use Data::Dumper;
 use JSON::XS;
 use P3Utils;
 
-my $opt = P3Utils::script_opts('groupName', P3Utils::col_options(), P3Utils::ih_options());
+my $opt = P3Utils::script_opts('groupName',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited genome IDs on stdin (or --input file)',
+            output  => 'creates/updates a workspace genome group',
+            example => 'p3-all-genomes --eq genus,Buchnera | p3-put-genome-group MyGenomes',
+        )}, P3Utils::col_options(), P3Utils::ih_options());
 
 my $group = shift;
 if (! $group) {

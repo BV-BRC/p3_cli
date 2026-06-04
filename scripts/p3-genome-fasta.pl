@@ -34,6 +34,11 @@ use P3Utils;
 
 # Get the command-line options.
 my $opt = P3Utils::script_opts('genomeID',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'none (genome ID on command line)',
+            output  => 'FASTA sequences',
+            example => 'p3-genome-fasta --protein 83332.12',
+        )},
         ['mode' => hidden => { one_of => [['protein', 'feature protein FASTA'],
                                           ['feature', 'feature DNA FASTA'],
                                           ['contig', 'contig DNA FASTA']],

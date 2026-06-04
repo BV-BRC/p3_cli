@@ -51,7 +51,12 @@ use P3Utils;
 use KmerDb;
 
 # Get the command-line options.
-my $opt = P3Utils::script_opts('idCol outFile', P3Utils::ih_options(), P3Utils::col_options(),
+my $opt = P3Utils::script_opts('idCol outFile',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited genome IDs on stdin (or --input file); outFile is positional',
+            output  => 'kmer database file',
+            example => 'p3-all-genomes --eq genus,Buchnera | p3-build-kmer-db kmer.db',
+        )}, P3Utils::ih_options(), P3Utils::col_options(),
         ['nameCol|name|l=s', 'index (1-based) or name of the input column containing group names'],
         ['kmerSize|kmersize|kmer|k=i', 'kmer size', { default => 15 }],
         ['max|m=i', 'maximum number of occurrences per useful kmer', { default => 10 }],

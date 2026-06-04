@@ -64,7 +64,12 @@ use P3DataAPI;
 use P3Utils;
 
 # Get the command-line options.
-my $opt = P3Utils::script_opts('clusterFile', P3Utils::col_options(), P3Utils::ih_options(), P3Utils::delim_options(),
+my $opt = P3Utils::script_opts('clusterFile',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited pair data on stdin (or --input file)',
+            output  => 'cluster assignments',
+            example => 'p3-identify-clusters < pairs.tbl',
+        )}, P3Utils::col_options(), P3Utils::ih_options(), P3Utils::delim_options(),
         ['locCol|location|loccol|loc=s', 'index (1-based) or name of column containing location specification', { default => 'location' }],
         ['idCol|id|idcol=s', 'index (1-based) or name of column containing feature ID', { default => 'patric_id' }],
         ['seqCol|sequence|seqcol|seq=s', 'index (1-based) or name of column containing sequence ID', { default => 'sequence_id' }],

@@ -32,7 +32,12 @@ use KmerDb;
 
 $| = 1;
 # Get the command-line options.
-my $opt = P3Utils::script_opts('kmerDB', P3Utils::col_options(), P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('kmerDB',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited feature IDs on stdin (or --input file); kmer DB is positional',
+            output  => 'kmer hit counts per feature',
+            example => 'p3-get-genome-features | p3-peg-kmer-hits kmer.db',
+        )}, P3Utils::col_options(), P3Utils::ih_options(),
         ['verbose|debug|v', 'print progress to STDERR'],
         );
 # Get access to BV-BRC.

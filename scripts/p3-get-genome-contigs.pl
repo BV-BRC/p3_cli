@@ -32,7 +32,12 @@ use P3DataAPI;
 use P3Utils;
 
 # Get the command-line options.
-my $opt = P3Utils::script_opts('', P3Utils::data_options(), P3Utils::col_options(), P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited genome IDs on stdin (or --input file)',
+            output  => 'tab-delimited contig data',
+            example => 'p3-all-genomes --eq genus,Buchnera | p3-get-genome-contigs -a length',
+        )}, P3Utils::data_options(), P3Utils::col_options(), P3Utils::ih_options(),
     ['fields|f', 'Show available fields'], ['batch', 'Use batched queries']);
 
 # Get access to BV-BRC.

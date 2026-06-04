@@ -41,7 +41,12 @@ use P3Utils;
 use P3Sequences;
 
 # Get the command-line options.
-my $opt = P3Utils::script_opts('', P3Utils::col_options(), P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited feature IDs on stdin (or --input file)',
+            output  => 'tab-delimited genome region data around features',
+            example => 'p3-get-genome-features | p3-get-feature-regions',
+        )}, P3Utils::col_options(), P3Utils::ih_options(),
         ['distance|dist|margin|d=i', 'distance to show around specified feature', { default => 100 }],
         ['comment|c=s@', 'field to put in FASTA comment (implies FASTA)'],
         ['consolidated|K', 'extend regions to include other requested features that overlap']

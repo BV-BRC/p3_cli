@@ -55,7 +55,12 @@ use File::Copy::Recursive;
 
 $| = 1;
 # Get the command-line options.
-my $opt = P3Utils::script_opts('genome1 genome2 ... genomeN', P3Utils::ih_options(), P3Utils::col_options(),
+my $opt = P3Utils::script_opts('genome1 genome2 ... genomeN',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'genome IDs as arguments or - for stdin (or --input file)',
+            output  => 'genome data files',
+            example => 'p3-dump-genomes 83332.12  or:  p3-all-genomes | p3-dump-genomes -',
+        )}, P3Utils::ih_options(), P3Utils::col_options(),
         ['outDir|o=s', 'output directory name', { default => '.'} ],
         ['missing|safe|m', 'only process new genomes without replacing files'],
         ['fasta|contigs|F', 'produce contig FASTA files for the genomes'],
