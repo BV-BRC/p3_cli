@@ -89,6 +89,8 @@ my $commoner = Bio::KBase::AppService::CommonSpec->new();
 my $uploader = Bio::KBase::AppService::UploadSpec->new($p3token);
 my $reader = Bio::KBase::AppService::ReadSpec->new($uploader, simple => 1, srrAlt => 1);
 
+$reader->{srr_label} = 'srr_libs';
+
 # Get the application service helper.
 my $app_service = Bio::KBase::AppService::Client->new();
 
