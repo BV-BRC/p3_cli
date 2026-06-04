@@ -38,7 +38,13 @@ use GenomeTypeObject;
 
 
 # Get the command-line options.
-my $opt = P3Utils::script_opts('gtoFile', P3Utils::col_options(), P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('gtoFile',
+        { _input_spec => P3Utils::input_spec(
+            input   => "gtoFile is a GTO file; location strings come from stdin (or --input file)",
+            output  => "DNA sequences (tab-delimited or --fasta)",
+            example => "p3-echo 'NC_000913:100+50' | p3-gto-dna genome.gto",
+        )},
+        P3Utils::col_options(), P3Utils::ih_options(),
         ['label=s', 'index (1-based) or name of the label column', { default => 1 }],
         ['fasta', 'output should be in FASTA format'],
         );

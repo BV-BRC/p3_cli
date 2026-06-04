@@ -64,7 +64,13 @@ use P3DataAPI;
 use P3Utils;
 
 # Get the command-line options.
-my $opt = P3Utils::script_opts('', P3Utils::data_options(),
+my $opt = P3Utils::script_opts('',
+        { _input_spec => P3Utils::input_spec(
+            input   => "none (queries BV-BRC database directly)",
+            output  => "tab-delimited genome IDs (with optional extra fields via --attr)",
+            example => "p3-all-genomes --eq genus,Streptococcus -a genome_name",
+        )},
+        P3Utils::data_options(),
         ['fields|f', 'show available fields'],
         ['public', 'only include public genomes'],
         ['private', 'only include private genomes']);

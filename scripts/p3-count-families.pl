@@ -39,7 +39,12 @@ use Stats;
 use constant FAMILY_FIELD => { local => 'plfam_id', global => 'pgfam_id', figfam => 'figfam_id' };
 
 # Get the command-line options.
-my $opt = P3Utils::script_opts('', P3Utils::col_options(), P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited data on stdin (or --input file)',
+            output  => 'family counts',
+            example => 'p3-get-genome-features -a pgfam_id | p3-count-families',
+        )}, P3Utils::col_options(), P3Utils::ih_options(),
         ['singly|s', 'only count singly-occurring family instances'],
         ['type=s', 'type of protein family (local, global, figfam)', { default => 'global' }],
         ['verbose|v', 'write status messages to STDERR']

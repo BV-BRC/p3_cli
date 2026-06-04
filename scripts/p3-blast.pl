@@ -100,6 +100,11 @@ use constant BLAST_TOOL => { blastp => 'prot', blastn => 'dna', blastx => 'prot'
 $| = 1;
 # Get the command-line parameters.
 my $opt = P3Utils::script_opts('type blastdb',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'query sequences on stdin (or --input file)',
+            output  => 'BLAST hit results',
+            example => 'p3-blast --type prot < query.fa',
+        )},
         P3Utils::ih_options(),
         ['output' => hidden => { one_of => [ [ 'hsp' => 'produce HSP output'], ['sim' => 'produce similarity output'], ['tbl' => 'produce table output']]}],
         ['maxE|e=f', 'maximum e-value', { default => 1e-10 }],

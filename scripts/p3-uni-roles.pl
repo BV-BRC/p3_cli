@@ -44,7 +44,12 @@ use IO::File;
 
 $| = 1;
 # Get the command-line options.
-my $opt = P3Utils::script_opts('outFile', P3Utils::col_options(), P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('outFile',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited genome IDs on stdin (or --input file); role file is positional',
+            output  => 'universal role assignments',
+            example => 'p3-all-genomes --eq genus,Buchnera | p3-uni-roles roles.tbl',
+        )}, P3Utils::col_options(), P3Utils::ih_options(),
         ['roleFile|rolefile|r=s', 'roles.in.subsystems file containing the roles of interest',
                 { default => "$FIG_Config::p3data/roles.unified" }],
         ['resume', 'restart an interrupted job']

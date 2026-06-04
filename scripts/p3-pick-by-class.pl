@@ -55,7 +55,12 @@ use P3Utils;
 
 $| = 1;
 # Get the command-line options.
-my $opt = P3Utils::script_opts('', P3Utils::col_options(1000), P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited data on stdin (or --input file)',
+            output  => 'class-balanced selection',
+            example => 'p3-pick-by-class < data.tbl',
+        )}, P3Utils::col_options(1000), P3Utils::ih_options(),
     ['verbose|debug|v', 'show progress on STDERR'],
     ['max|m=i', 'maximum number of output lines', { default => -1 }],
     ['fuzz=f', 'error multiplier', { default => 1.2 }]);

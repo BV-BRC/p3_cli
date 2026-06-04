@@ -36,7 +36,12 @@ use P3Utils;
 use CGI;
 
 # Get the command-line options.
-my $opt = P3Utils::script_opts('', P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited data on stdin (or --input file)',
+            output  => 'HTML table',
+            example => 'p3-all-genomes -a genome_name | p3-tbl-to-html > genomes.html',
+        )}, P3Utils::ih_options(),
         ['nohead', 'file does not have headers'],
         ['class=s', 'if specified, style for the table'],
         ['border=s', 'if specified, border style for the table']

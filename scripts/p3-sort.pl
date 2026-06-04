@@ -58,7 +58,13 @@ use P3Utils;
 use SeedUtils qw(by_fig_id);
 
 # Get the command-line options.
-my $opt = P3Utils::script_opts('col1 col2 ... colN', P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('col1 col2 ... colN',
+        { _input_spec => P3Utils::input_spec(
+            input   => "tab-delimited data on stdin (or --input file)",
+            output  => "sorted tab-delimited data",
+            example => "p3-all-genomes -a genome_name -a contigs | p3-sort 3 n",
+        )},
+        P3Utils::ih_options(),
         ['count|K', 'count instead of sorting'],
         ['nonblank|V', 'discard records with empty keys'],
         ['unique|u', 'discard records with duplicate keys'],

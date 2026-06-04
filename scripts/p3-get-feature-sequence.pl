@@ -34,7 +34,12 @@ use Data::Dumper;
 use P3DataAPI;
 use gjoseqlib;
 
-my $opt = P3Utils::script_opts('', P3Utils::ih_options(), P3Utils::col_options(),
+my $opt = P3Utils::script_opts('',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited feature IDs on stdin (or --input file)',
+            output  => 'tab-delimited DNA/protein sequences',
+            example => 'p3-all-genomes --eq genome_id,83332.12 | p3-get-genome-features | p3-get-feature-sequence',
+        )}, P3Utils::ih_options(), P3Utils::col_options(),
         ['mode' => hidden => { one_of => [['protein', 'feature protein FASTA'],
                                           ['dna', 'feature DNA FASTA']],
                                           default => 'protein' }],
