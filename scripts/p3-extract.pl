@@ -35,7 +35,12 @@ use strict;
 use P3Utils;
 
 # Get the command-line options.
-my $opt = P3Utils::script_opts('col1 col2 ... colN', P3Utils::ih_options(), ['nohead', 'file has no headers'],
+my $opt = P3Utils::script_opts('col1 col2 ... colN',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited data on stdin (or --input file)',
+            output  => 'selected columns',
+            example => 'p3-all-genomes -a genome_name | p3-extract 2',
+        )}, P3Utils::ih_options(), ['nohead', 'file has no headers'],
         ['all', 'output all columns'],
         ['reverse|v', 'output all columns not specified'],
         );

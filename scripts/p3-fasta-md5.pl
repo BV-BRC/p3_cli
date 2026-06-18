@@ -39,7 +39,12 @@ use P3Utils;
 
 $| = 1;
 # Get the command-line options.
-my $opt = P3Utils::script_opts('parms', P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('parms',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'FASTA data on stdin (or --input file)',
+            output  => 'sequence MD5 checksums',
+            example => 'p3-fasta-md5 < sequences.fa',
+        )}, P3Utils::ih_options(),
     );
 # Open the input file.
 my $ih = P3Utils::ih($opt);

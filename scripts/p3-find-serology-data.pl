@@ -27,7 +27,12 @@ use P3DataAPI;
 use P3Utils;
 
 # Get the command-line options.
-my $opt = P3Utils::script_opts('', P3Utils::data_options(),
+my $opt = P3Utils::script_opts('',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'none (queries BV-BRC database directly)',
+            output  => 'tab-delimited serology data',
+            example => 'p3-find-serology-data --eq host,Human',
+        )}, P3Utils::data_options(),
         ['fields|f', 'show available fields']);
 # Get access to BV-BRC.
 my $p3 = P3DataAPI->new();

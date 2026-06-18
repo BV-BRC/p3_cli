@@ -35,7 +35,12 @@ use P3Utils;
 
 
 # Get the command-line options.
-my $opt = P3Utils::script_opts('', P3Utils::col_options(), P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'FASTA sequences on stdin (or --input file)',
+            output  => 'sequence profile data',
+            example => 'p3-sequence-profile < seqs.fa',
+        )}, P3Utils::col_options(), P3Utils::ih_options(),
         ['fasta', 'input is a FASTA file'],
         ['count|k', 'output the record count']
         );

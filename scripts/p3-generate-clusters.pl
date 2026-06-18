@@ -39,7 +39,12 @@ use strict;
 use P3Utils;
 
 # Get the command-line options.
-my $opt = P3Utils::script_opts('col1 col2', P3Utils::ih_options(), P3Utils::delim_options(),
+my $opt = P3Utils::script_opts('col1 col2',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited pair data on stdin (or --input file)',
+            output  => 'cluster assignments',
+            example => 'p3-generate-clusters < pairs.tbl',
+        )}, P3Utils::ih_options(), P3Utils::delim_options(),
         ['title|t=s', 'output column title', { default => 'cluster'} ]
         );
 # Verify the positional parameters.

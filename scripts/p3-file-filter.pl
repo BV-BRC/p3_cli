@@ -49,7 +49,12 @@ use P3Utils;
 
 
 # Get the command-line options.
-my $opt = P3Utils::script_opts('filterFile filterCol1 filterCol2 ... filterColN', P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('filterFile filterCol1 filterCol2 ... filterColN',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited data on stdin (or --input file); filter file is positional',
+            output  => 'filtered rows matching a reference file',
+            example => 'p3-file-filter --col 1 ref.tbl < data.tbl',
+        )}, P3Utils::ih_options(),
         ['reverse|invert|v', 'only keep non-matching records'],
         ['nohead', 'file has no headers'],
         ['col|c=s@', 'input file key columns', { default => [0] }]

@@ -52,7 +52,12 @@ use SeedTkRun;
 
 $| = 1;
 # Get the command-line options.
-my $opt = P3Utils::script_opts('workDir outDir', P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('workDir outDir',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited genome IDs on stdin (or --input file)',
+            output  => 'cluster run results',
+            example => 'p3-all-genomes --eq genus,Buchnera | p3-mass-cluster-run',
+        )}, P3Utils::ih_options(),
           ['size|n=i', 'sample size', { default => 20 }],
           ["min=f","min fraction of in-group to be signature family", { default => 0.8 }],
           ["max=f","max fraction of out-group to be signature family", { default => 0.1 }],

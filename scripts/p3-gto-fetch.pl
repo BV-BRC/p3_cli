@@ -55,7 +55,12 @@ use Stats;
 
 $| = 1;
 # Get the command-line options.
-my $opt = P3Utils::script_opts('sourceDir targetDir', P3Utils::col_options(), P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('sourceDir targetDir',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited feature IDs on stdin (or --input file)',
+            output  => 'feature data from GTO files',
+            example => 'p3-echo fig|83332.12.peg.1 | p3-gto-fetch',
+        )}, P3Utils::col_options(), P3Utils::ih_options(),
         ['subCol=s', 'column containing subdirectory names'],
         ['clear', 'erase target before copying']);
 my $stats = Stats->new();

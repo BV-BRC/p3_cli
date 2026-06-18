@@ -23,7 +23,12 @@ use P3Utils;
 
 
 # Get the command-line options.
-my $opt = P3Utils::script_opts('col1 col2', P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('col1 col2',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited data on stdin (or --input file)',
+            output  => 'pivoted data',
+            example => 'p3-all-genomes -a genus | p3-pivot genus',
+        )}, P3Utils::ih_options(),
         );
 # Open the input file.
 my $ih = P3Utils::ih($opt);

@@ -18,7 +18,12 @@ use P3Utils;
 
 
 # Get the command-line options.
-my $opt = P3Utils::script_opts('');
+my $opt = P3Utils::script_opts('',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'none (queries BV-BRC database directly)',
+            output  => 'tab-delimited genus/species data',
+            example => 'p3-genus-species',
+        )});
 # Get access to BV-BRC.
 my $p3 = P3DataAPI->new();
 # Form the full header set and write it out.

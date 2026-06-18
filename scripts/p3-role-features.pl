@@ -35,7 +35,12 @@ use RoleParse;
 use SeedUtils;
 
 # Get the command-line options.
-my $opt = P3Utils::script_opts('', P3Utils::data_options(), P3Utils::col_options(), P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited role descriptions on stdin (or --input file)',
+            output  => 'features with matching roles',
+            example => 'p3-echo "Phenylalanyl-tRNA synthetase" | p3-role-features',
+        )}, P3Utils::data_options(), P3Utils::col_options(), P3Utils::ih_options(),
         ['genomes|G=s', 'name of a file containing genome IDs in the first column'],
         ['verbose|v', 'display status messages on STDERR']
         );

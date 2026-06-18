@@ -40,7 +40,12 @@ use SeedUtils;
 use RoleParse;
 
 # Get the command-line options.
-my $opt = P3Utils::script_opts('', P3Utils::col_options(), P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited function descriptions on stdin (or --input file)',
+            output  => 'standardized roles',
+            example => 'p3-get-genome-features -a product | p3-function-to-role',
+        )}, P3Utils::col_options(), P3Utils::ih_options(),
     ['roles|R=s', 'name of role file']);
 
 # Get access to BV-BRC.

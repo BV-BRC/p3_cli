@@ -26,7 +26,12 @@ use strict;
 use P3Utils;
 
 # Get the command-line options.
-my $opt = P3Utils::script_opts('count', P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('count',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited data on stdin (or --input file)',
+            output  => 'randomly selected rows',
+            example => 'p3-all-genomes | p3-pick 10',
+        )}, P3Utils::ih_options(),
         ['nohead', 'file has no headers']);
 # Get the desired row count.
 my ($count) = @ARGV;

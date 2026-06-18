@@ -55,7 +55,13 @@ use constant KEYS => { genome_name => 1, genbank_accessions => 1, assembly_acces
 };
 
 # Get the command-line options.
-my $opt = P3Utils::script_opts('keyName', P3Utils::data_options(), P3Utils::col_options(), P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('keyName',
+        { _input_spec => P3Utils::input_spec(
+            input   => "keyName specifies the search field; values to search come from stdin (or --input file)",
+            output  => "tab-delimited genome data",
+            example => "p3-find-genomes --eq genome_status,Complete genome_name < names.tbl",
+        )},
+        P3Utils::data_options(), P3Utils::col_options(), P3Utils::ih_options(),
         ['keyNames|keynames|keys', 'list key field names']
         );
 if ($opt->keynames) {

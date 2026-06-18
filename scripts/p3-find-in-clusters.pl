@@ -38,7 +38,12 @@ use P3DataAPI;
 use P3Utils;
 
 # Get the command-line options.
-my $opt = P3Utils::script_opts('realClusterFile', P3Utils::col_options(), P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('realClusterFile',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited feature IDs on stdin (or --input file); cluster file is positional',
+            output  => 'cluster membership data',
+            example => 'p3-find-in-clusters clusters.tbl < features.tbl',
+        )}, P3Utils::col_options(), P3Utils::ih_options(),
         ['maxGap|maxgap|maxG|maxg|g=i', 'maximum feature gap', { default => 2000 }],
         ['location|loc|l=s', 'index (1-based) or name of column containing feature location', { default => 'location' }],
         ['sequence|seq|s=s', 'index (1-based) or name of column containing the ID of the contig containing the feature', { default => 'sequence_id' }]

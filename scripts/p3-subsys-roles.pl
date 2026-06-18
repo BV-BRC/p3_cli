@@ -43,6 +43,11 @@ use RoleParse;
 
 # Get the command-line options.
 my $opt = P3Utils::script_opts('',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'none (queries BV-BRC database directly)',
+            output  => 'tab-delimited subsystem role data',
+            example => 'p3-subsys-roles -a role_name',
+        )},
         ['verbose|debug|v', 'display progress messages on STDERR'],
         ['roleFile|roles|R=s', 'name of a file containing role names'],
         ['col|c=s', 'index (1-based) of the input role column', { default => 0 }],

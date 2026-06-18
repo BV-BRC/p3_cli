@@ -36,7 +36,12 @@ use RoleParse;
 use SeedUtils;
 
 # Get the command-line options.
-my $opt = P3Utils::script_opts('', P3Utils::col_options(), P3Utils::ih_options(), P3Utils::delim_options(),
+my $opt = P3Utils::script_opts('',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited function descriptions on stdin (or --input file)',
+            output  => 'parsed roles',
+            example => 'p3-get-genome-features -a product | p3-function-parse',
+        )}, P3Utils::col_options(), P3Utils::ih_options(), P3Utils::delim_options(),
         ['subsystems|subs|subsystem|sub|s', 'include subsystems in output']
         );
 # Get the options.

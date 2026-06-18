@@ -34,7 +34,12 @@ use P3DataAPI;
 use P3Utils;
 
 # Get the command-line options.
-my $opt = P3Utils::script_opts('idCol seqCol', P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('idCol seqCol',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited data on stdin (or --input file)',
+            output  => 'FASTA format output',
+            example => 'p3-get-feature-sequence | p3-tbl-to-fasta',
+        )}, P3Utils::ih_options(),
         ['nohead', 'input has no headers'],
         ['comment|k=s@', 'index (1-based) or name of the comment column']
         );

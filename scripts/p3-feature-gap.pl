@@ -40,7 +40,12 @@ fig|1302.21.peg.966 fig|1302.21.peg.1019    55253
     use BasicLocation;
 
 # Get the command-line options.
-my $opt = P3Utils::script_opts('', P3Utils::col_options(), P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited feature IDs on stdin (or --input file)',
+            output  => 'gap analysis data',
+            example => 'p3-get-genome-features | p3-feature-gap',
+        )}, P3Utils::col_options(), P3Utils::ih_options(),
     ['inf=i', 'infinite-gap value', { default => 2000000000 }],
     ['col2|C=s', 'name or index of column containing second feature ID', { default => -1 }],
  );

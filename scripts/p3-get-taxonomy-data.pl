@@ -47,7 +47,12 @@ use P3Utils;
 
 $| = 1;
 # Get the command-line options.
-my $opt = P3Utils::script_opts('', P3Utils::data_options(), P3Utils::col_options(), P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited taxonomy IDs on stdin (or --input file)',
+            output  => 'tab-delimited taxonomy data',
+            example => 'p3-all-taxonomies | p3-get-taxonomy-data -a taxon_name',
+        )}, P3Utils::data_options(), P3Utils::col_options(), P3Utils::ih_options(),
     ['fields|f', 'Show available fields']);
 
 # Get access to BV-BRC.

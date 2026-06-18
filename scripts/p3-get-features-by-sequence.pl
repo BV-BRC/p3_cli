@@ -47,7 +47,12 @@ my $xtab4 = SeedUtils::genetic_code(4);
 my $xtab11 = SeedUtils::genetic_code(11);
 
 # Get the command-line options.
-my $opt = P3Utils::script_opts('', P3Utils::col_options(), P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited sequences on stdin (or --input file)',
+            output  => 'tab-delimited matching features',
+            example => 'p3-get-features-by-sequence < sequences.tbl',
+        )}, P3Utils::col_options(), P3Utils::ih_options(),
         ['mode' => hidden => { one_of => [['protein', 'input is protein sequences'],
                                           ['dna', 'input is DNA sequences']],
                                           default => 'dna' }],
