@@ -42,7 +42,7 @@ sub new
     }
 
     my $self = {
-        client => Bio::P3::Workspace::WorkspaceClient::RpcClient->new,
+        client => P3WorkspaceClient::RpcClient->new,
         url => $url,
         headers => [],
         api => P3DataAPI->new(),
@@ -2457,7 +2457,7 @@ adminmode has a value which is a bool
 
 =cut
 
-package Bio::P3::Workspace::WorkspaceClient::RpcClient;
+package P3WorkspaceClient::RpcClient;
 use base 'JSON::RPC::Legacy::Client';
 use POSIX;
 use strict;
