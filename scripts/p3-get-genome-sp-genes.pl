@@ -20,8 +20,20 @@
 
     p3-get-genome-sp-genes.pl [options] property
 
-This script returns specialty gene data for the genes in one of more genomes.  The script recognizes the following types
-of specialty genes.
+This script returns specialty gene data for the genes in one of more genomes.
+
+The standard input should contain a tab-delimited table with a column of genome IDs. 
+The requested output columns are appended to the input columns. A single input genome ID will generally produce
+many output rows.
+
+The default is to take the input genome IDs from the last column of the input, but this can be overridden using the
+C<--col> option.
+
+For a single genome, use L<p3-echo> to create the input. For example,
+
+    p3-echo 83332.12 | p3-get-genome-sp-genes.pl amr
+
+The specialty gene types are as follows.
 
 =over 4
 
