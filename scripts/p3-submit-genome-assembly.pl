@@ -113,6 +113,7 @@ GetOptions("pilon-iter=i" => \ $params->{pilon_iter},
 	   "pipeline=s" => \ $params->{pipeline},
 	   "min-contig-len=i" => \ $params->{min_contig_len},
 	   "min-contig-cov=i" => \ $params->{min_contig_cov},
+	   "genome-size=s" => \ $params->{genome_size},
            'paired-end-lib=s{2}',  sub {
 	       my ($opt_name, $opt_value) = @_;
 	       

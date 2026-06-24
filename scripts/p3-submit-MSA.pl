@@ -28,7 +28,7 @@ If a file to be uploaded already exists and this parameter is specified, it will
 
 =item --aligner
 
-The aligner to use for the MSA.  Valid values are C<Muscle> and C<Mafft>.  The default is C<Muscle>.
+The aligner to use for the MSA.  Valid values are C<Muscle>, C<Mafft>, and C<progressiveMauve>.  The default is C<Muscle>.
 
 =item --alphabet
 
@@ -68,7 +68,7 @@ use Bio::KBase::AppService::UploadSpec;
 
 use constant ALPHABET_TYPE => { 'dna' => 'feature_dna_fasta', 'protein' => 'feature_protein_fasta' };
 
-use constant ALIGNER => { 'Muscle' => 1, 'Mafft' => 1 };
+use constant ALIGNER => { 'Muscle' => 1, 'Mafft' => 1, 'progressiveMauve' => 1 };
 
 # Insure we're logged in.
 my $p3token = P3AuthToken->new();
