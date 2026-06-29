@@ -151,6 +151,9 @@ my($opt, $usage) =
 		     ["genetic-code|g=i", "Genetic code for this genome; either 11 or 4. If not specified defaults to 11 unless it can be determined from the declared or computed taxonomy ID."],
 		     ["domain|d=s", "Domain for this genome (Bacteria or Archaea)"],
 		     [],
+		     ["lowvan-min-contig-length=i", "Minimum contig length for the lowvan viral annotation pipeline (default 300)."],
+		     ["lowvan-max-contig-length=i", "Maximum contig length for the lowvan viral annotation pipeline (default 40000)."],
+		     [],
 		     ["Advanced options:"],
 		     [],
 		     ["workflow-file=s", "Use the given workflow document to process annotate this genome."],
@@ -344,6 +347,8 @@ my $params = {
     ($opt->reference_virus ? (reference_virus_name => $opt->reference_virus) : ()),
     ($opt->indexing_url ? (indexing_url => $opt->indexing_url) : ()),
     ($opt->public ? (public => 1) : ()),
+    (defined($opt->lowvan_min_contig_length) ? (lowvan_min_contig_length => $opt->lowvan_min_contig_length) : ()),
+    (defined($opt->lowvan_max_contig_length) ? (lowvan_max_contig_length => $opt->lowvan_max_contig_length) : ()),
 };
 
 my $start_params = {
