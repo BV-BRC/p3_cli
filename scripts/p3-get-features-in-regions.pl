@@ -51,6 +51,11 @@ use P3Utils;
 $| = 1;
 # Get the command-line options.
 my $opt = P3Utils::script_opts('genomeCol contigCol startCol endCol',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited region specs on stdin (or --input file)',
+            output  => 'tab-delimited features in genome regions',
+            example => 'p3-get-features-in-regions < regions.tbl',
+        )},
         P3Utils::data_options(), P3Utils::ih_options(),
         ['fields|f', 'Show available fields']);
 

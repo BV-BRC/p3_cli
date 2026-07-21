@@ -89,7 +89,12 @@ use constant TYPES => { human => "Human Homolog", amr => "Antibiotic Resistance"
 
 $| = 1;
 # Get the command-line options.
-my $opt = P3Utils::script_opts('property', P3Utils::data_options(), P3Utils::col_options(), P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('property',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited genome IDs on stdin (or --input file)',
+            output  => 'tab-delimited specialty gene data',
+            example => 'p3-all-genomes | p3-get-genome-sp-genes',
+        )}, P3Utils::data_options(), P3Utils::col_options(), P3Utils::ih_options(),
     ['fields|f', 'Show available fields'],
     ['typeNames|t', 'List available specialty types']);
 # Get access to BV-BRC.

@@ -45,7 +45,12 @@ use Category::EC;
 $| = 1;
 my $stats = Stats->new();
 # Get the command-line options.
-my $opt = P3Utils::script_opts('catFile', P3Utils::col_options(), P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('catFile',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited role pairs on stdin (or --input file)',
+            output  => 'co-occurrence data',
+            example => 'p3-co-occur < roles.tbl',
+        )}, P3Utils::col_options(), P3Utils::ih_options(),
         ['gap|g=i', 'maximum gap distance', { default => 2000 }],
         ['type|t=s', 'type of category for clustering', { default => 'role' }],
         ['verbose|v', 'write status messages on STDERR']

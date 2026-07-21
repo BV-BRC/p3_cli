@@ -57,7 +57,12 @@ use P3Utils;
 
 $| = 1;
 # Get the command-line options.
-my $opt = P3Utils::script_opts('', P3Utils::data_options(), P3Utils::col_options(), P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited subsystem IDs on stdin (or --input file)',
+            output  => 'tab-delimited features in subsystems',
+            example => 'p3-all-subsystems | p3-get-subsystem-features -a product',
+        )}, P3Utils::data_options(), P3Utils::col_options(), P3Utils::ih_options(),
     ['fields|f', 'Show available fields'],
     ['names|name|N', 'input contains subsystem names instead of IDs']);
 

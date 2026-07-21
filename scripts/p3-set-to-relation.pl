@@ -31,7 +31,12 @@ use P3Utils;
 
 
 # Get the command-line options.
-my $opt = P3Utils::script_opts('', P3Utils::ih_options(), P3Utils::col_options(),
+my $opt = P3Utils::script_opts('',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited set data on stdin (or --input file)',
+            output  => 'relational pairs',
+            example => 'p3-set-to-relation < sets.tbl',
+        )}, P3Utils::ih_options(), P3Utils::col_options(),
         P3Utils::delim_options(),
         ['idCol|idcol|id=s', 'index (1-based) or name of cluster ID column']
         );

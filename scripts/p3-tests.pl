@@ -63,7 +63,12 @@ my $inFile = "$workDir/in.tbl";
 CreateInFile($inFile);
 # Test delimiters.
 @ARGV = ('--delim=tab');
-my $opt = P3Utils::script_opts('', P3Utils::delim_options());
+my $opt = P3Utils::script_opts('',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited data on stdin (or --input file)',
+            output  => 'test results',
+            example => 'p3-tests < test_data.tbl',
+        )}, P3Utils::delim_options());
 is(P3Utils::delim($opt), "\t", 'delim test');
 is(P3Utils::undelim($opt), '\t', 'undelim test');
 # Test get-couplets.

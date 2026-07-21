@@ -58,7 +58,12 @@ use TabFile;
 
 $| = 1;
 # Get the command-line options.
-my $opt = P3Utils::script_opts('file1 file2 ... fileN', P3Utils::col_options(),
+my $opt = P3Utils::script_opts('file1 file2 ... fileN',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited genome IDs on stdin; group files as positional args',
+            output  => 'discriminating kmer data',
+            example => 'p3-discriminating-kmers good.tbl bad.tbl',
+        )}, P3Utils::col_options(),
         ['fasta', 'input files are FASTA, not tab-delimited'],
         ['groups=s', 'group names to assign to the input file'],
         ['kmer|K=i', 'kmer size'],

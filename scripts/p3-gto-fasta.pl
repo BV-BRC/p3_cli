@@ -37,6 +37,11 @@ use Contigs;
 
 # Get the command-line options.
 my $opt = P3Utils::script_opts('gtoFile',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited data on stdin (or --input file); GTO file is positional',
+            output  => 'FASTA sequences from GTO',
+            example => 'p3-gto-fasta genome.gto',
+        )},
         ['mode' => hidden => { one_of => [['protein', 'feature protein FASTA'],
                                           ['feature', 'feature DNA FASTA'],
                                           ['contig', 'contig DNA FASTA']],

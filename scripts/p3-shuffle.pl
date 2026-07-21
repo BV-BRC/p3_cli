@@ -51,7 +51,12 @@ use P3Utils;
 
 $| = 1;
 # Get the command-line options.
-my $opt = P3Utils::script_opts('', P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited data on stdin (or --input file)',
+            output  => 'randomly shuffled rows',
+            example => 'p3-all-genomes | p3-shuffle',
+        )}, P3Utils::ih_options(),
     ['batchSize=i', 'size of each batch to scramble', { default => 500000 }],
     ['verbose|debug|v', 'show progress on STDERR']);
 

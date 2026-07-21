@@ -49,7 +49,12 @@ use P3Utils;
 use Digest::MD5;
 
 # Get the command-line options.
-my $opt = P3Utils::script_opts('file1 file2 ... fileN', P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('file1 file2 ... fileN',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited data on stdin (or --input file); file1 is positional (or -)',
+            output  => 'merged rows from two files',
+            example => 'p3-merge file1.tbl < file2.tbl',
+        )}, P3Utils::ih_options(),
         ['nohead', 'input files do not have headers'],
         ['mode' => hidden => { one_of => [['and|all', 'output lines in both files'],
                                           ['or|union', 'output lines in either file'],

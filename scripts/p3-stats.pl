@@ -32,7 +32,12 @@ use P3Utils;
 
 
 # Get the command-line options.
-my $opt = P3Utils::script_opts('statCol', P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('statCol',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited data on stdin (or --input file)',
+            output  => 'column statistics',
+            example => 'p3-all-genomes -a contigs | p3-stats contigs',
+        )}, P3Utils::ih_options(),
         ['col|c=s', 'grouping column (or "none")', { default => 0 }],
         ['nohead', 'input has no headers']
         );

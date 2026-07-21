@@ -30,7 +30,12 @@ use P3DataAPI;
 use P3Utils;
 
 # Get the command-line options.
-my $opt = P3Utils::script_opts('', P3Utils::data_options(), P3Utils::col_options(), P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited special feature IDs on stdin (or --input file)',
+            output  => 'tab-delimited variant data',
+            example => 'p3-all-sfs | p3-get-sf-variants',
+        )}, P3Utils::data_options(), P3Utils::col_options(), P3Utils::ih_options(),
     ['fields|f', 'Show available fields']);
 
 my $fields = ($opt->fields ? 1 : 0);

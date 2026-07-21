@@ -78,7 +78,12 @@ use P3Utils;
 use constant KEYS => { gene => 2, gene_id => 1, refseq_locus_tag => 1, protein_id => 2, aa_sequence_md5 => 2, product => 2 };
 
 # Get the command-line options.
-my $opt = P3Utils::script_opts('keyName', P3Utils::data_options(), P3Utils::col_options(), P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('keyName',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited search values on stdin (or --input file); keyName is positional',
+            output  => 'matching features',
+            example => 'p3-echo fig|83332.12.peg.1 | p3-find-features patric_id',
+        )}, P3Utils::data_options(), P3Utils::col_options(), P3Utils::ih_options(),
         ['keyNames|keynames|keys', 'list key field names']
         );
 if ($opt->keynames) {

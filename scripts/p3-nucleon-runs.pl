@@ -45,6 +45,11 @@ use BadLetters;
 
 # Get the command-line options.
 my $opt = P3Utils::script_opts('letter inFile inFile2',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'none (queries BV-BRC database directly)',
+            output  => 'tab-delimited nucleon run data',
+            example => 'p3-nucleon-runs --eq genome_id,83332.12',
+        )},
         ['geneticCode|geneticcode|code|gc=i', 'genetic code for protein translation'],
         ['run=i', 'minimum run size', { default => 10 }],
         ['reads|fastq', 'input is FASTQ, not FASTA'],

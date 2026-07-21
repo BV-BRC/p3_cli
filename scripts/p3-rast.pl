@@ -81,7 +81,12 @@ Do not add the genome to the BV-BRC index.
 use constant RAST_URL => 'http://redwood.mcs.anl.gov:5000/quick';
 
 # Get the command-line parameters.
-my $opt = P3Utils::script_opts('genomeID name', P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('genomeID name',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'FASTA contigs on stdin (or --input file)',
+            output  => 'annotated genome (GTO)',
+            example => 'p3-rast < contigs.fa',
+        )}, P3Utils::ih_options(),
         ["gto|j", "input file is in JSON format"],
         ["domain|d=s", "domain (A or B) of the new genome", { default => 'B' }],
         ["geneticCode=i", "genetic code for the new genome", { default => 11 }],

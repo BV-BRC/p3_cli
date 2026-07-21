@@ -34,7 +34,12 @@ use P3DataAPI;
 use P3Utils;
 
 # Get the command-line options.
-my $opt = P3Utils::script_opts('genomeFieldName genomeFieldValue', P3Utils::data_options(),
+my $opt = P3Utils::script_opts('genomeFieldName genomeFieldValue',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'none (queries BV-BRC database directly)',
+            output  => 'tab-delimited feature data',
+            example => 'p3-all-genome-features --eq genome_id,83332.12 -a product',
+        )}, P3Utils::data_options(),
         ['fields|f', 'show available feature fields'],
         ['keyNames|keynames', 'show available genome filtering fields']);
 # Get access to BV-BRC.
