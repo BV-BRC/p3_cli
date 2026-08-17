@@ -2551,6 +2551,7 @@ use Data::Dumper;
 use strict;
 use base 'P3WorkspaceClient';
 use LWP::UserAgent;
+use P3ClientUA;
 use File::Slurp;
 
 #
@@ -2574,7 +2575,7 @@ sub copy_files_to_handles
     my $ua;
     if ($use_shock)
     {
-        $ua = LWP::UserAgent->new();
+        $ua = P3ClientUA::new_ua();
         $token = $token->token if ref($token);
     }
 
@@ -2630,7 +2631,7 @@ sub save_data_to_file
         local $HTTP::Request::Common::DYNAMIC_FILE_UPLOAD = 1;
 
         $token = $token->token if ref($token);
-        my $ua = LWP::UserAgent->new();
+        my $ua = P3ClientUA::new_ua();
 
         my $res = $self->create({ objects => [[$path, $type, $metadata ]],
                                 overwrite => ($overwrite ? 1 : 0),
@@ -2674,7 +2675,7 @@ sub save_file_to_file
         local $HTTP::Request::Common::DYNAMIC_FILE_UPLOAD = 1;
 
         $token = $token->token if ref($token);
-        my $ua = LWP::UserAgent->new();
+        my $ua = P3ClientUA::new_ua();
 
         my $res = $self->create({ objects => [[$path, $type, $metadata ]],
                                 overwrite => ($overwrite ? 1 : 0),
