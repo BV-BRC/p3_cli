@@ -27,6 +27,7 @@ package RASTlib;
     use SeedUtils;
     use URI;
     use P3DataAPI;
+    use P3ClientUA;
     use Crypt::RC4;
     use FastA;
     use MD5Computer;
@@ -264,7 +265,7 @@ sub Submit {
     my $header = $options{header} // auth_header($user, $pass);
     # Submit the request.
     my $request = HTTP::Request->new(POST => "$url", $header, $contigString);
-    my $ua = LWP::UserAgent->new();
+    my $ua = P3ClientUA::new_ua();
     my $response = $ua->request($request);
     if ($response->code ne 200) {
         my $message = "Error response for RAST submisssion: " . $response->message;
@@ -346,7 +347,7 @@ sub check {
     my $url = join("/", RAST_URL, $jobID, 'status');
     my $request = HTTP::Request->new(GET => $url, $header);
     # Check the status.
-    my $ua = LWP::UserAgent->new();
+    my $ua = P3ClientUA::new_ua();
     my $response = $ua->request($request);
     if ($response->code ne 200) {
         my $message = "Error response for RAST status: " . $response->message;
@@ -417,7 +418,7 @@ sub retrieve {
        # Insure the taxonID is a string.
        $taxonID //= "";
     # Ask for the GTO from PATRIC.
-    my $ua = LWP::UserAgent->new();
+    my $ua = P3ClientUA::new_ua();
     my $url = join("/", RAST_URL, $jobID, 'retrieve');
     my $request = HTTP::Request->new(GET => $url, $header);
     my $response = $ua->request($request);
