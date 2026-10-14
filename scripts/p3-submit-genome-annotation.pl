@@ -153,6 +153,8 @@ my($opt, $usage) =
 		     [],
 		     ["lowvan-min-contig-length=i", "Minimum contig length for the lowvan viral annotation pipeline (default 300)."],
 		     ["lowvan-max-contig-length=i", "Maximum contig length for the lowvan viral annotation pipeline (default 40000)."],
+		     ["lowvan-min-contig-bit=f", "Minimum BLASTn bit score for the lowvan viral annotation pipeline to accept a taxon call (default 150)."],
+		     ["lowvan-fallback-viral-taxon", "If the lowvan classification finds no reference above the minimum bit score, retry using the annotation taxon taken from the genome's own lineage. Only affects genomes that would otherwise be left unannotated."],
 		     [],
 		     ["Advanced options:"],
 		     [],
@@ -349,6 +351,10 @@ my $params = {
     ($opt->public ? (public => 1) : ()),
     (defined($opt->lowvan_min_contig_length) ? (lowvan_min_contig_length => $opt->lowvan_min_contig_length) : ()),
     (defined($opt->lowvan_max_contig_length) ? (lowvan_max_contig_length => $opt->lowvan_max_contig_length) : ()),
+    # 0 + : Getopt::Long leaves a =f value as a string, which JSON-encodes as "50" and not
+    # 50. The spec declares this float, and the Go front end sends a number.
+    (defined($opt->lowvan_min_contig_bit) ? (lowvan_min_contig_bit => 0 + $opt->lowvan_min_contig_bit) : ()),
+    ($opt->lowvan_fallback_viral_taxon ? (lowvan_fallback_viral_taxon => 1) : ()),
 };
 
 my $start_params = {
