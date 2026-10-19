@@ -8,6 +8,7 @@ no warnings 'redefine';
 use strict;
 use Data::Dumper;
 use JSON::RPC::Legacy::Client;
+use P3ClientUA;
 use URI;
 my $get_time = sub { time, 0 };
 eval {
@@ -137,6 +138,13 @@ sub new
     my $ua = $self->{client}->ua;
     my $timeout = $ENV{CDMI_TIMEOUT} || (30 * 60);
     $ua->timeout($timeout);
+
+    #
+    # JSON::RPC::Legacy::Client builds its own LWP::UserAgent, so every
+    # workspace RPC from the CLI was going out as libwww-perl -- the string
+    # Cloudflare 1010-bans.
+    #
+    $ua->agent(P3ClientUA::user_agent_string());
     bless $self, $class;
     #    $self->_validate_version();
     return $self;
