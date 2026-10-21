@@ -8,6 +8,7 @@ no warnings 'redefine';
 use strict;
 use Data::Dumper;
 use JSON::RPC::Legacy::Client;
+use P3ClientUA;
 use URI;
 my $get_time = sub { time, 0 };
 eval {
@@ -137,6 +138,13 @@ sub new
     my $ua = $self->{client}->ua;
     my $timeout = $ENV{CDMI_TIMEOUT} || (30 * 60);
     $ua->timeout($timeout);
+
+    #
+    # JSON::RPC::Legacy::Client builds its own LWP::UserAgent, so every
+    # workspace RPC from the CLI was going out as libwww-perl -- the string
+    # Cloudflare 1010-bans.
+    #
+    $ua->agent(P3ClientUA::user_agent_string());
     bless $self, $class;
     #    $self->_validate_version();
     return $self;
@@ -2551,6 +2559,7 @@ use Data::Dumper;
 use strict;
 use base 'P3WorkspaceClient';
 use LWP::UserAgent;
+use P3ClientUA;
 use File::Slurp;
 
 #
@@ -2574,7 +2583,7 @@ sub copy_files_to_handles
     my $ua;
     if ($use_shock)
     {
-        $ua = LWP::UserAgent->new();
+        $ua = P3ClientUA::new_ua();
         $token = $token->token if ref($token);
     }
 
@@ -2630,7 +2639,7 @@ sub save_data_to_file
         local $HTTP::Request::Common::DYNAMIC_FILE_UPLOAD = 1;
 
         $token = $token->token if ref($token);
-        my $ua = LWP::UserAgent->new();
+        my $ua = P3ClientUA::new_ua();
 
         my $res = $self->create({ objects => [[$path, $type, $metadata ]],
                                 overwrite => ($overwrite ? 1 : 0),
@@ -2674,7 +2683,7 @@ sub save_file_to_file
         local $HTTP::Request::Common::DYNAMIC_FILE_UPLOAD = 1;
 
         $token = $token->token if ref($token);
-        my $ua = LWP::UserAgent->new();
+        my $ua = P3ClientUA::new_ua();
 
         my $res = $self->create({ objects => [[$path, $type, $metadata ]],
                                 overwrite => ($overwrite ? 1 : 0),

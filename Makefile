@@ -4,6 +4,28 @@ include $(TOP_DIR)/tools/Makefile.common
 DEPLOY_RUNTIME ?= /kb/runtime
 TARGET ?= /kb/deployment
 
+#
+# Identify the CLI to the BV-BRC services. Every generated p3-* wrapper exports
+# P3_CLIENT_PRODUCT, which P3ClientUA (p3_auth) turns into the User-Agent, so a
+# request from these tools is distinguishable from any other Perl client in the
+# tree -- in an access log, and in a Cloudflare block report.
+#
+# Doing it in the wrapper rather than in the scripts is what makes it hold for
+# all of them: there is no module every p3-* script loads, and the HTTP clients
+# that actually talk to the API live in p3_core, not here.
+#
+# The version is intentionally not specified in this repository -- stamping a
+# release is a release-tooling job. Supply it at build time:
+#
+#	make P3_CLI_VERSION=1.2.3	=>	bvbrc-cli-perl/1.2.3
+#	make				=>	bvbrc-cli-perl
+#
+P3_CLI_PRODUCT = bvbrc-cli-perl
+P3_CLI_VERSION ?=
+
+export P3_CLIENT_PRODUCT = $(P3_CLI_PRODUCT)$(if $(strip $(P3_CLI_VERSION)),/$(strip $(P3_CLI_VERSION)))
+export WRAP_VARIABLES = P3_CLIENT_PRODUCT
+
 SRC_PERL = $(wildcard scripts/*.pl)
 BIN_PERL = $(addprefix $(BIN_DIR)/,$(basename $(notdir $(SRC_PERL))))
 DEPLOY_PERL = $(addprefix $(TARGET)/bin/,$(basename $(notdir $(SRC_PERL))))
@@ -28,6 +50,15 @@ TPAGE_ARGS = --define kb_top=$(TARGET) --define kb_runtime=$(DEPLOY_RUNTIME) --d
 all: bin 
 
 bin: $(BIN_PERL) $(BIN_SERVICE_PERL)
+
+#
+# P3_CLIENT_PRODUCT is baked into each wrapper when it is generated, so a change
+# to it here has to force the wrappers to be rebuilt; otherwise an existing tree
+# keeps announcing the old identity until someone empties bin/ by hand.
+#
+# This has to come after "all", or it would take over as make's default goal.
+#
+$(BIN_PERL) $(BIN_SERVICE_PERL): Makefile
 
 deploy: deploy-all
 deploy-all: deploy-client 
