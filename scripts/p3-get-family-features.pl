@@ -48,7 +48,12 @@ use constant FAMTYPE => {'local' => 'plfam_id', global => 'pgfam_id', figfam => 
                          plfam => 'plfam_id', pgfam => 'pgfam_id', fig => 'figfam_id' };
 
 # Get the command-line options.
-my $opt = P3Utils::script_opts('', P3Utils::data_options(), P3Utils::col_options(), P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited family IDs on stdin (or --input file)',
+            output  => 'tab-delimited features in protein families',
+            example => 'p3-get-genome-features -a pgfam_id | p3-get-family-features -a product',
+        )}, P3Utils::data_options(), P3Utils::col_options(), P3Utils::ih_options(),
         ['gFile|gfile|g=s', 'name of a file containing genome IDs'],
         ['gCol|gcol=s', 'index (1-based) or name of the genome file column with the IDs', { default => 'genome.genome_id'}],
         ['fields', 'list the available field names'],

@@ -55,7 +55,12 @@ use MD5Computer;
 
 $| = 1;
 # Get the command-line options.
-my $opt = P3Utils::script_opts('', P3Utils::col_options(), P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited genome IDs on stdin (or --input file)',
+            output  => 'genome MD5 checksums',
+            example => 'p3-all-genomes --eq genus,Buchnera | p3-genome-md5',
+        )}, P3Utils::col_options(), P3Utils::ih_options(),
     ['restart=s', 'Restart after the specified genome'],
     ['verbose|debug|v', 'display debug information on STDERR']);
 

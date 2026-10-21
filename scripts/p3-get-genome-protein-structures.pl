@@ -48,7 +48,12 @@ use P3Utils;
 
 $| = 1;
 # Get the command-line options.
-my $opt = P3Utils::script_opts('', P3Utils::data_options(), P3Utils::col_options(), P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited genome IDs on stdin (or --input file)',
+            output  => 'tab-delimited protein structure data',
+            example => 'p3-all-genomes | p3-get-genome-protein-structures',
+        )}, P3Utils::data_options(), P3Utils::col_options(), P3Utils::ih_options(),
     ['fields|f', 'Show available fields']);
 
 # Get access to BV-BRC.

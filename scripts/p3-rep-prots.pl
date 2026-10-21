@@ -56,7 +56,12 @@ use Data::Dumper;
 
 $| = 1;
 # Get the command-line options.
-my $opt = P3Utils::script_opts('outDir', P3Utils::col_options(), P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('outDir',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited genome IDs on stdin (or --input file); rep DB is positional',
+            output  => 'representative protein assignments',
+            example => 'p3-all-genomes --eq genus,Buchnera | p3-rep-prots repdb',
+        )}, P3Utils::col_options(), P3Utils::ih_options(),
         ['clear', 'clear the output directory if it exists'],
         ['prot=s', 'name of the protein to use', { default => 'Phenylalanyl-tRNA synthetase alpha chain' }],
         ['dna', 'produce a DNA FASTA file in addition to the default files'],

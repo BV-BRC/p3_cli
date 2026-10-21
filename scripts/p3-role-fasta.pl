@@ -44,7 +44,12 @@ use RoleParse;
 use SeedUtils;
 
 # Get the command-line options.
-my $opt = P3Utils::script_opts('roleDesc', P3Utils::col_options(), P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('roleDesc',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited role names on stdin (or --input file)',
+            output  => 'FASTA sequences for roles',
+            example => 'p3-echo "Phenylalanyl-tRNA synthetase" | p3-role-fasta',
+        )}, P3Utils::col_options(), P3Utils::ih_options(),
         ['binning', 'format or use as a binning BLAST database'],
         ['dna', 'output DNA sequences'],
         ['debug|verbose|v', 'display progress on STDERR'],

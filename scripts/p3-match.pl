@@ -42,7 +42,12 @@ use strict;
 use P3Utils;
 
 # Get the command-line options.
-my $opt = P3Utils::script_opts('match-value', P3Utils::ih_options(), P3Utils::col_options(),
+my $opt = P3Utils::script_opts('match-value',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited data on stdin (or --input file)',
+            output  => 'rows matching a pattern',
+            example => 'p3-all-genomes -a genome_name | p3-match Streptococcus',
+        )}, P3Utils::ih_options(), P3Utils::col_options(),
         ['reverse|invert|v', 'output non-matching records'],
         ['discards=s', 'name of file to contain discarded records'],
         ['nonblank', 'match all nonblank column values'],

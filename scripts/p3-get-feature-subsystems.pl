@@ -28,7 +28,12 @@ use P3DataAPI;
 use P3Utils;
 
 # Get the command-line options.
-my $opt = P3Utils::script_opts('', P3Utils::data_options(), P3Utils::col_options(), P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited feature IDs on stdin (or --input file)',
+            output  => 'tab-delimited subsystem data for features',
+            example => 'p3-get-genome-features | p3-get-feature-subsystems',
+        )}, P3Utils::data_options(), P3Utils::col_options(), P3Utils::ih_options(),
     ['fields|f', 'Show available fields']);
 
 # Get access to BV-BRC.

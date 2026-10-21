@@ -56,7 +56,12 @@ use strict;
 use P3Utils;
 
 # Get the command-line options.
-my $opt = P3Utils::script_opts('file1 file2', P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('file1 file2',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited data on stdin (or --input file); file1 is positional (or -)',
+            output  => 'joined rows from two files',
+            example => 'p3-join file1.tbl < file2.tbl',
+        )}, P3Utils::ih_options(),
         ['nohead', 'input files have no headers'],
         ['batchSize=i', 'hidden', { default => 10 }],
         ['key1|k1|1=s', 'key field for file 1', { default => 0 }],

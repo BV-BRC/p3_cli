@@ -47,6 +47,11 @@ use KmerDb;
 
 # Get the command-line options.
 my $opt = P3Utils::script_opts('genome1 genome2 ... genomeN',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'none (kmer databases on command line)',
+            output  => 'kmer comparison results',
+            example => 'p3-kmer-compare kmerdb1 kmerdb2',
+        )},
         ['kmerSize|kmersize|kmer|k=i', 'kmer size'],
         ['geneticCode|geneticcode|code|gc|x=i', 'genetic code for protein kmers (default is to use DNA kmers)'],
         ['verbose|v', 'include percentages in output']

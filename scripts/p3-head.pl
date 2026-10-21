@@ -33,7 +33,12 @@ use P3Utils;
 
 
 # Get the command-line options.
-my $opt = P3Utils::script_opts('', P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited data on stdin (or --input file)',
+            output  => 'first N rows of data',
+            example => 'p3-all-genomes | p3-head 10',
+        )}, P3Utils::ih_options(),
         ['nohead', 'file has no headers'],
         ['lines|n=i', 'number of data lines to display', { default => 10 }]
         );

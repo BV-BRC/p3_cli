@@ -94,7 +94,12 @@ use strict;
 use P3Utils;
 
 # Get the command-line options.
-my $opt = P3Utils::script_opts('', P3Utils::ih_options(),
+my $opt = P3Utils::script_opts('',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'tab-delimited role data on stdin (or --input file)',
+            output  => 'closely related roles',
+            example => 'p3-generate-close-roles < roles.tbl',
+        )}, P3Utils::ih_options(),
         ['genome|g=s', 'index (1-based) or name of the genome ID column', { default => 1 }],
         ['sequence|seq|s=s', 'index (1-based) or name of the sequence ID column', { default => 2 }],
         ['location|loc|l=s', 'index (1-based) or name of the location column', { default => 3 }],

@@ -36,6 +36,11 @@ use File::Copy::Recursive;
 $| = 1;
 # Get the command-line options.
 my $opt = P3Utils::script_opts('kmerdb outDir',
+        { _input_spec => P3Utils::input_spec(
+            input   => 'none (queries BV-BRC database directly)',
+            output  => 'kmer data',
+            example => 'p3-write-kmers --eq genome_id,83332.12',
+        )},
         ['names', 'use group names for output files'],
         ['clear', 'erase output directory']
         );
